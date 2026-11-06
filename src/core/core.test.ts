@@ -78,6 +78,15 @@ describe("compose", () => {
     expect(en).toContain("title: HRV / Resting HR");
     expect(en).not.toContain("readiness");
   });
+  it("names Garmin as the data source right under the title, in every mode and language", () => {
+    for (const lang of ["en", "ru", "de", "ja"] as const) {
+      for (const mode of ["dashboard", "month"] as const) {
+        const md = compose(buildProfile(rows(10, full)), { source: SRC, lang, mode }).markdown;
+        const after = md.split(/^# .*$/m)[1]?.trimStart().split("\n")[0] ?? "";
+        expect(after, `${lang} ${mode}`).toContain("Garmin");
+      }
+    }
+  });
   it("never writes a block for a missing field or unused sport", () => {
     const r = compose(buildProfile(rows(40, full)), { source: SRC });
     expect(r.markdown).not.toContain("training_readiness");

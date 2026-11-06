@@ -75,6 +75,8 @@ export function compose(p: DataProfile, o: ComposeOptions): ComposeResult {
 
   out.push(["---", "created: " + (p.last ?? ""), "updated: " + (p.last ?? ""), "tags:", '  - "#dashboard"', '  - "#garmy"', "---"].join("\n"));
   out.push("# " + (o.mode === "month" ? t.month : t.title));
+  // Garmin's API brand guidelines ask for the source to be named next to the title of any view of its data
+  out.push(t.dataSource ?? "Garmin");
 
   const sportCard = (s: string): Row => {
     const sp = SPORTS[s]!;

@@ -52,7 +52,7 @@ export const pt: Locale = {
   waitMonth: "Mapas do ano e metas aparecem quando houver um mês de dados.",
   sum7: "Total de 7 dias", monthCard: "Mês",
   title: "Meu painel Garmin", month: "Resumo mensal",
-  madeBy: "Montado pelo Garmy a partir dos seus dados. Reconstrua quando quiser.",
+  dataSource: "Fonte dos dados: Garmin", madeBy: "Montado pelo Garmy a partir dos seus dados. Reconstrua quando quiser.",
 },
   units: { ms: " ms", bpm: " bpm", km: " km" },
 };

@@ -52,7 +52,7 @@ export const fr: Locale = {
   waitMonth: "Les cartes de l'année et les objectifs apparaissent après un mois de données.",
   sum7: "Total sur 7 jours", monthCard: "Mois",
   title: "Mon tableau de bord Garmin", month: "Bilan du mois",
-  madeBy: "Créé par Garmy à partir de vos données. Reconstruisez-le à tout moment.",
+  dataSource: "Source des données : Garmin", madeBy: "Créé par Garmy à partir de vos données. Reconstruisez-le à tout moment.",
 },
   units: { ms: " ms", bpm: " bpm", km: " km" },
 };

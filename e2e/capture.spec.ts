@@ -85,8 +85,16 @@ async function openInReading(win: Page, path: string | null): Promise<void> {
         const file = p ?? a.workspace.getActiveFile()?.path;
         a.workspace.leftSplit.collapse();
         a.workspace.rightSplit.collapse();
-        await a.workspace.getLeaf(false).setViewState({ type: "markdown", state: { file, mode: "preview" }, active: true });
+        const leaf = a.workspace.getLeaf(false);
+        await leaf.setViewState({ type: "markdown", state: { file, mode: "preview" }, active: true });
+        // setViewState is ignored for a note that is already open in the tab, so check the mode and force it
+        const view = (leaf as unknown as { view: { getMode?(): string; getState(): object; setState(s: object, r: object): Promise<void> } }).view;
+        for (let i = 0; i < 5 && view.getMode?.() !== "preview"; i++) {
+            await view.setState({ ...view.getState(), mode: "preview" }, { history: false });
+            await new Promise((r) => setTimeout(r, 300));
+        }
     }, path);
+    await win.waitForSelector(".workspace-leaf.mod-active .markdown-reading-view", { timeout: 10_000 });
     await win.waitForTimeout(800);
 }
 const openActiveInReading = (win: Page): Promise<void> => openInReading(win, null);

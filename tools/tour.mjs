@@ -7,12 +7,14 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { createRequire } from "node:module";
-const require = createRequire("/Users/dyurkin/projects/dashsidian/package.json");
-const { _electron } = require("playwright");
-
-const ELECTRON = "/Users/dyurkin/projects/dashsidian/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron";
-const ASAR = "/Applications/Obsidian.app/Contents/Resources/app.asar";
 const ROOT = path.resolve(import.meta.dirname, "..");
+const require = createRequire(path.join(ROOT, "package.json"));
+const { _electron } = require("@playwright/test");
+
+const ELECTRON = require("electron"); // the project-local Electron, see scripts/e2e-setup.sh for why
+const ASAR = "/Applications/Obsidian.app/Contents/Resources/app.asar";
+// A built Dashy (main.js, manifest.json, styles.css): DASHY_DIST, default a sibling checkout
+const DASHY_DIST = process.env.DASHY_DIST ?? path.join(ROOT, "..", "dashsidian");
 const BAD = process.argv.includes("--bad-key");
 const STATES = process.argv.includes("--states");
 const MEDIA = process.argv.includes("--media");
@@ -25,7 +27,7 @@ const key = BAD || STATES ? "definitely-not-a-valid-key" : execFileSync("/usr/bi
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "garmy-e2e-"));
 const vault = path.join(tmp, "vault"), obs = path.join(vault, ".obsidian");
-for (const [id, src] of [["garmidian", ROOT], ["dashsidian", "/Users/dyurkin/my-obsidian-vault/.obsidian/plugins/dashsidian"]]) {
+for (const [id, src] of [["garmidian", ROOT], ["dashsidian", DASHY_DIST]]) {
   fs.mkdirSync(path.join(obs, "plugins", id), { recursive: true });
   for (const f of ["main.js", "manifest.json", "styles.css"]) fs.copyFileSync(path.join(fs.realpathSync(src), f), path.join(obs, "plugins", id, f));
 }

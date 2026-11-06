@@ -73,7 +73,8 @@ One note per day in `Garmy/data`, with these properties when Garmin has them: `s
 
 ## Disclosures
 
-- **Account and key.** You need a Garmin Connect account and a Personal API key you create yourself. Garmin's terms cover personal use of your own key; the API is not for commercial services with many users. If Garmin rejects the key (it expires after the lifetime you chose), Garmy says so once and settings offer **Replace key**.
+- **Account and key.** You need a Garmin Connect account and a Personal API key you create yourself. Garmin describes the Personal API as meant for individuals who want programmatic access to their own data, and not for commercial applications serving multiple end users. Garmy has no server and no accounts: it runs on your computer with your own key, it is free, and any donation is voluntary. Read the terms you accept when you create a key.
+- **Attribution.** Every dashboard names Garmin as its data source right under the title, as Garmin's API brand guidelines ask. Keep that line if you share a screenshot. If Garmin rejects the key (it expires after the lifetime you chose), Garmy says so once and settings offer **Replace key**.
 - **Network.** The plugin contacts `personal.connectapi.garmin.com` and nothing else: once to exchange the key for a 24 hour token, then to read your own data. It uses Obsidian's `requestUrl`. There is no telemetry, no analytics and no ads.
 - **Your data.** Health data stays in your vault. If your vault is synced (iCloud, git, Obsidian Sync), the daily notes sync with it, like any other note.
 - **Secrets.** The key lives in Obsidian's secure storage, never in a note or `data.json`. The token stays in memory.

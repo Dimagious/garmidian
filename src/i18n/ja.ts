@@ -52,7 +52,7 @@ export const ja: Locale = {
   waitMonth: "年間マップと目標は、1か月分のデータがたまると表示されます。",
   sum7: "7日間の合計", monthCard: "月間",
   title: "私のGarminダッシュボード", month: "月間レビュー",
-  madeBy: "Garmyがあなたのデータから作成しました。いつでも再構築できます。",
+  dataSource: "データの提供元：Garmin", madeBy: "Garmyがあなたのデータから作成しました。いつでも再構築できます。",
 },
   units: { ms: "ms", bpm: "bpm", km: "km" },
 };

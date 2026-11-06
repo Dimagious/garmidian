@@ -7,3 +7,4 @@ test-results/
 garmidian-*.zip
 # built in by scripts/e2e-setup.sh
 e2e-vault.pristine/.obsidian/plugins/
+.capture/

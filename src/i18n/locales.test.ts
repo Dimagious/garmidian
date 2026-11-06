@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { LABEL_KEYS, LANGS, LOCALES, pickLang } from "./index";
 
 /** Names that must survive translation wherever the English text uses them. */
-const BRANDS = ["Garmin Connect", "Personal API", "Dashy", "Obsidian", "Garmy", "Body Battery", "HRV"];
+const BRANDS = ["Garmin", "Garmin Connect", "Personal API", "Dashy", "Obsidian", "Garmy", "Body Battery", "HRV"];
 
 /** Every text in a locale, flattened to "path" -> text. Functions are called with sample arguments. */
 function leaves(value: unknown, path: string, out: Map<string, string>): void {

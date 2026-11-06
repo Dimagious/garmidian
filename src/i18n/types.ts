@@ -48,7 +48,7 @@ export interface SyncUi {
 }
 
 /** Words used inside the generated dashboard notes. */
-export const LABEL_KEYS = ["sleep_score", "sleep_duration", "hrv", "resting_hr", "training_readiness", "body_battery", "stress", "steps", "distance_km", "run", "bike", "swim", "strength", "latestNight", "latest", "days", "now", "weekVsUsual", "week", "trends", "activity", "training", "races", "recovery", "stepsPerDay", "stepsStreak", "km7", "chartSteps", "chartMinutes", "yearBySport", "monthByDay", "goals", "nextRace", "waitWeek", "waitMonth", "sum7", "monthCard", "title", "month", "madeBy"] as const;
+export const LABEL_KEYS = ["sleep_score", "sleep_duration", "hrv", "resting_hr", "training_readiness", "body_battery", "stress", "steps", "distance_km", "run", "bike", "swim", "strength", "latestNight", "latest", "days", "now", "weekVsUsual", "week", "trends", "activity", "training", "races", "recovery", "stepsPerDay", "stepsStreak", "km7", "chartSteps", "chartMinutes", "yearBySport", "monthByDay", "goals", "nextRace", "waitWeek", "waitMonth", "sum7", "monthCard", "title", "month", "madeBy", "dataSource"] as const;
 export type LabelKey = (typeof LABEL_KEYS)[number];
 
 export interface Locale {

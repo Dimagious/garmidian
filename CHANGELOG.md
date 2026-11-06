@@ -6,6 +6,7 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ### Added
 
+- Every dashboard names Garmin as its data source under the title ("Data source: Garmin", in all seven languages), as Garmin's API brand guidelines ask for any view of Garmin data.
 - A README with clips and pictures taken from the real plugin on generated demo data (`npm run capture`).
 - Interface languages: English, Russian, Spanish, German, French, Portuguese and Japanese. The plugin follows Obsidian's language and falls back to English when it does not speak it; settings have a "Language" option to choose another. The dashboard labels have their own language choice in the wizard.
 - Automatic sync: shortly after Obsidian starts and then every 6, 12 or 24 hours (or off), plus a "Sync now" button in settings. A sync loads the days since the last one with a margin of three, capped at 60.
