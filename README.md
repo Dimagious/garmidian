@@ -17,7 +17,7 @@ Sleep, HRV, resting heart rate, Body Battery, steps, runs, rides, swims and stre
 
 <img alt="The Garmy wizard in Obsidian: a Garmin key is pasted, a year of history loads in four parts, the user chooses what to show, previews the dashboard on their own numbers and creates the note, which then scrolls through recovery cards, charts, a year map by sport and monthly goals" src="https://raw.githubusercontent.com/Dimagious/garmidian/HEAD/docs/screens/film-wizard.gif" width="100%">
 
-**Install:** Garmy is not in the community catalog yet. Until it is, install it with [BRAT](https://github.com/TfTHacker/obsidian42-brat): add the beta plugin `Dimagious/garmidian`. Garmy draws its blocks with [Dashy](https://github.com/Dimagious/dashsidian), so install Dashy from **Settings, Community plugins** too. Then open the command palette and run **Garmy: Build a Garmin dashboard**.
+**Install:** Settings, **Community plugins**, **Browse**, search for **Garmy**. Garmy draws its blocks with [Dashy](https://github.com/Dimagious/dashsidian), so install Dashy the same way. Then open the command palette and run **Garmy: Build a Garmin dashboard**.
 
 ## Why you might want it
 
