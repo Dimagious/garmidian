@@ -9,6 +9,7 @@ export interface SyncUi {
   setKeyRejected: (date: string) => string; setReplaceKey: string;
   noticeSynced: (days: number) => string; noticeNoKey: string; noticeOffline: string; noticeRate: string; noticeFailed: string;
   noticeKeyRejected: string; noticeReplaceKey: string;
+  useNotesTitle: string; useNotesHint: string; findNotes: string; notesNone: string; notesFound: string; notesFolder: (folder: string, n: number) => string;
   rebuildNoNote: string; rebuildNoRegion: string; rebuildNoData: string; rebuildDone: string;
 }
 
@@ -21,6 +22,7 @@ export const SYNC_UI: Record<Lang, SyncUi> = {
     setKeyRejected: (d) => `Garmin не принял ключ ${d}. Возможно, он истёк. Создайте новый.`, setReplaceKey: "Заменить ключ",
     noticeSynced: (n) => `Garmy: обновлено дней: ${n}`, noticeNoKey: "Garmy: ключа нет. Сначала пройдите мастер.", noticeOffline: "Garmy: нет связи с Garmin. Повторим позже.", noticeRate: "Garmy: Garmin просит подождать. Повторим позже.", noticeFailed: "Garmy: не удалось обновить данные. Подробности в консоли разработчика.",
     noticeKeyRejected: "Garmy: Garmin не принял ключ. Возможно, он истёк. Создайте новый ключ и вставьте его в мастере.", noticeReplaceKey: "Заменить ключ",
+    useNotesTitle: "Уже есть числа Garmin в заметках?", useNotesHint: "Если их пишет Garmin Health Sync или ваш скрипт, Garmy соберёт дашборд из этих заметок. Ключ не нужен.", findNotes: "Найти такие заметки", notesNone: "Заметок с числами Garmin не нашлось. В имени нужна дата (2026-11-06) и хотя бы два показателя, например steps или sleep_score.", notesFound: "Найдено в папках:", notesFolder: (f, n) => `${f || "корень vault"}: ${n}`,
     rebuildNoNote: "Garmy: откройте заметку с дашбордом.", rebuildNoRegion: "Garmy: в этой заметке нет дашборда Garmy. Его создаёт мастер.", rebuildNoData: "Garmy: данных нет. Сначала загрузите историю в мастере.", rebuildDone: "Garmy: дашборд пересобран.",
   },
   en: {
@@ -31,6 +33,7 @@ export const SYNC_UI: Record<Lang, SyncUi> = {
     setKeyRejected: (d) => `Garmin rejected the key on ${d}. It may have expired. Create a new one.`, setReplaceKey: "Replace key",
     noticeSynced: (n) => `Garmy: ${n} days synced`, noticeNoKey: "Garmy: no key. Run the wizard first.", noticeOffline: "Garmy: no connection to Garmin. Will try again later.", noticeRate: "Garmy: Garmin asks to wait. Will try again later.", noticeFailed: "Garmy: sync failed. Details are in the developer console.",
     noticeKeyRejected: "Garmy: Garmin rejected the key. It may have expired. Create a new key and paste it in the wizard.", noticeReplaceKey: "Replace key",
+    useNotesTitle: "Already have Garmin numbers in your notes?", useNotesHint: "If Garmin Health Sync or a script writes them, Garmy can build a dashboard from those notes. No key needed.", findNotes: "Look for those notes", notesNone: "No notes with Garmin numbers found. A note needs a date in its name (2026-11-06) and at least two metrics such as steps or sleep_score.", notesFound: "Found in these folders:", notesFolder: (f, n) => `${f || "vault root"}: ${n}`,
     rebuildNoNote: "Garmy: open the note with the dashboard.", rebuildNoRegion: "Garmy: this note has no Garmy dashboard. The wizard creates one.", rebuildNoData: "Garmy: no data yet. Load your history in the wizard first.", rebuildDone: "Garmy: dashboard rebuilt.",
   },
 };

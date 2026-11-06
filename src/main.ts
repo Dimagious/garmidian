@@ -1,8 +1,10 @@
 import { Notice, Plugin, getLanguage, requestUrl } from "obsidian";
 import { GarminClient, GarminError, type Http, type Scheduler } from "./api/client";
 import type { Lang } from "./core/catalog";
-import { addDays, daysBetween, localDate } from "./core/dates";
+import { addDays, localDate } from "./core/dates";
+import { ISO_FORMAT } from "./core/dayname";
 import { overwriteFrom } from "./core/merge";
+import { shouldAutoSync, syncWindowDays } from "./core/schedule";
 import { WizardModal } from "./app/wizard";
 import { UI } from "./app/i18n";
 import { SYNC_UI } from "./app/i18n-sync";
@@ -22,8 +24,6 @@ export interface GarmySettings {
 const DEFAULTS: GarmySettings = { dataFolder: "Garmy/data", notesFolder: "Garmy", racesFolder: "", lastSync: "", lastSyncAt: 0, syncHours: 6, keyProblem: "" };
 const SECRET_ID = "garmy-garmin-api-key";
 const DASHY_ID = "dashsidian";
-const FIRST_SYNC_DAYS = 14;
-const MAX_SYNC_DAYS = 60;
 const AUTO_CHECK_MS = 30 * 60 * 1000;
 const STARTUP_DELAY_MS = 5000;
 
@@ -57,10 +57,29 @@ export default class GarmyPlugin extends Plugin {
     this.addCommand({ id: "sync-recent", name: "Sync the latest days from Garmin", callback: () => void this.syncNow(true) });
     this.addCommand({ id: "rebuild-dashboard", name: "Rebuild the dashboard in this note", callback: () => void rebuildActiveDashboard(this.app, this.lang()) });
     this.addSettingTab(new GarmySettingTab(this.app, this));
-    this.app.workspace.onLayoutReady(() => {
-      window.setTimeout(() => void this.maybeAutoSync(), STARTUP_DELAY_MS);
-      this.registerInterval(window.setInterval(() => void this.maybeAutoSync(), AUTO_CHECK_MS));
-    });
+    this.app.workspace.onLayoutReady(() => this.startAutoSync());
+  }
+
+  private autoSyncTimer: number | null = null;
+
+  /** One check shortly after start, then one every half hour. A check syncs only when the interval has passed. */
+  startAutoSync(startupDelayMs: number = STARTUP_DELAY_MS): void {
+    window.setTimeout(() => void this.maybeAutoSync(), startupDelayMs);
+    if (this.autoSyncTimer === null) {
+      this.autoSyncTimer = window.setInterval(() => void this.maybeAutoSync(), AUTO_CHECK_MS);
+      this.registerInterval(this.autoSyncTimer);
+    }
+  }
+
+  /** The user's daily note format, so notes named 06.11.2026 or 2026-11-06 are both found. */
+  dailyFormat(): string {
+    const app = this.app as unknown as {
+      plugins?: { plugins?: Record<string, { settings?: { daily?: { format?: string } } } | undefined> };
+      internalPlugins?: { getPluginById?: (id: string) => { instance?: { options?: { format?: string } } } | undefined };
+    };
+    return app.plugins?.plugins?.["periodic-notes"]?.settings?.daily?.format
+      || app.internalPlugins?.getPluginById?.("daily-notes")?.instance?.options?.format
+      || ISO_FORMAT;
   }
 
   lang(): Lang { return getLanguage().startsWith("ru") ? "ru" : "en"; }
@@ -89,10 +108,7 @@ export default class GarmyPlugin extends Plugin {
   }
 
   private async maybeAutoSync(): Promise<void> {
-    const s = this.settings;
-    if (s.syncHours <= 0 || s.keyProblem || !this.getKey()) return;
-    if (Date.now() - s.lastSyncAt < s.syncHours * 3600e3) return;
-    await this.syncNow(false);
+    if (shouldAutoSync(this.settings, this.getKey() !== "", Date.now())) await this.syncNow(false);
   }
 
   /** Refreshes the days since the last sync (plus a margin) and the three most recent ones are overwritten. */
@@ -103,9 +119,7 @@ export default class GarmyPlugin extends Plugin {
     this.syncing = true;
     try {
       const today = localDate(Date.now());
-      const back = this.settings.lastSync
-        ? Math.min(MAX_SYNC_DAYS, Math.max(3, daysBetween(this.settings.lastSync, today) + 3))
-        : FIRST_SYNC_DAYS;
+      const back = syncWindowDays(this.settings.lastSync, today);
       const res = await this.newClient().backfill(addDays(today, -back), today);
       await writeDays(this.app, this.settings.dataFolder, res.records, { overwriteFrom: overwriteFrom(today) });
       await this.recordSync(today);

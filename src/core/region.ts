@@ -12,6 +12,8 @@ export interface RegionMeta {
   sports: string[];
   lang: Lang;
   races: string | null;
+  /** How the source notes are named, when they are not ISO dates (notes the user already had). */
+  dayFormat?: string;
 }
 
 const PATTERN = /%% garmy:start (\{[^\n]*?\}) %%\n([\s\S]*?)\n%% garmy:end %%/;
@@ -42,7 +44,7 @@ export function readRegionMeta(note: string): RegionMeta | null {
     if (raw === null || typeof raw !== "object") return null;
     const o = raw as Partial<RegionMeta>;
     if (o.v !== 1 || typeof o.source !== "string" || !Array.isArray(o.groups) || !Array.isArray(o.sports)) return null;
-    return { v: 1, source: o.source, groups: o.groups.map(String), sports: o.sports.map(String), lang: o.lang === "en" ? "en" : "ru", races: typeof o.races === "string" ? o.races : null };
+    return { v: 1, source: o.source, groups: o.groups.map(String), sports: o.sports.map(String), lang: o.lang === "en" ? "en" : "ru", races: typeof o.races === "string" ? o.races : null, ...(typeof o.dayFormat === "string" ? { dayFormat: o.dayFormat } : {}) };
   } catch {
     return null;
   }

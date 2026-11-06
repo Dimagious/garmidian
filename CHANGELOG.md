@@ -10,6 +10,7 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 - The three most recent days are overwritten on every sync, so numbers written part-way through a day are corrected. Older days only get missing properties filled.
 - A rejected or expired key is remembered: settings show it with a "Replace key" button, and a notice offers the same once.
 - Loading can be cancelled, and a request that gets no answer in 30 seconds becomes a "no connection" error instead of hanging.
+- Use notes you already have: the key step can look for folders of daily notes that carry Garmin numbers (for example written by Garmin Health Sync) and build a dashboard from them, with no key and no loading. Notes need a date in the name (ISO, or your own daily note format from Daily notes or Periodic Notes, such as `06.11.2026`) and at least two known metrics.
 - "Rebuild the dashboard in this note": the dashboard lives between two invisible comment markers, and the command regenerates only that part from the data on disk with the original choices.
 - Body Battery: the day's highest value is saved as `body_battery` and shown in the recovery cards and the score chart. It comes with the daily summaries, so it costs no extra request.
 - The preview warns when Dashy is turned off and can turn it on, or opens its page in the community browser when it is not installed.

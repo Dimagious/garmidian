@@ -1,8 +1,9 @@
 import { TFile, normalizePath, type App } from "obsidian";
+import { isoParser, type DayParser } from "../core/dayname";
 import { changesFor } from "../core/merge";
+import type { NoteProps } from "../core/detect";
 import type { DayRecord } from "../core/types";
 
-const DAY = /^(\d{4}-\d{2}-\d{2})\.md$/;
 const yamlValue = (v: number | string): string => (typeof v === "string" ? JSON.stringify(v) : String(v));
 
 async function ensureFolder(app: App, folder: string): Promise<void> {
@@ -49,21 +50,31 @@ export async function writeDays(app: App, folder: string, records: DayRecord[], 
 }
 
 /** Reads the day notes back (for a returning user). Waits for the metadata cache to know new files. */
-export function readRows(app: App, folder: string): DayRecord[] {
+export function readRows(app: App, folder: string, parse: DayParser = isoParser): DayRecord[] {
   const prefix = normalizePath(folder) + "/";
   const rows: DayRecord[] = [];
   for (const f of app.vault.getMarkdownFiles()) {
     if (!f.path.startsWith(prefix)) continue;
-    const m = DAY.exec(f.name);
-    if (!m || !m[1]) continue;
+    const date = f.name.endsWith(".md") ? parse(f.name.slice(0, -3)) : null;
+    if (!date) continue;
     const fm = app.metadataCache.getFileCache(f)?.frontmatter;
     if (!fm) continue;
     const fields: Record<string, number | string> = {};
     for (const [k, v] of Object.entries(fm)) if (typeof v === "number" || typeof v === "string") fields[k] = v;
     delete fields.position;
-    rows.push({ date: m[1], fields });
+    rows.push({ date, fields });
   }
   return rows.sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/** The properties of every note the metadata cache knows, for detecting where Garmin numbers already live. */
+export function scanNotes(app: App): NoteProps[] {
+  const out: NoteProps[] = [];
+  for (const f of app.vault.getMarkdownFiles()) {
+    const fm = app.metadataCache.getFileCache(f)?.frontmatter;
+    if (fm) out.push({ path: f.path, props: fm });
+  }
+  return out;
 }
 
 export async function uniquePath(app: App, folder: string, name: string): Promise<string> {

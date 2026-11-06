@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { App } from "obsidian";
 import { TFile } from "obsidian";
-import { readRows, uniquePath, writeDays } from "./storage";
+import { dayParser } from "../core/dayname";
+import { readRows, scanNotes, uniquePath, writeDays } from "./storage";
 
 type Fm = Record<string, unknown>;
 
@@ -104,10 +105,29 @@ describe("readRows", () => {
   });
 });
 
+describe("readRows with another day format", () => {
+  it("reads notes named in the given format and returns ISO dates", () => {
+    const { app } = fakeApp({ "D/06.11.2026.md": { steps: 6 }, "D/05.11.2026.md": { steps: 5 }, "D/2026-11-04.md": { steps: 4 } });
+    const rows = readRows(app, "D", dayParser("DD.MM.YYYY"));
+    expect(rows.map((r) => r.date)).toEqual(["2026-11-05", "2026-11-06"]);
+    expect(rows[1]?.fields).toEqual({ steps: 6 });
+  });
+});
+
 describe("uniquePath", () => {
   it("numbers a name that is taken", async () => {
     const { app } = fakeApp({ "N/Dash.md": {}, "N/Dash 2.md": {} });
     expect(await uniquePath(app, "N", "Dash")).toBe("N/Dash 3.md");
     expect(await uniquePath(app, "N", "Fresh")).toBe("N/Fresh.md");
+  });
+});
+
+describe("scanNotes", () => {
+  it("lists the properties of the notes the cache knows", () => {
+    const { app } = fakeApp({ "Diary/2026-11-01.md": { steps: 1 }, "x.md": { a: 2 } });
+    expect(scanNotes(app)).toEqual([{ path: "Diary/2026-11-01.md", props: { steps: 1 } }, { path: "x.md", props: { a: 2 } }]);
+  });
+  it("skips notes the cache has not read yet", () => {
+    expect(scanNotes(fakeApp({ "x.md": { a: 2 } }, true).app)).toEqual([]);
   });
 });

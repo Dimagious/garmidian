@@ -81,6 +81,46 @@ test.describe("sync", () => {
     });
 });
 
+const notesIn = (win: Page): Promise<number> => win.evaluate(() => (globalThis as unknown as { app: { vault: { getMarkdownFiles(): Array<{ path: string }> } } }).app.vault.getMarkdownFiles().filter((f) => f.path.startsWith("Garmy/data/")).length);
+
+const plugin = (win: Page, body: string): Promise<void> => win.evaluate((code) => {
+    const a = (globalThis as unknown as { app: { plugins: { plugins: Record<string, unknown> } } }).app;
+    new Function("p", code)(a.plugins.plugins.garmidian);
+}, body);
+
+test.describe("auto sync wiring", () => {
+    test("a due sync starts by itself from the timer", async ({ win }) => {
+        await setKey(win, "k");
+        await fakeGarmin(win, 40);
+        await plugin(win, "p.settings.syncHours = 6; p.settings.lastSyncAt = 0; p.startAutoSync(100);");
+        await expect.poll(() => notesIn(win), { timeout: 20_000 }).toBeGreaterThan(10);
+    });
+
+    test("turned off, it does nothing", async ({ win }) => {
+        await setKey(win, "k");
+        await fakeGarmin(win, 40);
+        await plugin(win, "p.settings.syncHours = 0; p.settings.lastSyncAt = 0; p.startAutoSync(100);");
+        await win.waitForTimeout(3_000);
+        expect(await notesIn(win)).toBe(0);
+    });
+
+    test("it waits until the interval has passed", async ({ win }) => {
+        await setKey(win, "k");
+        await fakeGarmin(win, 40);
+        await plugin(win, "p.settings.syncHours = 6; p.settings.lastSyncAt = Date.now() - 3600e3; p.startAutoSync(100);");
+        await win.waitForTimeout(3_000);
+        expect(await notesIn(win)).toBe(0);
+    });
+
+    test("it stays quiet when Garmin rejected the key earlier", async ({ win }) => {
+        await setKey(win, "k");
+        await fakeGarmin(win, 40);
+        await plugin(win, "p.settings.syncHours = 6; p.settings.lastSyncAt = 0; p.settings.keyProblem = '2026-11-01'; p.startAutoSync(100);");
+        await win.waitForTimeout(3_000);
+        expect(await notesIn(win)).toBe(0);
+    });
+});
+
 test.describe("wizard: cancel and Dashy", () => {
     test("cancelling a load saves nothing and says so", async ({ win }) => {
         await fakeGarmin(win, 365, "ok", 700);
@@ -115,5 +155,26 @@ test.describe("wizard: cancel and Dashy", () => {
         await expect(win.locator(".garmy-warn")).toContainText("turned off");
         await win.locator(".garmy-warn button", { hasText: "Turn on Dashy" }).click();
         await expect(win.locator(".garmy-warn")).toHaveCount(0, { timeout: 10_000 });
+    });
+
+    test("a Dashy that is not installed is flagged, with a link to its page", async ({ win }) => {
+        await win.evaluate(async () => {
+            const g = globalThis as unknown as { app: { plugins: { disablePlugin(id: string): Promise<void>; manifests: Record<string, unknown> } }; __opened?: string; open: (u: string) => unknown };
+            await g.app.plugins.disablePlugin("dashsidian");
+            delete g.app.plugins.manifests.dashsidian; // as if it had never been installed
+            g.open = (u: string) => { g.__opened = u; return null; };
+        });
+        await fakeGarmin(win, 30);
+        await openWizard(win);
+        await win.locator(".garmy-key").fill("k");
+        await win.locator(".garmy-key-check").click();
+        await win.locator(".garmy-load").waitFor({ timeout: 10_000 });
+        await win.locator(".garmy-period").selectOption("30");
+        await win.locator(".garmy-load").click();
+        await win.locator(".garmy-preview-btn").waitFor({ timeout: 30_000 });
+        await win.locator(".garmy-preview-btn").click();
+        await expect(win.locator(".garmy-warn")).toContainText("not installed");
+        await win.locator(".garmy-warn button", { hasText: "Open the Dashy page" }).click();
+        expect(await win.evaluate(() => (globalThis as unknown as { __opened?: string }).__opened)).toBe("obsidian://show-plugin?id=dashsidian");
     });
 });

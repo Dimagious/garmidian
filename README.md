@@ -13,6 +13,10 @@ Garmy is an independent project and is not affiliated with, endorsed by or spons
 3. **Choose.** Only what exists in your data is offered: no swimming cards if you never swam.
 4. **Insert.** Preview the dashboard on your own data, then create a note or insert it into the current one. The result is plain Dashy blocks you can edit by hand, so nothing is lost if you stop using the plugin.
 
+## Already keep Garmin numbers in your notes?
+
+If Garmin Health Sync or your own script writes metrics such as `steps` or `sleep_score` into daily notes, the first step of the wizard can find those folders and build the dashboard from them. No key and no loading. Notes need a date in the name (`2026-11-06`, or the format of your daily notes from Daily notes or Periodic Notes, for example `06.11.2026`) and at least two known metrics. Formats with month or weekday names are not read. Sport minutes (`run_min` and the like) are used when present.
+
 ## Keeping it fresh
 
 - **Automatic sync** refreshes the latest days shortly after Obsidian starts and then every 6, 12 or 24 hours. Choose the interval, or turn it off, in the plugin settings. "Sync now" is there too.

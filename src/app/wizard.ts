@@ -8,9 +8,11 @@ import { UI, type Ui } from "./i18n";
 import { SYNC_UI, type SyncUi } from "./i18n-sync";
 import { addDays, localDate } from "../core/dates";
 import { splitComposed, wrapRegion, type RegionMeta } from "../core/region";
+import { dayParser, isoParser, ISO_FORMAT, type DayParser } from "../core/dayname";
 import { overwriteFrom } from "../core/merge";
 import { mountMediaSlot } from "./media-slot";
-import { readRows, uniquePath, writeDays } from "./storage";
+import { readRows, scanNotes, uniquePath, writeDays } from "./storage";
+import { detectDataFolders, type FolderCandidate } from "../core/detect";
 import type GarmyPlugin from "../main";
 
 type Step = "key" | "load" | "choose" | "preview";
@@ -61,6 +63,9 @@ export class WizardModal extends Modal {
   private get ui(): Ui { return UI[this.lang]; }
   private get sync(): SyncUi { return SYNC_UI[this.lang]; }
   private cancelToken: CancelToken = { cancelled: false };
+  /** Set when the user builds from notes they already have: the folder those notes live in. */
+  private sourceFolder: string | null = null;
+  private candidates: FolderCandidate[] | null = null;
 
   onOpen(): void {
     this.renderer.load();
@@ -193,9 +198,39 @@ export class WizardModal extends Modal {
       toggle.setAttr("aria-pressed", String(shown));
     });
 
+    this.renderExistingNotes(body);
+
     const check = this.button(foot, ui.keyCheck, "garmy-key-check", () => void this.checkKey(), "cta");
     if (this.checking) { check.disabled = true; check.setText(ui.keyChecking); }
     return heading;
+  }
+
+  /** A way past the key for people who already keep Garmin numbers in their notes. */
+  private renderExistingNotes(body: HTMLElement): void {
+    const t = this.sync;
+    const box = body.createDiv({ cls: "garmy-alt" });
+    box.createEl("h4", { cls: "garmy-subhead", text: t.useNotesTitle });
+    box.createEl("p", { cls: "garmy-hint", text: t.useNotesHint });
+    if (this.candidates === null) {
+      this.button(box, t.findNotes, "garmy-find-notes", () => { this.candidates = detectDataFolders(scanNotes(this.app), this.dayParse()); this.render(); });
+      return;
+    }
+    if (this.candidates.length === 0) { box.createEl("p", { cls: "garmy-hint garmy-notes-none", text: t.notesNone }); return; }
+    box.createEl("p", { cls: "garmy-hint", text: t.notesFound });
+    for (const c of this.candidates) this.button(box, t.notesFolder(c.folder, c.notes), "garmy-notes-folder", () => this.useFolder(c.folder));
+  }
+
+  /** ISO names always count; the user's own daily note format counts too. */
+  private dayParse(): DayParser {
+    const custom = dayParser(this.plugin.dailyFormat());
+    return (name) => isoParser(name) ?? custom(name);
+  }
+
+  private useFolder(folder: string): void {
+    this.sourceFolder = folder;
+    this.rows = readRows(this.app, folder, this.dayParse());
+    this.profile = buildProfile(this.rows);
+    this.afterLoad();
   }
 
   private pluginDir(): string { return this.plugin.manifest.dir ?? `${this.app.vault.configDir}/plugins/${this.plugin.manifest.id}`; }
@@ -296,6 +331,7 @@ export class WizardModal extends Modal {
     const ui = this.ui;
     if (this.loading) return;
     if (this.plugin.syncing) { this.notice = { kind: "warn", title: ui.errStopTitle, body: this.sync.busy }; this.render(); return; }
+    this.sourceFolder = null; // a load from Garmin builds on the data folder, not on notes picked earlier
     this.loading = true;
     this.plugin.syncing = true;
     this.cancelToken = { cancelled: false };
@@ -447,7 +483,7 @@ export class WizardModal extends Modal {
 
   private build(): string {
     const races = this.choices.races && this.app.vault.getAbstractFileByPath(this.choices.races) ? this.choices.races : null;
-    this.meta = { v: 1, source: this.plugin.settings.dataFolder, groups: [...this.choices.groups], sports: [...this.choices.sports], lang: this.choices.lang, races };
+    this.meta = { v: 1, source: this.sourceFolder ?? this.plugin.settings.dataFolder, groups: [...this.choices.groups], sports: [...this.choices.sports], lang: this.choices.lang, races, ...(this.sourceFolder !== null && this.plugin.dailyFormat() !== ISO_FORMAT ? { dayFormat: this.plugin.dailyFormat() } : {}) };
     return compose(this.profile, { source: this.meta.source, lang: this.meta.lang, groups: this.meta.groups, sports: this.meta.sports, races }).markdown;
   }
 
