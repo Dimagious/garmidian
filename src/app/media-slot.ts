@@ -1,17 +1,17 @@
-import { setIcon, type App } from "obsidian";
+import { setIcon } from "obsidian";
 
 export interface MediaSlotOptions {
-  /** Path relative to the plugin folder, for example "media/help-key.gif". */
-  file: string;
-  /** Plugin folder inside the vault, for example ".obsidian/plugins/garmidian". */
-  pluginDir: string;
+  /** The picture or clip as a data URL bundled into the plugin, or null when there is none. */
+  src: string | null;
+  /** A clip (GIF) can be stopped; a still picture has no toggle. */
+  animated: boolean;
   caption: string;
   alt: string;
   playLabel: string;
   stopLabel: string;
   /** Drawn in the empty state. */
   illustration: "key" | "plugin";
-  /** With no media file the whole slot is removed instead of showing the placeholder. */
+  /** With no media the whole slot is removed instead of showing the placeholder. */
   hideWhenMissing?: boolean;
 }
 
@@ -44,40 +44,37 @@ function drawIllustration(host: HTMLElement, kind: "key" | "plugin"): void {
 }
 
 /**
- * A reserved place for a short help clip. It always renders at once with the placeholder,
- * then swaps in the file from the plugin folder when that file exists.
- * With prefers-reduced-motion the clip does not autoplay: it waits for a click on a play button.
+ * A place for a help picture or short clip. Without media it shows a theme-aware sketch (or nothing, with
+ * hideWhenMissing). A clip does not autoplay under prefers-reduced-motion: it waits for a click on a play button.
  */
-export function mountMediaSlot(app: App, parent: HTMLElement, o: MediaSlotOptions): HTMLElement {
+export function mountMediaSlot(parent: HTMLElement, o: MediaSlotOptions): HTMLElement {
   const fig = parent.createEl("figure", { cls: "garmy-media is-empty" });
   const stage = fig.createDiv({ cls: "garmy-media-stage" });
   drawIllustration(stage, o.illustration);
   fig.createEl("figcaption", { cls: "garmy-media-caption", text: o.caption });
-  if (o.hideWhenMissing) fig.addClass("is-hidden");
-
-  const path = `${o.pluginDir}/${o.file}`;
+  if (!o.src) {
+    if (o.hideWhenMissing) fig.addClass("is-hidden");
+    return fig;
+  }
+  const src = o.src;
+  fig.removeClass("is-empty");
+  const img = stage.createEl("img", { cls: "garmy-media-clip", attr: { alt: o.alt } });
+  if (!o.animated) {
+    img.src = src;
+    img.addClass("is-still");
+    return fig;
+  }
   const reduced = activeWindow.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  const show = (src: string): void => {
-    fig.removeClass("is-empty");
-    fig.removeClass("is-hidden");
-    const img = stage.createEl("img", { cls: "garmy-media-clip", attr: { alt: o.alt } });
-    const btn = stage.createEl("button", { cls: "garmy-media-toggle clickable-icon", attr: { type: "button" } });
-    const setPlaying = (on: boolean): void => {
-      img.toggleClass("is-off", !on);
-      btn.setAttr("aria-label", on ? o.stopLabel : o.playLabel);
-      btn.setAttr("aria-pressed", String(on));
-      btn.empty();
-      setIcon(btn, on ? "pause" : "play");
-      if (on) img.src = src; else img.removeAttribute("src");
-    };
-    img.addEventListener("error", () => { fig.addClass("is-empty"); img.remove(); btn.remove(); if (o.hideWhenMissing) fig.addClass("is-hidden"); });
-    btn.addEventListener("click", () => setPlaying(img.hasClass("is-off")));
-    setPlaying(!reduced);
+  const btn = stage.createEl("button", { cls: "garmy-media-toggle clickable-icon", attr: { type: "button" } });
+  const setPlaying = (on: boolean): void => {
+    img.toggleClass("is-off", !on);
+    btn.setAttr("aria-label", on ? o.stopLabel : o.playLabel);
+    btn.setAttr("aria-pressed", String(on));
+    btn.empty();
+    setIcon(btn, on ? "pause" : "play");
+    if (on) img.src = src; else img.removeAttribute("src");
   };
-
-  void app.vault.adapter.exists(path).then((found) => {
-    if (found) show(app.vault.adapter.getResourcePath(path));
-  }).catch((e: unknown) => { console.error(`Garmy: could not check ${path}`, e); });
+  btn.addEventListener("click", () => setPlaying(img.hasClass("is-off")));
+  setPlaying(!reduced);
   return fig;
 }

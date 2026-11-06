@@ -10,6 +10,7 @@ import { encodeMeta, splitComposed, withMeta, wrapRegion, type RegionMeta } from
 import { dayParser, isoParser, ISO_FORMAT, type DayParser } from "../core/dayname";
 import { overwriteFrom } from "../core/merge";
 import { mountMediaSlot } from "./media-slot";
+import keyHelp from "../../media/help-key.png";
 import { readRows, scanNotes, uniquePath, writeDays } from "./storage";
 import { detectDataFolders, type FolderCandidate } from "../core/detect";
 import type GarmyPlugin from "../main";
@@ -171,8 +172,8 @@ export class WizardModal extends Modal {
     const ol = main.createEl("ol", { cls: "garmy-howto" });
     for (const t of ui.keyHow) ol.createEl("li", { text: t });
 
-    mountMediaSlot(this.app, side, {
-      file: "media/help-key.gif", pluginDir: this.pluginDir(), caption: ui.mediaKeyCaption, alt: ui.mediaKeyAlt,
+    mountMediaSlot(side, {
+      src: keyHelp, animated: false, caption: ui.mediaKeyCaption, alt: ui.mediaKeyAlt,
       playLabel: ui.mediaPlay, stopLabel: ui.mediaStop, illustration: "key",
     });
 
@@ -232,7 +233,6 @@ export class WizardModal extends Modal {
     this.afterLoad();
   }
 
-  private pluginDir(): string { return this.plugin.manifest.dir ?? `${this.app.vault.configDir}/plugins/${this.plugin.manifest.id}`; }
 
   private async checkKey(): Promise<void> {
     const ui = this.ui;
@@ -507,8 +507,8 @@ export class WizardModal extends Modal {
       callout.addClass("garmy-warn");
       body.appendChild(callout);
       if (missing) {
-        mountMediaSlot(this.app, callout.querySelector<HTMLElement>(".garmy-callout-text") ?? callout, {
-          file: "media/help-dashy.gif", pluginDir: this.pluginDir(), caption: ui.mediaDashyCaption, alt: ui.mediaDashyAlt,
+        mountMediaSlot(callout.querySelector<HTMLElement>(".garmy-callout-text") ?? callout, {
+          src: null, animated: true, caption: ui.mediaDashyCaption, alt: ui.mediaDashyAlt,
           playLabel: ui.mediaPlay, stopLabel: ui.mediaStop, illustration: "plugin", hideWhenMissing: true,
         });
       }

@@ -1,7 +1,6 @@
 // Real Obsidian, empty vault, real Garmin key from Keychain (never printed). Drives the wizard end to end.
-// usage: node tools/tour.mjs [--bad-key] [--states] [--media] [--days=30]
+// usage: node tools/tour.mjs [--bad-key] [--states] [--days=30]
 //   --states  mocked network: every error and warning state, no Garmin calls
-//   --media   generates a synthetic help-key.gif (never from a real account) to show the media slot with a clip
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -17,9 +16,8 @@ const ASAR = "/Applications/Obsidian.app/Contents/Resources/app.asar";
 const DASHY_DIST = process.env.DASHY_DIST ?? path.join(ROOT, "..", "dashsidian");
 const BAD = process.argv.includes("--bad-key");
 const STATES = process.argv.includes("--states");
-const MEDIA = process.argv.includes("--media");
 const DAYS = process.argv.find((a) => a.startsWith("--days="))?.slice(7) ?? "365";
-const OUT = path.join(ROOT, ".e2e", STATES ? "states" : BAD ? "bad-key" : `days-${DAYS}${MEDIA ? "-media" : ""}`);
+const OUT = path.join(ROOT, ".e2e", STATES ? "states" : BAD ? "bad-key" : `days-${DAYS}`);
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
@@ -30,11 +28,6 @@ const vault = path.join(tmp, "vault"), obs = path.join(vault, ".obsidian");
 for (const [id, src] of [["garmidian", ROOT], ["dashsidian", DASHY_DIST]]) {
   fs.mkdirSync(path.join(obs, "plugins", id), { recursive: true });
   for (const f of ["main.js", "manifest.json", "styles.css"]) fs.copyFileSync(path.join(fs.realpathSync(src), f), path.join(obs, "plugins", id, f));
-}
-if (MEDIA) {
-  const md = path.join(obs, "plugins", "garmidian", "media");
-  fs.mkdirSync(md, { recursive: true });
-  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-f", "lavfi", "-i", "testsrc2=size=480x300:rate=6:duration=2", "-vf", "format=rgb8", path.join(md, "help-key.gif")]);
 }
 fs.writeFileSync(path.join(obs, "community-plugins.json"), JSON.stringify(["dashsidian", "garmidian"]));
 fs.writeFileSync(path.join(obs, "app.json"), "{}");

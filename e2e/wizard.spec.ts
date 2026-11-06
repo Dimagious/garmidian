@@ -13,6 +13,16 @@ test.describe("wizard, fake Garmin", () => {
         expect(info.sync).toBeTruthy();
     });
 
+    test("the key step shows the bundled Garmin Connect help picture", async ({ win }) => {
+        await setKey(win, "");
+        await openWizard(win);
+        const img = win.locator(".garmy-media-clip.is-still");
+        await expect(img).toBeVisible();
+        expect(await img.getAttribute("src")).toMatch(/^data:image\/png;base64,/);
+        await expect(win.locator(".garmy-howto")).toContainText("Personal API Key");
+        expect(await img.evaluate((el) => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(300);
+    });
+
     test("an empty key gets a friendly message", async ({ win }) => {
         await setKey(win, "");
         await openWizard(win);

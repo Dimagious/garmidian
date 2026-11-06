@@ -6,7 +6,7 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "build": "esbuild src/main.ts --bundle --outfile=main.js --platform=browser --format=cjs --target=es2020 --external:obsidian --external:electron --footer:js=\"module.exports = module.exports.default || module.exports;\" && node scripts/assert-bundle.cjs",
+    "build": "esbuild src/main.ts --bundle --outfile=main.js --platform=browser --format=cjs --target=es2020 --loader:.png=dataurl --external:obsidian --external:electron --footer:js=\"module.exports = module.exports.default || module.exports;\" && node scripts/assert-bundle.cjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run --coverage",
     "lint": "eslint .",

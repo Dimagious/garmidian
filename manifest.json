@@ -5,5 +5,7 @@
   "minAppVersion": "1.13.0",
   "description": "Build a Garmin dashboard in a few clicks: paste a Personal API key, pick sports and metrics, insert a ready Dashy dashboard.",
   "author": "Dimagious",
-  "isDesktopOnly": false
+  "authorUrl": "https://github.com/Dimagious",
+  "isDesktopOnly": false,
+  "fundingUrl": "https://buymeacoffee.com/dimagious"
 }

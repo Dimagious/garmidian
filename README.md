@@ -9,6 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-7c5ce8)](https://github.com/Dimagious/garmidian/blob/main/LICENSE)
 [![Obsidian 1.13+](https://img.shields.io/badge/Obsidian-1.13%2B-7c5ce8)](https://obsidian.md)
 [![Languages](https://img.shields.io/badge/languages-7-7c5ce8)](#seven-languages)
+[![Buy me a coffee](https://img.shields.io/badge/support-buy%20me%20a%20coffee-7c5ce8)](https://buymeacoffee.com/dimagious)
 
 **Paste a Garmin key. Pick what you care about. Get a dashboard in your note.**
 
@@ -78,6 +79,7 @@ One note per day in `Garmy/data`, with these properties when Garmin has them: `s
 - **Network.** The plugin contacts `personal.connectapi.garmin.com` and nothing else: once to exchange the key for a 24 hour token, then to read your own data. It uses Obsidian's `requestUrl`. There is no telemetry, no analytics and no ads.
 - **Your data.** Health data stays in your vault. If your vault is synced (iCloud, git, Obsidian Sync), the daily notes sync with it, like any other note.
 - **Secrets.** The key lives in Obsidian's secure storage, never in a note or `data.json`. The token stays in memory.
+- **Support.** Garmy is free and nothing is locked behind a payment. If it saves you time, [you can buy me a coffee](https://buymeacoffee.com/dimagious); the plugin itself shows no ads and no donation prompts.
 - **Files.** The plugin creates notes in the data folder and the dashboard folder you configure, and changes only the dashboard part of a note you ask it to rebuild.
 
 Garmy is an independent project and is not affiliated with, endorsed by or sponsored by Garmin. Garmin and Garmin Connect are trademarks of Garmin Ltd. or its subsidiaries.
