@@ -35,6 +35,7 @@ npm run lint && npm run typecheck && npm test && npm run build   # the gates
 npm run release:check                                             # everything incl. versions and scorecard
 npm run e2e                                                       # needs macOS Obsidian and a Dashy build (DASHY_DIST, default ../dashsidian)
 GARMIN_LIVE=1 npm run e2e -- e2e/live.spec.ts                     # real API, key from Keychain service garmin-personal-api
+npm run capture                                                   # retake README pictures and clips (real Obsidian, demo data, needs ffmpeg); output docs/screens
 node tools/tour.mjs --days=30                                     # screenshots of every wizard state, output in .e2e/
 ```
 
@@ -43,6 +44,8 @@ node tools/tour.mjs --days=30                                     # screenshots 
 - Obsidian collects `getSettingDefinitions()` early for search. Anything that can change (is a key saved?) must be read inside the row's `render`, not outside it.
 - Timers go through `window.setTimeout`; DOM and media queries through `activeDocument` / `activeWindow` (popout windows). The scorecard gate checks this.
 - "Today" is the local day (`core/dates.ts`), never `toISOString()`. Date arithmetic goes through `addDays`.
+- README pictures must come from `npm run capture` (real plugin, generated demo data). Never put a real person's health data into a picture. `npm run readme:check` verifies links, images and dashes.
+- The rebuild region is `%% garmy:start %%` ... `%% garmy:end %%` plus one `garmy` property (core/region.ts). It stores the sports the user switched off, not the ones chosen, so a rebuild picks up new sports.
 - The three latest days are overwritten on sync, older days only filled (`core/merge.ts`, ADR 0005).
 - A day split across two activity pages must be summed after all pages are read, not per page.
 - Do not write `distance_km`: range endpoints give walking distance, not the day's total.

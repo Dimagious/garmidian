@@ -15,7 +15,9 @@
     "release:check": "node scripts/version-sync.cjs && npm run scorecard:check && npm run lint && npm run typecheck && npm run test && npm run build",
     "release:zip": "node scripts/make-zip.cjs",
     "e2e:setup": "./scripts/e2e-setup.sh",
-    "e2e": "./scripts/e2e-setup.sh && env -u ELECTRON_RUN_AS_NODE playwright test"
+    "e2e": "./scripts/e2e-setup.sh && env -u ELECTRON_RUN_AS_NODE playwright test",
+    "capture": "node scripts/capture.mjs",
+    "readme:check": "node scripts/readme-check.cjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

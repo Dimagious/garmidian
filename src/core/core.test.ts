@@ -61,7 +61,7 @@ describe("compose", () => {
   it("3 days: only latest cards, a waiting note, no charts", () => {
     const r = compose(buildProfile(rows(3, full)), { source: SRC });
     expect(r.log.blocks).toEqual(["recovery.now", "activity.cards", "training.cards"]);
-    expect(r.markdown).toContain("неделя данных");
+    expect(r.markdown).toContain("a week of data");
     expect(r.markdown).not.toContain("dashy-chart");
   });
   it("Body Battery appears in the cards and the score chart only when the data has it", () => {
@@ -69,6 +69,14 @@ describe("compose", () => {
     expect(with_).toContain("field: body_battery, agg: latest");
     expect(with_).toMatch(/field: body_battery, label: Body Battery/);
     expect(compose(buildProfile(rows(40, full)), { source: SRC }).markdown).not.toContain("body_battery");
+  });
+  it("chart titles name the series that are really drawn", () => {
+    const md = compose(buildProfile(rows(40, (i) => ({ ...full(i), body_battery: 80 }))), { source: SRC }).markdown;
+    expect(md).toContain("title: Sleep / Body Battery"); // English is the default language
+    const en = compose(buildProfile(rows(40, (i) => ({ ...full(i), body_battery: 80 }))), { source: SRC, lang: "en" }).markdown;
+    expect(en).toContain("title: Sleep / Body Battery");
+    expect(en).toContain("title: HRV / Resting HR");
+    expect(en).not.toContain("readiness");
   });
   it("never writes a block for a missing field or unused sport", () => {
     const r = compose(buildProfile(rows(40, full)), { source: SRC });

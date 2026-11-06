@@ -26,6 +26,8 @@ jobs:
         run: node scripts/assert-versions.cjs
       - name: Scorecard regression gate
         run: npm run scorecard:check
+      - name: README (broken images, dead anchors, dashes)
+        run: npm run readme:check
       - name: Unit tests (with coverage gates)
         run: npm run test
       - name: Build release bundle (and check it has no Node-only references)

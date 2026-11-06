@@ -50,7 +50,7 @@ export function activeSports(p: DataProfile, chosen?: string[]): string[] {
 }
 
 export function compose(p: DataProfile, o: ComposeOptions): ComposeResult {
-  const lang: Lang = o.lang ?? "ru";
+  const lang: Lang = o.lang ?? "en";
   const t = T[lang];
   const u = UNITS[lang];
   const src = o.source;
@@ -97,7 +97,7 @@ export function compose(p: DataProfile, o: ComposeOptions): ComposeResult {
     }
     if (has(p, "steps")) add("month.steps", fence("dashy-chart", ["source: " + src, "field: steps", "type: bar", "range: note", "goal: 10000", "label: " + q(t.steps), "title: " + q(t.chartSteps)]));
     const hr = avail(["sleep_score", "hrv", "resting_hr"]);
-    if (hr.length) add("month.sleepHrv", fence("dashy-chart", ["source: " + src, "range: note", "agg: avg", "title: " + q(t.sleepHrv), series(hr.map((f) => ({ field: f, label: lbl(f), color: colorOf(f) })))]));
+    if (hr.length) add("month.sleepHrv", fence("dashy-chart", ["source: " + src, "range: note", "agg: avg", "title: " + q(hr.map(lbl).join(" / ")), series(hr.map((f) => ({ field: f, label: lbl(f), color: colorOf(f) })))]));
     return { markdown: out.join("\n\n") + "\n", log: { blocks, skipped } };
   }
 
@@ -117,9 +117,9 @@ export function compose(p: DataProfile, o: ComposeOptions): ComposeResult {
     } else skip("recovery.week", `span ${p.span} < 7`);
     if (R !== null) {
       const a = avail(["sleep_score", "training_readiness", "body_battery"]);
-      if (a.length) add("recovery.chart.scores", fence("dashy-chart", ["source: " + src, `range: ${R}d`, "agg: avg", "title: " + q(t.chartRecovery), series(a.map((f) => ({ field: f, label: lbl(f), color: colorOf(f) })))]));
+      if (a.length) add("recovery.chart.scores", fence("dashy-chart", ["source: " + src, `range: ${R}d`, "agg: avg", "title: " + q(a.map(lbl).join(" / ")), series(a.map((f) => ({ field: f, label: lbl(f), color: colorOf(f) })))]));
       const b = avail(["hrv", "resting_hr"]);
-      if (b.length) add("recovery.chart.hr", fence("dashy-chart", ["source: " + src, `range: ${R}d`, "agg: avg", "title: " + q(t.chartHr), series(b.map((f) => ({ field: f, label: lbl(f), color: colorOf(f) })))]));
+      if (b.length) add("recovery.chart.hr", fence("dashy-chart", ["source: " + src, `range: ${R}d`, "agg: avg", "title: " + q(b.map(lbl).join(" / ")), series(b.map((f) => ({ field: f, label: lbl(f), color: colorOf(f) })))]));
     } else skip("recovery.charts", `span ${p.span} < 7`);
   }
 

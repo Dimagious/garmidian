@@ -1,7 +1,8 @@
+import { SPORTS } from "./catalog";
 import { describe, expect, it } from "vitest";
 import { detectDataFolders } from "./detect";
 import { rebuildNote } from "./rebuild";
-import { readRegionMeta, splitComposed, wrapRegion, type RegionMeta } from "./region";
+import { readRegionMeta, splitComposed, withMeta, wrapRegion, type RegionMeta } from "./region";
 import { compose } from "./compose";
 import { buildProfile } from "./profile";
 import { shouldAutoSync, syncWindowDays } from "./schedule";
@@ -48,12 +49,12 @@ describe("syncWindowDays", () => {
 const rows = (n: number, f: (i: number) => Record<string, number | string>): DayRecord[] =>
   Array.from({ length: n }, (_, i) => ({ date: new Date(Date.UTC(2026, 9, 1 + i)).toISOString().slice(0, 10), fields: f(i) }));
 const full = (): Record<string, number | string> => ({ steps: 8000, resting_hr: 50, stress: 25, sleep_score: 80, sleep_duration: "7h 0min", hrv: 50, run_km: 5, run_min: 30 });
-const meta: RegionMeta = { v: 1, source: "Garmy/data", groups: ["recovery", "activity", "training"], sports: ["run"], lang: "en", races: null };
+const meta: RegionMeta = { v: 1, source: "Garmy/data", groups: ["recovery", "activity", "training"], noSports: [], lang: "en", races: null };
 
 function noteWith(data: DayRecord[], m: RegionMeta = meta): string {
-  const composed = compose(buildProfile(data), { source: m.source, lang: m.lang, groups: m.groups, sports: m.sports, races: m.races });
+  const composed = compose(buildProfile(data), { source: m.source, lang: m.lang, groups: m.groups, sports: Object.keys(SPORTS).filter((k) => !m.noSports.includes(k)), races: m.races });
   const parts = splitComposed(composed.markdown);
-  return `---\ntags: [x]\n---\n\nMy intro line\n\n${wrapRegion(parts.body, m)}\n\nMy outro line\n`;
+  return withMeta(`---\ntags: [x]\n---\n\nMy intro line\n\n${wrapRegion(parts.body)}\n\nMy outro line\n`, m);
 }
 
 describe("rebuildNote", () => {
@@ -71,9 +72,17 @@ describe("rebuildNote", () => {
     expect(readRegionMeta(r.text)).toEqual(meta);
   });
   it("keeps the choices the dashboard was built with", () => {
-    const only = noteWith(rows(40, full), { ...meta, groups: ["recovery"], sports: [] });
+    const only = noteWith(rows(40, full), { ...meta, groups: ["recovery"], noSports: [] });
     const r = rebuildNote(only, rows(60, full), () => false);
     expect(r.kind === "ok" && r.blocks.every((b) => b.startsWith("recovery"))).toBe(true);
+  });
+  it("picks up a sport that appeared after the dashboard was built, but not one the user switched off", () => {
+    const young = noteWith(rows(10, full), { ...meta, noSports: ["swim"] });
+    const later = (i: number): Record<string, number | string> => ({ ...full(), bike_km: 40, bike_min: 90, swim_km: 1.5, swim_min: 40 });
+    const r = rebuildNote(young, rows(40, later), () => false);
+    expect(r.kind === "ok" && r.text.includes("field: bike_km")).toBe(true);
+    expect(r.kind === "ok" && r.text.includes("swim_km")).toBe(false);
+    expect(r.kind === "ok" && readRegionMeta(r.text)?.noSports).toEqual(["swim"]);
   });
   it("is idempotent when nothing changed", () => {
     const data = rows(40, full);
@@ -139,13 +148,13 @@ describe("detectDataFolders with another day format", () => {
 
 describe("rebuildNote with a custom day format", () => {
   it("keeps the format in the region so the same notes are read again", () => {
-    const m: RegionMeta = { v: 1, source: "Diary", groups: ["recovery"], sports: [], lang: "en", races: null, dayFormat: "DD.MM.YYYY" };
-    const note = `${wrapRegion("old", m)}\n`;
+    const m: RegionMeta = { v: 1, source: "Diary", groups: ["recovery"], noSports: [], lang: "en", races: null, dayFormat: "DD.MM.YYYY" };
+    const note = withMeta(`${wrapRegion("old")}\n`, m);
     expect(readRegionMeta(note)?.dayFormat).toBe("DD.MM.YYYY");
     const r = rebuildNote(note, rows(20, full), () => false);
     expect(r.kind === "ok" && readRegionMeta(r.text)?.dayFormat).toBe("DD.MM.YYYY");
   });
   it("a region without a format stays without one", () => {
-    expect(readRegionMeta(wrapRegion("x", { v: 1, source: "S", groups: [], sports: [], lang: "en", races: null }))).not.toHaveProperty("dayFormat");
+    expect(readRegionMeta(withMeta(wrapRegion("x"), { v: 1, source: "S", groups: [], noSports: [], lang: "en", races: null }))).not.toHaveProperty("dayFormat");
   });
 });

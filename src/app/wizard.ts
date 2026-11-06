@@ -6,7 +6,7 @@ import { buildProfile } from "../core/profile";
 import type { DataProfile, DayRecord } from "../core/types";
 import { LANGS, SYNC_UI, T, UI, pickLang, type Lang, type SyncUi, type Ui } from "../i18n";
 import { addDays, localDate } from "../core/dates";
-import { splitComposed, wrapRegion, type RegionMeta } from "../core/region";
+import { encodeMeta, splitComposed, withMeta, wrapRegion, type RegionMeta } from "../core/region";
 import { dayParser, isoParser, ISO_FORMAT, type DayParser } from "../core/dayname";
 import { overwriteFrom } from "../core/merge";
 import { mountMediaSlot } from "./media-slot";
@@ -481,12 +481,12 @@ export class WizardModal extends Modal {
   }
 
   // ---- 4. preview + insert
-  private meta: RegionMeta = { v: 1, source: "", groups: [], sports: [], lang: "en", races: null };
+  private meta: RegionMeta = { v: 1, source: "", groups: [], noSports: [], lang: "en", races: null };
 
   private build(): string {
     const races = this.choices.races && this.app.vault.getAbstractFileByPath(this.choices.races) ? this.choices.races : null;
-    this.meta = { v: 1, source: this.sourceFolder ?? this.plugin.settings.dataFolder, groups: [...this.choices.groups], sports: [...this.choices.sports], lang: this.choices.lang, races, ...(this.sourceFolder !== null && this.plugin.dailyFormat() !== ISO_FORMAT ? { dayFormat: this.plugin.dailyFormat() } : {}) };
-    return compose(this.profile, { source: this.meta.source, lang: this.meta.lang, groups: this.meta.groups, sports: this.meta.sports, races }).markdown;
+    this.meta = { v: 1, source: this.sourceFolder ?? this.plugin.settings.dataFolder, groups: [...this.choices.groups], noSports: activeSports(this.profile).filter((x) => !this.choices.sports.has(x)), lang: this.choices.lang, races, ...(this.sourceFolder !== null && this.plugin.dailyFormat() !== ISO_FORMAT ? { dayFormat: this.plugin.dailyFormat() } : {}) };
+    return compose(this.profile, { source: this.meta.source, lang: this.meta.lang, groups: this.meta.groups, sports: [...this.choices.sports], races }).markdown;
   }
 
   private renderPreview(body: HTMLElement, foot: HTMLElement): HTMLElement {
@@ -540,7 +540,7 @@ export class WizardModal extends Modal {
     const name = this.choices.lang === "ru" ? "Дашборд Garmin" : "Garmin dashboard";
     const path = await uniquePath(this.app, this.plugin.settings.notesFolder, name);
     const parts = splitComposed(this.markdown);
-    const file = await this.app.vault.create(path, `${parts.frontmatter}\n\n${parts.title}\n\n${wrapRegion(parts.body, this.meta)}\n`);
+    const file = await this.app.vault.create(path, withMeta(`${parts.frontmatter}\n\n${parts.title}\n\n${wrapRegion(parts.body)}\n`, this.meta));
     await this.app.workspace.getLeaf(false).openFile(file);
     new Notice(this.ui.created + path);
     this.close();
@@ -549,7 +549,9 @@ export class WizardModal extends Modal {
   private insertIntoActive(): void {
     const view = this.app.workspace.getActiveViewOfType(MarkdownView);
     if (!view) { this.notice = { kind: "warn", title: this.ui.errNoNoteTitle, body: this.ui.noActive }; this.render(); return; }
-    view.editor.replaceSelection(wrapRegion(splitComposed(this.markdown).body, this.meta) + "\n");
+    view.editor.replaceSelection(wrapRegion(splitComposed(this.markdown).body) + "\n");
+    const target = view.file;
+    if (target) void this.app.fileManager.processFrontMatter(target, (fm: Record<string, unknown>) => { fm.garmy = encodeMeta(this.meta); });
     new Notice(this.ui.inserted);
     this.close();
   }

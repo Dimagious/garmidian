@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 160" width="900" height="160" role="img" aria-labelledby="garmy-banner-title">
+  <title id="garmy-banner-title">Garmy: your Garmin data as a dashboard in your Obsidian notes</title>
+  <rect x="0.5" y="0.5" width="899" height="159" rx="20" fill="#1e1e1e" stroke="#3a3a3a"/>
+  <g transform="translate(32,32) scale(3)">
+    <rect x="2" y="2" width="28" height="28" rx="7" fill="#7c5ce8"/>
+    <polyline points="5.5,17 10.5,17 13,11 16.5,22.5 19.5,14 21.5,17 26.5,17" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="7" y="24.5" width="4" height="2" rx="1" fill="#ffffff" fill-opacity=".55"/>
+    <rect x="12.5" y="24.5" width="7" height="2" rx="1" fill="#ffffff" fill-opacity=".8"/>
+    <rect x="21" y="24.5" width="4" height="2" rx="1" fill="#ffffff" fill-opacity=".55"/>
+  </g>
+  <g transform="translate(152,78.5)">
+    <text x="0" y="0" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+      <tspan font-weight="700" font-size="36" fill="#f2f2f2">Garmy</tspan><tspan dx="12" font-size="15" fill="#8a8a8a" font-family="'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace">garmidian</tspan>
+    </text>
+    <text x="0" y="32" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" fill="#b8b8b8">Your Garmin data, as a dashboard in your notes.</text>
+  </g>
+</svg>

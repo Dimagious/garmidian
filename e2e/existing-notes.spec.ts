@@ -41,14 +41,14 @@ test.describe("notes the user already has", () => {
         const path = await win.evaluate(() => (globalThis as unknown as { app: { workspace: { getActiveFile(): { path: string } } } }).app.workspace.getActiveFile().path);
 
         const young = await readNote(win, path);
-        expect(young).toContain("%% garmy:start");
-        expect(young).toContain("source\":\"Diary\"");
+        expect(young).toContain("%% garmy:start %%");
+        expect(young).toContain('garmy: "1|Diary|');
         expect(young).toContain("a week of data"); // 6 days is too young for charts
 
         // the user writes around the dashboard, and the diary grows
         await win.evaluate(async (p) => {
             const a = (globalThis as unknown as { app: { vault: { getFileByPath(p: string): unknown; process(f: unknown, fn: (d: string) => string): Promise<string> } } }).app;
-            await a.vault.process(a.vault.getFileByPath(p), (d) => d.replace("%% garmy:start", "My own sentence above.\n\n%% garmy:start"));
+            await a.vault.process(a.vault.getFileByPath(p), (d) => d.replace("%% garmy:start %%", "My own sentence above.\n\n%% garmy:start %%"));
         }, path);
         await seedDiary(win, 6, 40);
         await win.evaluate(() => (globalThis as unknown as { app: { commands: { executeCommandById(id: string): boolean } } }).app.commands.executeCommandById("garmidian:rebuild-dashboard"));
@@ -90,7 +90,7 @@ test.describe("notes the user already has", () => {
             const a = (globalThis as unknown as { app: { workspace: { getActiveFile(): unknown }; vault: { read(f: unknown): Promise<string> } } }).app;
             return a.vault.read(a.workspace.getActiveFile());
         });
-        expect(text).toContain('"dayFormat":"DD.MM.YYYY"');
-        expect(text).toContain('"source":"Tagebuch"');
+        expect(text).toContain('garmy: "1|Tagebuch|');
+        expect(text).toContain("|DD.MM.YYYY\"");
     });
 });
