@@ -1,9 +1,10 @@
-import { Notice, Plugin, PluginSettingTab, Setting, getLanguage, requestUrl, setIcon, type App } from "obsidian";
+import { Notice, Plugin, getLanguage, requestUrl } from "obsidian";
 import { GarminClient, iso, type Http } from "./api/client";
 import type { Lang } from "./core/catalog";
 import { WizardModal } from "./app/wizard";
 import { UI } from "./app/i18n";
 import { writeDays } from "./app/storage";
+import { GarmySettingTab } from "./app/settings";
 
 export interface GarmySettings { dataFolder: string; notesFolder: string; racesFolder: string; lastSync: string }
 const DEFAULTS: GarmySettings = { dataFolder: "Garmy/data", notesFolder: "Garmy", racesFolder: "", lastSync: "" };
@@ -46,33 +47,5 @@ export default class GarmyPlugin extends Plugin {
     } catch (e) {
       new Notice(`Garmy: ${e instanceof Error ? e.message : String(e)}`);
     }
-  }
-}
-
-class GarmySettingTab extends PluginSettingTab {
-  constructor(app: App, private readonly plugin: GarmyPlugin) { super(app, plugin); }
-
-  display(): void {
-    const el = this.containerEl;
-    const ui = UI[this.plugin.lang()];
-    el.empty();
-    el.addClass("garmy-settings");
-
-    new Setting(el).setName(ui.setAccount).setHeading();
-    const hasKey = this.plugin.getKey() !== "";
-    const keyRow = new Setting(el).setName(ui.setKeyName);
-    keyRow.descEl.empty();
-    const line = keyRow.descEl.createDiv({ cls: `garmy-keystatus ${hasKey ? "is-saved" : "is-none"}` });
-    setIcon(line.createSpan({ cls: "garmy-keystatus-icon", attr: { "aria-hidden": "true" } }), hasKey ? "shield-check" : "key-round");
-    line.createSpan({ text: hasKey ? ui.setKeySaved : ui.setKeyNone });
-    keyRow.descEl.createDiv({ cls: "garmy-keystatus-sub", text: `${ui.setLastSync}: ${this.plugin.settings.lastSync || ui.setNever}` });
-    if (hasKey) keyRow.addButton((b) => b.setButtonText(ui.setForget).setWarning().onClick(() => { this.plugin.setKey(""); this.display(); }));
-
-    new Setting(el).setName(ui.setFolders).setHeading();
-    new Setting(el).setName(ui.setDataName).setDesc(ui.setDataDesc).addText((t) => t.setValue(this.plugin.settings.dataFolder).onChange(async (v) => { this.plugin.settings.dataFolder = v.trim() || "Garmy/data"; await this.plugin.saveSettings(); }));
-    new Setting(el).setName(ui.setNotesName).setDesc(ui.setNotesDesc).addText((t) => t.setValue(this.plugin.settings.notesFolder).onChange(async (v) => { this.plugin.settings.notesFolder = v.trim() || "Garmy"; await this.plugin.saveSettings(); }));
-
-    new Setting(el).setName(ui.setWizard).setHeading();
-    new Setting(el).setName(ui.setWizardName).setDesc(ui.setWizardDesc).addButton((b) => b.setButtonText(ui.setOpen).setCta().onClick(() => this.plugin.openWizard()));
   }
 }

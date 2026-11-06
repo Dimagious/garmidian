@@ -1,0 +1,43 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint (Obsidian plugin rules)
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Versions agree (package.json, manifest.json, versions.json)
+        run: node scripts/assert-versions.cjs
+      - name: Scorecard regression gate
+        run: npm run scorecard:check
+      - name: Unit tests (with coverage gates)
+        run: npm run test
+      - name: Build release bundle (and check it has no Node-only references)
+        run: npm run build
+      - name: Pack plugin zip
+        run: npm run release:zip
+      - uses: actions/upload-artifact@v7
+        with:
+          name: garmidian-bundle
+          path: |
+            main.js
+            manifest.json
+            styles.css
+            garmidian-*.zip
+          if-no-files-found: error

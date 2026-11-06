@@ -1,4 +1,4 @@
-import { MarkdownRenderer, Modal, Notice, Setting, MarkdownView, setIcon, type App } from "obsidian";
+import { Component, MarkdownRenderer, Modal, Notice, Setting, MarkdownView, setIcon, type App } from "obsidian";
 import { GarminClient, GarminError, iso, type Progress } from "../api/client";
 import { SPORTS, T, type Lang } from "../core/catalog";
 import { activeSports, compose } from "../core/compose";
@@ -38,6 +38,8 @@ export class WizardModal extends Modal {
   private advanceTimer: number | null = null;
   private keyInput: HTMLInputElement | null = null;
   private uid = 0;
+  /** Owns the preview renderer, so its lifetime is the modal's and not the plugin's. */
+  private readonly renderer = new Component();
 
   /** Names an element by another one. Unlike aria-label it does not pop an Obsidian tooltip on hover. */
   private labelBy(el: HTMLElement, source: HTMLElement): void {
@@ -55,12 +57,14 @@ export class WizardModal extends Modal {
   private get ui(): Ui { return UI[this.lang]; }
 
   onOpen(): void {
+    this.renderer.load();
     const saved = readRows(this.app, this.plugin.settings.dataFolder);
     if (saved.length) { this.rows = saved; this.profile = buildProfile(saved); }
     this.render();
   }
 
   onClose(): void {
+    this.renderer.unload();
     if (this.advanceTimer !== null) window.clearTimeout(this.advanceTimer);
     this.contentEl.empty();
   }
@@ -368,7 +372,7 @@ export class WizardModal extends Modal {
     const empty = body.createDiv({ cls: "garmy-hint garmy-empty-hint", text: ui.nothingChosen, attr: { role: "status" } });
     const refresh = (): void => { empty.toggleClass("is-visible", this.choices.groups.size === 0 && this.choices.sports.size === 0); };
 
-    const cards = body.createEl("div", { cls: "garmy-cards", attr: { role: "group" } });
+    const cards = body.createDiv({ cls: "garmy-cards", attr: { role: "group" } });
     this.labelBy(cards, heading);
     for (const g of ["recovery", "activity", "training"]) {
       if (!this.groupAvailable(g)) continue;
@@ -386,7 +390,7 @@ export class WizardModal extends Modal {
     const sports = activeSports(this.profile);
     const sportsHead = body.createEl("h4", { cls: "garmy-subhead", text: ui.sports });
     body.createEl("p", { cls: "garmy-hint", text: sports.length ? ui.sportsHint : ui.noSports });
-    const chips = body.createEl("div", { cls: "garmy-chips", attr: { role: "group" } });
+    const chips = body.createDiv({ cls: "garmy-chips", attr: { role: "group" } });
     this.labelBy(chips, sportsHead);
     for (const s of sports) {
       const sp = SPORTS[s];
@@ -443,7 +447,7 @@ export class WizardModal extends Modal {
     const box = frame.createDiv({ cls: "garmy-preview markdown-rendered is-rendering", attr: { role: "region", tabindex: "0", "aria-busy": "true" } });
     this.labelBy(box, frameTitle);
     const wait = box.createDiv({ cls: "garmy-preview-wait", text: ui.previewRendering });
-    MarkdownRenderer.render(this.app, this.stripFrontmatter(this.markdown), box, this.plugin.settings.dataFolder + "/preview.md", this.plugin).then(() => {
+    MarkdownRenderer.render(this.app, this.stripFrontmatter(this.markdown), box, this.plugin.settings.dataFolder + "/preview.md", this.renderer).then(() => {
       wait.remove(); box.removeClass("is-rendering"); box.setAttr("aria-busy", "false");
     }).catch((e: unknown) => {
       console.error("Garmy: preview render failed", e);

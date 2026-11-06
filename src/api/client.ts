@@ -40,7 +40,7 @@ export class GarminClient {
     private readonly http: Http,
     private readonly apiKey: string,
     private readonly now: () => number = Date.now,
-    private readonly sleep: (ms: number) => Promise<void> = (t) => new Promise((r) => setTimeout(r, t)),
+    private readonly sleep: (ms: number) => Promise<void> = (t) => new Promise((r) => window.setTimeout(r, t)),
   ) {}
 
   private async send(req: HttpRequest): Promise<HttpResponse> {
@@ -123,7 +123,7 @@ export class GarminClient {
         break;
       }
       const n = Array.isArray(batch) ? batch.length : 0;
-      if (Array.isArray(batch)) activities.push(...batch);
+      if (Array.isArray(batch)) for (const a of batch as unknown[]) activities.push(a);
       onProgress({ step: "activities", done: page + 1, total: n === 200 ? page + 2 : page + 1 });
       if (n < 200) break;
       start += 200;

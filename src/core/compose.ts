@@ -50,7 +50,7 @@ export function activeSports(p: DataProfile, chosen?: string[]): string[] {
 
 export function compose(p: DataProfile, o: ComposeOptions): ComposeResult {
   const lang: Lang = o.lang ?? "ru";
-  const t = T[lang] as Record<string, string>;
+  const t = T[lang];
   const u = UNITS[lang];
   const src = o.source;
   const groups = o.groups ?? ["recovery", "activity", "training"];

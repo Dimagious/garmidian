@@ -1,5 +1,5 @@
 // Real Obsidian, empty vault, real Garmin key from Keychain (never printed). Drives the wizard end to end.
-// usage: node e2e/wizard.mjs [--bad-key] [--states] [--media] [--days=30]
+// usage: node tools/tour.mjs [--bad-key] [--states] [--media] [--days=30]
 //   --states  mocked network: every error and warning state, no Garmin calls
 //   --media   generates a synthetic help-key.gif (never from a real account) to show the media slot with a clip
 import fs from "node:fs";

@@ -1,0 +1,35 @@
+# Security fixes arrive on their own (Dependabot security updates). This file
+# is about the other half: keeping versions from drifting so far that the
+# eventual jump has to be verified by hand. In September 2026 Dashy's runner was
+# two majors behind, Electron nine, and the bundler seven minors — each step
+# would have been dull, together they were an afternoon.
+#
+# Monthly and grouped, so the noise stays at one pull request per ecosystem.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+    groups:
+      # One pull request, one lockfile. Separate ones conflict with each other
+      # the moment the first is merged.
+      dev-dependencies:
+        dependency-type: "development"
+        patterns: ["*"]
+
+  # The workflows pin actions by major, and the runner already warns that the
+  # Node 20 ones are deprecated.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "chore(ci)"
+    groups:
+      actions:
+        patterns: ["*"]

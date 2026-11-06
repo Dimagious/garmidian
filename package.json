@@ -6,15 +6,29 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "build": "esbuild src/main.ts --bundle --outfile=main.js --platform=browser --format=cjs --target=es2020 --external:obsidian --external:electron --footer:js=\"module.exports = module.exports.default || module.exports;\"",
+    "build": "esbuild src/main.ts --bundle --outfile=main.js --platform=browser --format=cjs --target=es2020 --external:obsidian --external:electron --footer:js=\"module.exports = module.exports.default || module.exports;\" && node scripts/assert-bundle.cjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run"
+    "test": "vitest run --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "scorecard:check": "node scripts/scorecard-check.cjs",
+    "release:check": "node scripts/version-sync.cjs && npm run scorecard:check && npm run lint && npm run typecheck && npm run test && npm run build",
+    "release:zip": "node scripts/make-zip.cjs",
+    "e2e:setup": "./scripts/e2e-setup.sh",
+    "e2e": "./scripts/e2e-setup.sh && env -u ELECTRON_RUN_AS_NODE playwright test"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.65.0",
     "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^3.2.7",
+    "electron": "^44.10.2",
     "esbuild": "^0.25.0",
+    "eslint": "^10.14.0",
+    "eslint-plugin-obsidianmd": "^0.4.2",
     "obsidian": "1.13.1",
     "typescript": "^5.6.0",
+    "typescript-eslint": "^8.72.1",
     "vitest": "^3.0.0"
   }
 }

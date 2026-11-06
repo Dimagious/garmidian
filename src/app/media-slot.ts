@@ -18,7 +18,7 @@ export interface MediaSlotOptions {
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 function svg(parent: Element, tag: string, attrs: Record<string, string>): SVGElement {
-  const node = document.createElementNS(SVG_NS, tag);
+  const node = activeDocument.createElementNS(SVG_NS, tag);
   for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
   parent.appendChild(node);
   return node;
@@ -56,7 +56,7 @@ export function mountMediaSlot(app: App, parent: HTMLElement, o: MediaSlotOption
   if (o.hideWhenMissing) fig.addClass("is-hidden");
 
   const path = `${o.pluginDir}/${o.file}`;
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced = activeWindow.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const show = (src: string): void => {
     fig.removeClass("is-empty");

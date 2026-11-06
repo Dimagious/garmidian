@@ -25,15 +25,15 @@ Not available through the Personal API: Training Readiness, VO2 max as a number,
 
 ## Requirements
 
-Obsidian 1.11.4 or newer, the Dashy plugin, and a Garmin Personal API key. Garmin's terms cover personal use of your own key; the API is not for commercial multi-user services.
+Obsidian 1.13.0 or newer, the Dashy plugin, and a Garmin Personal API key. Garmin's terms cover personal use of your own key; the API is not for commercial multi-user services.
 
 ## Development
 
 ```bash
 npm install
 npm run typecheck && npm test && npm run build
-node e2e/wizard.mjs            # real Obsidian, needs a Garmin key in the macOS Keychain (service garmin-personal-api)
-node e2e/wizard.mjs --bad-key  # negative path
+node tools/tour.mjs            # real Obsidian, needs a Garmin key in the macOS Keychain (service garmin-personal-api)
+node tools/tour.mjs --bad-key  # negative path
 ```
 
 Layers: `src/core` (mapping, data profile, dashboard composer, no I/O), `src/api` (client with injected transport), `src/app` (wizard, note storage), `src/main.ts`.
