@@ -38,6 +38,10 @@ Not available through the Personal API: Training Readiness, VO2 max as a number,
 - **Secrets.** The key lives in Obsidian's secure storage, never in a note or `data.json`. The token stays in memory.
 - **Files.** The plugin creates notes in the data folder and the dashboard folder you configure, and changes only the dashboard region of a note you ask it to rebuild.
 
+## Languages
+
+The wizard, settings and notices follow Obsidian's language and fall back to English: English, Russian, Spanish, German, French, Portuguese (Brazil) and Japanese. Settings has a "Language" option to pick another one. The words inside the generated dashboard (card labels, chart titles) are chosen separately in the wizard, so you can keep an English interface and a dashboard in your own language. Dashy's own messages follow Dashy's language setting. Translations other than English and Russian were machine-assisted and are open to correction by native speakers.
+
 ## Requirements
 
 Obsidian 1.13.0 or newer, the Dashy plugin, and a Garmin Personal API key.

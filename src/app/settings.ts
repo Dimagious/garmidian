@@ -1,6 +1,5 @@
 import { PluginSettingTab, setIcon, type App, type SettingDefinitionItem } from "obsidian";
-import { UI } from "./i18n";
-import { SYNC_UI } from "./i18n-sync";
+import { LANGS, SYNC_UI, UI } from "../i18n";
 import type GarmyPlugin from "../main";
 
 type FolderKey = "dataFolder" | "notesFolder";
@@ -42,6 +41,14 @@ export class GarmySettingTab extends PluginSettingTab {
       },
       {
         type: "group",
+        heading: sync.setLangName,
+        items: [{
+          name: sync.setLangName, desc: sync.setLangDesc,
+          control: { type: "dropdown", key: "language", options: { auto: sync.setLangAuto, ...Object.fromEntries(LANGS.map((l) => [l.code, l.native])) } },
+        }],
+      },
+      {
+        type: "group",
         heading: sync.setSyncName,
         items: [
           {
@@ -78,10 +85,17 @@ export class GarmySettingTab extends PluginSettingTab {
 
   override getControlValue(key: string): unknown {
     if (key === "syncHours") return String(this.plugin.settings.syncHours);
+    if (key === "language") return this.plugin.settings.language;
     return key === "dataFolder" || key === "notesFolder" ? this.plugin.settings[key] : undefined;
   }
 
   override async setControlValue(key: string, value: unknown): Promise<void> {
+    if (key === "language" && typeof value === "string") {
+      this.plugin.settings.language = LANGS.find((l) => l.code === value)?.code ?? "auto";
+      await this.plugin.saveSettings();
+      this.update(); // redraw the tab in the new language
+      return;
+    }
     if (key === "syncHours" && typeof value === "string") {
       this.plugin.settings.syncHours = Number(value) || 0;
       await this.plugin.saveSettings();

@@ -19,6 +19,7 @@ Name vs id: `name` must not resemble "Obsidian" (the catalog review rejects that
 ```
 src/core   pure: catalog (metrics, sports, ru/en labels), profile (what data exists), mapping (API JSON -> fields), compose (profile + choices -> Dashy markdown)
 src/api    GarminClient with an injected transport (Obsidian requestUrl in the plugin, a fake in tests)
+src/i18n   one file per language (en, ru, es, de, fr, pt, ja) typed as `Locale`; `index.ts` picks the language from Obsidian's code
 src/app    wizard modal, media slots, vault storage, settings tab, i18n strings
 src/main.ts  plugin entry
 e2e/       Playwright specs against real Obsidian (fake Garmin by default, live with GARMIN_LIVE=1)
@@ -45,6 +46,7 @@ node tools/tour.mjs --days=30                                     # screenshots 
 - The three latest days are overwritten on sync, older days only filled (`core/merge.ts`, ADR 0005).
 - A day split across two activity pages must be summed after all pages are read, not per page.
 - Do not write `distance_km`: range endpoints give walking distance, not the day's total.
+- Every user-visible string lives in `src/i18n/<lang>.ts`. A new string goes into `types.ts` and all seven files; `locales.test.ts` fails on a missing key, an empty text, a lost product name (Garmin Connect, Dashy...) or an untranslated long text. Default language is Obsidian's, English when unsupported.
 - Never print or store the key. Tests use a fake key; the live spec reads the Keychain.
 - No em dashes anywhere (code, copy, docs).
 - Git: commits are authored by the developer only, no Claude trailers.

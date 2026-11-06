@@ -2,7 +2,7 @@ import { MarkdownView, Notice, type App } from "obsidian";
 import { dayParser, isoParser } from "../core/dayname";
 import { rebuildNote } from "../core/rebuild";
 import { readRegionMeta } from "../core/region";
-import { SYNC_UI } from "./i18n-sync";
+import { SYNC_UI } from "../i18n";
 import { readRows } from "./storage";
 import type { Lang } from "../core/catalog";
 

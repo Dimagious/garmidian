@@ -6,8 +6,7 @@ import { ISO_FORMAT } from "./core/dayname";
 import { overwriteFrom } from "./core/merge";
 import { shouldAutoSync, syncWindowDays } from "./core/schedule";
 import { WizardModal } from "./app/wizard";
-import { UI } from "./app/i18n";
-import { SYNC_UI } from "./app/i18n-sync";
+import { LANGS, SYNC_UI, UI, pickLang } from "./i18n";
 import { writeDays } from "./app/storage";
 import { GarmySettingTab } from "./app/settings";
 import { rebuildActiveDashboard } from "./app/rebuild";
@@ -16,12 +15,14 @@ export interface GarmySettings {
   dataFolder: string; notesFolder: string; racesFolder: string;
   /** Local date of the last successful sync, and when it ran. */
   lastSync: string; lastSyncAt: number;
+  /** Interface language: "auto" follows Obsidian. */
+  language: "auto" | Lang;
   /** Hours between automatic syncs; 0 turns them off. */
   syncHours: number;
   /** Local date on which Garmin rejected the key, or "" while the key works. */
   keyProblem: string;
 }
-const DEFAULTS: GarmySettings = { dataFolder: "Garmy/data", notesFolder: "Garmy", racesFolder: "", lastSync: "", lastSyncAt: 0, syncHours: 6, keyProblem: "" };
+const DEFAULTS: GarmySettings = { dataFolder: "Garmy/data", notesFolder: "Garmy", racesFolder: "", lastSync: "", lastSyncAt: 0, language: "auto", syncHours: 6, keyProblem: "" };
 const SECRET_ID = "garmy-garmin-api-key";
 const DASHY_ID = "dashsidian";
 const AUTO_CHECK_MS = 30 * 60 * 1000;
@@ -82,7 +83,11 @@ export default class GarmyPlugin extends Plugin {
       || ISO_FORMAT;
   }
 
-  lang(): Lang { return getLanguage().startsWith("ru") ? "ru" : "en"; }
+  /** The interface language: the user's choice, else Obsidian's language, else English. */
+  lang(): Lang {
+    const chosen = this.settings.language;
+    return chosen !== "auto" && LANGS.some((l) => l.code === chosen) ? chosen : pickLang(getLanguage());
+  }
   getKey(): string { return this.app.secretStorage.getSecret(SECRET_ID) ?? ""; }
   setKey(key: string): void { this.app.secretStorage.setSecret(SECRET_ID, key); }
   async saveSettings(): Promise<void> { await this.saveData(this.settings); }

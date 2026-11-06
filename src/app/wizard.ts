@@ -1,11 +1,10 @@
 import { Component, MarkdownRenderer, Modal, Notice, Setting, MarkdownView, setIcon, type App } from "obsidian";
 import { GarminError, type CancelToken, type Progress } from "../api/client";
-import { SPORTS, T, type Lang } from "../core/catalog";
+import { SPORTS } from "../core/catalog";
 import { activeSports, compose } from "../core/compose";
 import { buildProfile } from "../core/profile";
 import type { DataProfile, DayRecord } from "../core/types";
-import { UI, type Ui } from "./i18n";
-import { SYNC_UI, type SyncUi } from "./i18n-sync";
+import { LANGS, SYNC_UI, T, UI, pickLang, type Lang, type SyncUi, type Ui } from "../i18n";
 import { addDays, localDate } from "../core/dates";
 import { splitComposed, wrapRegion, type RegionMeta } from "../core/region";
 import { dayParser, isoParser, ISO_FORMAT, type DayParser } from "../core/dayname";
@@ -470,7 +469,10 @@ export class WizardModal extends Modal {
     more.createEl("summary", { text: ui.options });
     const inner = more.createDiv({ cls: "garmy-options-body" });
     new Setting(inner).setName(ui.races).setDesc(ui.racesHint).addText((t) => t.setValue(this.choices.races).onChange((v) => { this.choices.races = v.trim(); }));
-    new Setting(inner).setName(ui.language).addDropdown((d) => d.addOption("ru", "Русский").addOption("en", "English").setValue(this.choices.lang).onChange((v) => { this.choices.lang = v === "ru" ? "ru" : "en"; }));
+    new Setting(inner).setName(ui.language).addDropdown((d) => {
+      for (const l of LANGS) d.addOption(l.code, l.native);
+      d.setValue(this.choices.lang).onChange((v) => { this.choices.lang = pickLang(v); });
+    });
 
     this.button(foot, ui.back, "garmy-back", () => this.go("load"), "ghost");
     previewBtn = this.button(foot, ui.preview, "garmy-preview-btn", () => this.go("preview"), "cta");

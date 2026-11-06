@@ -1,6 +1,7 @@
 // Composer: data profile + user choices -> one markdown note with Dashy blocks.
 // Every block declares what it needs; a block whose data is missing is not written.
-import { METRICS, SPORTS, T, UNITS, type Lang } from "./catalog";
+import { METRICS, SPORTS, type Lang } from "./catalog";
+import { T, UNITS } from "../i18n";
 import { did, has } from "./profile";
 import type { DataProfile } from "./types";
 
