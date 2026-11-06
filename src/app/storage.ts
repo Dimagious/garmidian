@@ -49,12 +49,16 @@ export async function writeDays(app: App, folder: string, records: DayRecord[], 
   return res;
 }
 
-/** Reads the day notes back (for a returning user). Waits for the metadata cache to know new files. */
+/**
+ * Reads the day notes of one folder back (for a returning user). Waits for the metadata cache to know new files.
+ * Looks only at that folder's children: it does not walk the whole vault.
+ */
 export function readRows(app: App, folder: string, parse: DayParser = isoParser): DayRecord[] {
-  const prefix = normalizePath(folder) + "/";
+  const dir = app.vault.getFolderByPath(normalizePath(folder));
+  if (!dir) return [];
   const rows: DayRecord[] = [];
-  for (const f of app.vault.getMarkdownFiles()) {
-    if (!f.path.startsWith(prefix)) continue;
+  for (const f of dir.children) {
+    if (!(f instanceof TFile)) continue;
     const date = f.name.endsWith(".md") ? parse(f.name.slice(0, -3)) : null;
     if (!date) continue;
     const fm = app.metadataCache.getFileCache(f)?.frontmatter;
@@ -67,7 +71,11 @@ export function readRows(app: App, folder: string, parse: DayParser = isoParser)
   return rows.sort((a, b) => a.date.localeCompare(b.date));
 }
 
-/** The properties of every note the metadata cache knows, for detecting where Garmin numbers already live. */
+/**
+ * The properties of every note the metadata cache knows, to detect where Garmin numbers already live.
+ * This is the only place that walks the whole vault, and it runs only when the user clicks "Look for those notes".
+ * It reads properties from the cache; it opens no file.
+ */
 export function scanNotes(app: App): NoteProps[] {
   const out: NoteProps[] = [];
   for (const f of app.vault.getMarkdownFiles()) {

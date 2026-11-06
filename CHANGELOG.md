@@ -4,6 +4,13 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-06
+
+### Fixed
+
+- Styles no longer use `:has()` (Obsidian's review flags it as slow) or `clip-path`: selected cards, chips and the focus ring are marked with classes by the wizard.
+- Reading a folder of day notes no longer walks the whole vault; it reads that folder's children. The vault-wide scan remains only for "Look for those notes", on click.
+
 ## [1.0.0] - 2026-11-06
 
 First release for the community catalog.

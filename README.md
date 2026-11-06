@@ -80,7 +80,7 @@ One note per day in `Garmy/data`, with these properties when Garmin has them: `s
 - **Your data.** Health data stays in your vault. If your vault is synced (iCloud, git, Obsidian Sync), the daily notes sync with it, like any other note.
 - **Secrets.** The key lives in Obsidian's secure storage, never in a note or `data.json`. The token stays in memory.
 - **Support.** Garmy is free and nothing is locked behind a payment. If it saves you time, [you can buy me a coffee](https://buymeacoffee.com/dimagious); the plugin itself shows no ads and no donation prompts.
-- **Files.** The plugin creates notes in the data folder and the dashboard folder you configure, and changes only the dashboard part of a note you ask it to rebuild.
+- **Files.** The plugin creates notes in the data folder and the dashboard folder you configure, and changes only the dashboard part of a note you ask it to rebuild. The only time it looks across the whole vault is when you click **Look for those notes**: it reads note properties from Obsidian's cache to find folders that already hold Garmin numbers, opens no file, and keeps nothing.
 
 Garmy is an independent project and is not affiliated with, endorsed by or sponsored by Garmin. Garmin and Garmin Connect are trademarks of Garmin Ltd. or its subsidiaries.
 

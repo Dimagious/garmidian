@@ -412,6 +412,18 @@ export class WizardModal extends Modal {
     this.go("choose");
   }
 
+  /**
+   * Mirrors a checkbox's state onto its label as classes. The CSS used `label:has(input:checked)`, which Obsidian's
+   * review flags as slow (a broad selector invalidation); a class costs nothing.
+   */
+  private trackChecked(label: HTMLElement, input: HTMLInputElement): void {
+    const sync = (): void => { label.toggleClass("is-checked", input.checked); };
+    sync();
+    input.addEventListener("change", sync);
+    input.addEventListener("focus", () => { label.toggleClass("is-focus", input.matches(":focus-visible")); });
+    input.addEventListener("blur", () => { label.removeClass("is-focus"); });
+  }
+
   private groupAvailable(g: string): boolean {
     const c = this.profile.count;
     if (g === "recovery") return ["sleep_score", "sleep_duration", "hrv", "body_battery", "resting_hr", "stress", "training_readiness"].some((f) => (c[f] ?? 0) > 0);
@@ -440,6 +452,7 @@ export class WizardModal extends Modal {
       const label = cards.createEl("label", { cls: "garmy-card" });
       const input = label.createEl("input", { cls: `garmy-check garmy-group-${g}`, attr: { type: "checkbox" } });
       input.checked = this.choices.groups.has(g);
+      this.trackChecked(label, input);
       input.addEventListener("change", () => { if (input.checked) this.choices.groups.add(g); else this.choices.groups.delete(g); refresh(); });
       setIcon(label.createDiv({ cls: "garmy-card-icon", attr: { "aria-hidden": "true" } }), GROUP_ICONS[g] ?? "layout-dashboard");
       const txt = label.createDiv({ cls: "garmy-card-text" });
@@ -459,6 +472,7 @@ export class WizardModal extends Modal {
       const label = chips.createEl("label", { cls: "garmy-chip" });
       const input = label.createEl("input", { cls: `garmy-check garmy-sport-${s}`, attr: { type: "checkbox" } });
       input.checked = this.choices.sports.has(s);
+      this.trackChecked(label, input);
       input.addEventListener("change", () => { if (input.checked) this.choices.sports.add(s); else this.choices.sports.delete(s); refresh(); });
       label.createSpan({ cls: "garmy-chip-emoji", text: sp.icon, attr: { "aria-hidden": "true" } });
       label.createSpan({ cls: "garmy-chip-label", text: T[this.lang][s] ?? s });

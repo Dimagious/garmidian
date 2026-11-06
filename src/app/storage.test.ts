@@ -29,6 +29,10 @@ function fakeApp(initial: Record<string, Fm> = {}, cacheLag = false): { app: App
         return Promise.resolve(fileFor(p));
       },
       getMarkdownFiles: () => [...files.keys()].map(fileFor),
+      getFolderByPath: (p: string) => {
+        const kids = [...files.keys()].filter((k) => k.startsWith(p + "/") && !k.slice(p.length + 1).includes("/"));
+        return kids.length || folders.has(p) ? { children: kids.map(fileFor) } : null;
+      },
     },
     metadataCache: { getFileCache: (f: TFile) => (cacheLag ? null : { frontmatter: files.get(f.path) }) },
     fileManager: {
@@ -102,6 +106,18 @@ describe("readRows", () => {
   it("skips notes the cache does not know yet", () => {
     const { app } = fakeApp({ "D/2026-11-01.md": { steps: 1 } }, true);
     expect(readRows(app, "D")).toEqual([]);
+  });
+  it("returns nothing for a folder that does not exist, and does not look at the rest of the vault", () => {
+    const { app } = fakeApp({ "Other/2026-11-01.md": { steps: 1 } });
+    let walked = false;
+    (app.vault as unknown as { getMarkdownFiles: () => unknown }).getMarkdownFiles = () => { walked = true; return []; };
+    expect(readRows(app, "Missing")).toEqual([]);
+    expect(readRows(app, "Other").length).toBe(1);
+    expect(walked).toBe(false);
+  });
+  it("does not descend into subfolders", () => {
+    const { app } = fakeApp({ "D/2026-11-01.md": { steps: 1 }, "D/Archive/2026-10-01.md": { steps: 9 } });
+    expect(readRows(app, "D").map((r) => r.date)).toEqual(["2026-11-01"]);
   });
 });
 

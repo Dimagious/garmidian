@@ -62,12 +62,14 @@ export function mountMediaSlot(parent: HTMLElement, o: MediaSlotOptions): HTMLEl
   if (!o.animated) {
     img.src = src;
     img.addClass("is-still");
+    stage.addClass("has-still"); // a class instead of :has(), which Obsidian flags as slow
     return fig;
   }
   const reduced = activeWindow.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const btn = stage.createEl("button", { cls: "garmy-media-toggle clickable-icon", attr: { type: "button" } });
   const setPlaying = (on: boolean): void => {
     img.toggleClass("is-off", !on);
+    stage.toggleClass("is-paused", !on);
     btn.setAttr("aria-label", on ? o.stopLabel : o.playLabel);
     btn.setAttr("aria-pressed", String(on));
     btn.empty();
