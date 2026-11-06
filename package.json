@@ -1,0 +1,20 @@
+{
+  "name": "garmidian",
+  "version": "0.1.0",
+  "description": "Garmin dashboard builder for Obsidian: paste a Personal API key, pick sports and metrics, insert a ready Dashy dashboard.",
+  "main": "main.js",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "esbuild src/main.ts --bundle --outfile=main.js --platform=browser --format=cjs --target=es2020 --external:obsidian --external:electron --footer:js=\"module.exports = module.exports.default || module.exports;\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.25.0",
+    "obsidian": "1.13.1",
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0"
+  }
+}

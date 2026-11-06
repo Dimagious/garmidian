@@ -1,0 +1,11 @@
+import { execFileSync } from "node:child_process";
+const key = execFileSync("/usr/bin/security", ["find-generic-password", "-s", "garmin-personal-api", "-w"]).toString().trim();
+const B = "https://personal.connectapi.garmin.com";
+const tok = (await (await fetch(B + "/personalapitoken-service/personal-api/personal-api-key/token", { method: "POST", headers: { Authorization: "ApiKey " + key } })).text()).trim().replace(/^"|"$/g, "");
+const get = async (p) => { const r = await fetch(B + p, { headers: { Authorization: "Bearer " + tok } }); const t = await r.text(); try { return JSON.parse(t); } catch { return r.status + " " + t.slice(0, 100); } };
+const a = await get("/usersummary-service/stats/steps/daily/2026-01-03/2026-01-03");
+console.log("steps stats", JSON.stringify(a).slice(0, 400));
+const b = await get("/usersummary-service/usersummary/daily?calendarDate=2026-01-03");
+console.log("v1 totalDistanceMeters", b.totalDistanceMeters, "totalSteps", b.totalSteps);
+const c = await get("/usersummary-service/stats/steps/daily/2025-11-06/2026-11-05");
+console.log("steps stats 365d", Array.isArray(c) ? c.length : String(c).slice(0, 120));

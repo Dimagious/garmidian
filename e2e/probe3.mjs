@@ -1,0 +1,12 @@
+import { execFileSync } from "node:child_process";
+const key = execFileSync("/usr/bin/security", ["find-generic-password", "-s", "garmin-personal-api", "-w"]).toString().trim();
+const B = "https://personal.connectapi.garmin.com";
+const tok = (await (await fetch(B + "/personalapitoken-service/personal-api/personal-api-key/token", { method: "POST", headers: { Authorization: "ApiKey " + key } })).text()).trim().replace(/^"|"$/g, "");
+const get = async (p) => (await fetch(B + p, { headers: { Authorization: "Bearer " + tok } })).json();
+const d = (await get("/usersummary-service/v2/dailysummaries?startDate=2026-01-03&endDate=2026-01-03")).data[0];
+const walk = (o, pre = "") => { for (const [k, v] of Object.entries(o)) { if (v && typeof v === "object" && !Array.isArray(v)) walk(v, pre + k + "."); else if (/dist|meter/i.test(k)) console.log(pre + k, v); } };
+walk(d);
+const acts = await get("/activitylist-service/activities/search/activities?start=0&limit=50&startDate=2026-03-29&endDate=2026-03-29");
+console.log(acts.map((a) => [a.activityType.typeKey, a.startTimeLocal, Math.round(a.distance), Math.round(a.duration / 60)]));
+const acts2 = await get("/activitylist-service/activities/search/activities?start=0&limit=50&startDate=2026-03-28&endDate=2026-03-30");
+console.log(acts2.map((a) => [a.activityType.typeKey, a.startTimeLocal, Math.round(a.distance), Math.round(a.duration / 60)]));
