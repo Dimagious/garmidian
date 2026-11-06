@@ -206,3 +206,32 @@ test("languages reel: the same step in six languages", async ({ win }) => {
     }
     saveManifest();
 });
+
+test("phone stills: the mobile interface in a phone-sized window", async ({ app, win }) => {
+    // Obsidian's own mobile interface (app.emulateMobile) in a 390 px window. It is not a device: nothing here
+    // proves requestUrl or secure storage on iOS or Android, only that the layout and the blocks fit a phone.
+    const out = path.join(ROOT, ".capture", "phone");
+    fs.rmSync(out, { recursive: true, force: true });
+    fs.mkdirSync(out, { recursive: true });
+    // Switching reloads the window, so the call never returns.
+    await win.evaluate(() => (globalThis as unknown as { app: { emulateMobile(on: boolean): void } }).app.emulateMobile(true)).catch(() => undefined);
+    await win.waitForLoadState("domcontentloaded");
+    await expect.poll(() => win.evaluate(() => {
+        const a = (globalThis as unknown as { app?: { workspace?: { layoutReady?: boolean }; plugins?: { plugins?: Record<string, unknown> } } }).app;
+        return Boolean(a?.workspace?.layoutReady && a.plugins?.plugins?.garmidian && a.plugins.plugins.dashsidian);
+    }).catch(() => false), { timeout: 60_000 }).toBe(true);
+    await app.evaluate(({ BrowserWindow }) => { const w = BrowserWindow.getAllWindows()[0]; w?.setSize(390, 700); w?.center(); });
+    await win.waitForTimeout(1_500);
+    await hideProperties(win);
+    await setKey(win, "");
+    await installDemoGarmin(win, 365, 0);
+    const shot = (name: string): Promise<Buffer> => win.screenshot({ path: path.join(out, `${name}.png`) });
+    await runWizardToNote(win, 365, "365", async (label) => {
+        if (label === "key") { await win.waitForTimeout(400); await shot("1-key"); }
+        if (label === "choose") await shot("2-choose");
+        if (label === "preview") await shot("3-preview");
+    });
+    await openActiveInReading(win);
+    await settleNote(win);
+    for (const [i, y] of [0, 560, 1500, 2600].entries()) { await scrollNote(win, y); await win.waitForTimeout(500); await shot(`${4 + i}-dashboard`); }
+});

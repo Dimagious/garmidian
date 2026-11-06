@@ -98,6 +98,7 @@ npm run lint && npm run typecheck && npm test && npm run build
 npm run e2e                       # real Obsidian, fake Garmin (needs macOS Obsidian and a Dashy build, see CLAUDE.md)
 GARMIN_LIVE=1 npm run e2e -- e2e/live.spec.ts   # real Garmin, key from the Keychain (service garmin-personal-api)
 npm run capture                   # retake the README pictures and clips (needs ffmpeg)
+npm run listing                   # rebuild the community directory pictures in docs/listing from the capture
 ```
 
 Layers: `src/core` (mapping, data profile, dashboard composer, no I/O), `src/api` (client with injected transport), `src/i18n` (one file per language), `src/app` (wizard, note storage, sync, settings), `src/main.ts`. [Changelog](https://github.com/Dimagious/garmidian/blob/main/CHANGELOG.md).
