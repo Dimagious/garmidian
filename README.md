@@ -13,6 +13,10 @@ Status: early prototype (0.1.0). Not in the community catalog yet.
 
 The command "Sync the last 14 days from Garmin" tops up recent days.
 
+## Help clips
+
+The wizard reserves two slots for short help clips: `media/help-key.gif` (where to create the key, step 1) and `media/help-dashy.gif` (shown only if Dashy is missing). Put the files into the plugin folder next to `main.js`. Without them a calm placeholder is shown. See `docs/design.md`.
+
 ## What it writes
 
 One note per day in `Garmy/data` with these properties when Garmin has them: `steps`, `resting_hr`, `stress`, `sleep_score`, `sleep_duration`, `hrv`, and per sport `run_km`, `run_min`, `bike_km`, `bike_min`, `swim_km`, `swim_min`, `strength_min`. An existing note keeps every non-empty property.

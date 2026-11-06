@@ -1,8 +1,215 @@
-.garmy-wizard { max-width: 760px; width: 92vw; }
-.garmy-step { color: var(--text-muted); font-size: var(--font-ui-smaller); margin-bottom: var(--size-4-3); }
-.garmy-hint { color: var(--text-muted); font-size: var(--font-ui-small); }
+/* Garmy wizard and settings. Only Obsidian variables, so every theme and both color schemes work. */
+
+.garmy-wizard { width: min(760px, 94vw); max-width: 760px; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: min(90vh, 920px); }
+.garmy-wizard .modal-close-button { z-index: 2; }
+.garmy-shell { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; padding: 0; }
+
+.garmy-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Header */
+.garmy-head { padding: var(--size-4-5) var(--size-4-6) var(--size-4-2); }
+.garmy-title { margin: 0; font-size: var(--font-ui-large); font-weight: var(--font-semibold); line-height: var(--line-height-tight); color: var(--text-normal); }
+.garmy-subtitle { margin: var(--size-2-1) 0 0; font-size: var(--font-ui-small); color: var(--text-muted); }
+
+/* Step indicator */
+.garmy-stepper { padding: var(--size-4-2) var(--size-4-6) var(--size-4-3); border-bottom: 1px solid var(--background-modifier-border); }
+.garmy-steps { display: flex; align-items: center; gap: 0; margin: 0; padding: 0; list-style: none; }
+.garmy-steps-item { display: flex; align-items: center; flex: 0 1 auto; color: var(--text-faint); }
+.garmy-steps-item:not(:last-child) { flex: 1 1 0; }
+.garmy-steps-item:not(:last-child)::after { content: ""; flex: 1 1 auto; height: 2px; min-width: var(--size-4-3); margin: 0 var(--size-4-2); border-radius: 1px; background: var(--background-modifier-border); }
+.garmy-steps-item.is-done:not(:last-child)::after { background: var(--interactive-accent); }
+.garmy-wizard .garmy-steps-btn { display: inline-flex; align-items: center; gap: var(--size-4-2); padding: var(--size-2-1) var(--size-2-3) var(--size-2-1) var(--size-2-1); margin: 0; border: 0; border-radius: var(--radius-m); background: transparent; box-shadow: none; color: inherit; font-size: var(--font-ui-small); font-weight: var(--font-medium); height: auto; }
+.garmy-wizard button.garmy-steps-btn { cursor: pointer; }
+.garmy-wizard button.garmy-steps-btn:hover { background: var(--background-modifier-hover); }
+.garmy-wizard button.garmy-steps-btn:disabled { cursor: default; opacity: 0.6; }
+.garmy-steps-dot { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--background-modifier-border-hover); font-size: var(--font-ui-smaller); font-weight: var(--font-semibold); font-variant-numeric: tabular-nums; background: var(--background-primary); }
+.garmy-steps-dot .svg-icon { width: 14px; height: 14px; stroke-width: 3; }
+.garmy-steps-item.is-done { color: var(--text-muted); }
+.garmy-steps-item.is-done .garmy-steps-dot { border-color: var(--interactive-accent); background: var(--interactive-accent); color: var(--text-on-accent); }
+.garmy-steps-item.is-current { color: var(--text-normal); }
+.garmy-steps-item.is-current .garmy-steps-dot { border-color: var(--interactive-accent); color: var(--interactive-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--interactive-accent) 22%, transparent); }
+.garmy-steps-item.is-current .garmy-steps-label { font-weight: var(--font-semibold); }
+
+/* Body and footer */
+.garmy-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--size-4-4) var(--size-4-6); }
+.garmy-footer { display: flex; justify-content: flex-end; align-items: center; gap: var(--size-4-2); padding: var(--size-4-3) var(--size-4-6); border-top: 1px solid var(--background-modifier-border); background: var(--background-primary); }
+.garmy-footer .garmy-back { margin-right: auto; }
+.garmy-step-title { margin: 0; font-size: var(--font-ui-large); font-weight: var(--font-semibold); }
+.garmy-lead { margin: var(--size-2-2) 0 var(--size-4-4); color: var(--text-muted); font-size: var(--font-ui-medium); line-height: var(--line-height-normal); max-width: 62ch; }
+.garmy-subhead { margin: var(--size-4-4) 0 var(--size-2-2); font-size: var(--font-ui-small); font-weight: var(--font-semibold); text-transform: none; color: var(--text-normal); }
+.garmy-hint { margin: var(--size-2-1) 0 var(--size-4-2); color: var(--text-muted); font-size: var(--font-ui-small); }
+
+/* Buttons: native Obsidian look, with a quiet variant */
+.garmy-btn { cursor: pointer; }
+.garmy-btn-ghost { background: transparent; box-shadow: none; color: var(--text-muted); }
+.garmy-btn-ghost:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
+.garmy-wizard :is(button, input, select, summary, label.garmy-card, label.garmy-chip, .garmy-preview):focus-visible,
+.garmy-wizard label:has(input:focus-visible) { outline: 2px solid var(--interactive-accent); outline-offset: 2px; }
+.garmy-wizard input.garmy-check:focus-visible { outline: none; }
+
+/* Callouts */
+.garmy-callout { display: flex; gap: var(--size-4-3); padding: var(--size-4-3) var(--size-4-4); margin: var(--size-4-3) 0; border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); background: var(--background-secondary); }
+.garmy-callout.is-info { border-left: 3px solid var(--interactive-accent); }
+.garmy-callout.is-warn { border-left: 3px solid var(--text-warning); background: color-mix(in srgb, var(--text-warning) 9%, var(--background-primary)); }
+.garmy-callout.is-error { border-left: 3px solid var(--text-error); background: color-mix(in srgb, var(--text-error) 9%, var(--background-primary)); }
+.garmy-callout-icon { flex: none; display: flex; padding-top: 1px; color: var(--interactive-accent); }
+.garmy-callout.is-warn .garmy-callout-icon { color: var(--text-warning); }
+.garmy-callout.is-error .garmy-callout-icon { color: var(--text-error); }
+.garmy-callout-icon .svg-icon { width: 18px; height: 18px; }
+.garmy-callout-text { min-width: 0; flex: 1 1 auto; }
+.garmy-callout-title { font-weight: var(--font-semibold); font-size: var(--font-ui-small); color: var(--text-normal); }
+.garmy-callout-body { margin-top: var(--size-2-1); font-size: var(--font-ui-small); color: var(--text-muted); line-height: var(--line-height-normal); }
+.garmy-callout-action { margin-top: var(--size-4-2); }
+
+/* Step 1 */
+.garmy-cols { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: var(--size-4-6); align-items: start; }
+.garmy-cols .garmy-callout { margin-top: 0; }
+.garmy-howto { margin: 0; padding: 0; list-style: none; counter-reset: garmy-step; display: grid; gap: var(--size-4-2); }
+.garmy-howto li { counter-increment: garmy-step; position: relative; padding-left: var(--size-4-8); min-height: 24px; font-size: var(--font-ui-small); color: var(--text-normal); line-height: var(--line-height-normal); }
+.garmy-howto li::before { content: counter(garmy-step); position: absolute; left: 0; top: -1px; width: 22px; height: 22px; border-radius: 50%; background: var(--background-modifier-hover); color: var(--text-muted); font-size: var(--font-ui-smaller); font-weight: var(--font-semibold); display: flex; align-items: center; justify-content: center; }
+.garmy-field { margin-top: var(--size-4-5); }
+.garmy-label { display: block; margin-bottom: var(--size-2-2); font-size: var(--font-ui-small); font-weight: var(--font-semibold); }
+.garmy-status { display: flex; align-items: center; gap: var(--size-2-3); margin-bottom: var(--size-2-3); font-size: var(--font-ui-small); }
+.garmy-status.garmy-ok { color: var(--text-success); }
+.garmy-status-icon { display: inline-flex; flex: none; }
+.garmy-status-icon .svg-icon { width: 16px; height: 16px; }
+.garmy-key-row { display: flex; gap: var(--size-4-2); }
+.garmy-key { flex: 1 1 auto; width: 100%; min-width: 0; font-family: var(--font-monospace); }
+.garmy-key-toggle { flex: none; }
+
+/* Media slot */
+.garmy-media { margin: 0; }
+.garmy-media-stage { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); background: var(--background-secondary); color: var(--text-faint); }
+.garmy-media-art { display: block; width: 100%; height: 100%; }
+.garmy-art-frame { fill: var(--background-primary); stroke: var(--background-modifier-border-hover); stroke-width: 1.5; }
+.garmy-art-side { fill: var(--background-secondary-alt); }
+.garmy-art-line { fill: var(--background-modifier-border); }
+.garmy-art-hit { fill: color-mix(in srgb, var(--interactive-accent) 12%, var(--background-primary)); stroke: var(--interactive-accent); stroke-width: 1.5; }
+.garmy-art-hit-line { fill: color-mix(in srgb, var(--interactive-accent) 45%, transparent); }
+.garmy-art-key { fill: var(--interactive-accent); }
+.garmy-art-key-stroke { stroke: var(--interactive-accent); stroke-width: 2.5; stroke-linecap: round; }
+.garmy-art-btn { fill: var(--background-modifier-border); }
+.garmy-media-caption { margin-top: var(--size-4-2); font-size: var(--font-ui-smaller); color: var(--text-muted); line-height: var(--line-height-normal); }
+.garmy-media.is-hidden { display: none; }
+.garmy-media:not(.is-empty) .garmy-media-art { display: none; }
+.garmy-media-clip { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--background-primary); }
+.garmy-media-clip.is-off { visibility: hidden; }
+.garmy-media-toggle { position: absolute; right: var(--size-4-2); bottom: var(--size-4-2); background: var(--background-primary); border: 1px solid var(--background-modifier-border); box-shadow: var(--shadow-s); }
+.garmy-media:not(.is-empty) .garmy-media-stage:has(.garmy-media-clip.is-off) { display: flex; align-items: center; justify-content: center; }
+.garmy-media:not(.is-empty) .garmy-media-clip.is-off ~ .garmy-media-toggle { position: static; width: 52px; height: 52px; border-radius: 50%; box-shadow: var(--shadow-s); }
+.garmy-callout .garmy-media { margin-top: var(--size-4-3); max-width: 340px; }
+
+/* Step 2 */
+.garmy-saved { display: flex; align-items: center; justify-content: space-between; gap: var(--size-4-3); flex-wrap: wrap; padding: var(--size-4-2) var(--size-4-3); margin-bottom: var(--size-4-3); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); background: var(--background-secondary); }
+.garmy-saved-text { display: flex; align-items: center; gap: var(--size-2-3); font-size: var(--font-ui-small); color: var(--text-muted); }
+.garmy-field-inline { display: flex; align-items: center; gap: var(--size-4-3); flex-wrap: wrap; margin-top: var(--size-4-3); }
+.garmy-field-inline .garmy-label { margin: 0; }
+.garmy-progress { margin: var(--size-4-4) 0 0; font-variant-numeric: tabular-nums; }
+.garmy-parts { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); overflow: hidden; }
+.garmy-part { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: center; gap: var(--size-4-3); padding: var(--size-4-3) var(--size-4-4); }
+.garmy-part + .garmy-part { border-top: 1px solid var(--background-modifier-border); }
+.garmy-part-icon { display: flex; color: var(--text-faint); }
+.garmy-part-icon .svg-icon { width: 18px; height: 18px; }
+.garmy-part.is-loading .garmy-part-icon { color: var(--interactive-accent); }
+.garmy-part.is-loading .garmy-part-icon .svg-icon { animation: garmy-spin 1s linear infinite; }
+.garmy-part.is-done .garmy-part-icon { color: var(--text-success); }
+.garmy-part.is-warn .garmy-part-icon, .garmy-part.is-stopped .garmy-part-icon { color: var(--text-warning); }
+.garmy-part-name { font-size: var(--font-ui-small); font-weight: var(--font-medium); }
+.garmy-part.is-waiting .garmy-part-name { color: var(--text-muted); font-weight: var(--font-normal); }
+.garmy-part-state { font-size: var(--font-ui-small); color: var(--text-muted); text-align: right; min-width: 5em; }
+.garmy-part.is-done .garmy-part-state { color: var(--text-success); }
+.garmy-part.is-warn .garmy-part-state, .garmy-part.is-stopped .garmy-part-state { color: var(--text-warning); }
+.garmy-bar { height: 6px; margin-top: var(--size-2-2); border-radius: 3px; background: var(--background-modifier-border); overflow: hidden; }
+.garmy-bar-fill { height: 100%; width: var(--garmy-pct, 0%); border-radius: 3px; background: var(--interactive-accent); transition: width 0.25s ease; }
+.garmy-part.is-done .garmy-bar-fill { background: var(--text-success); }
+.garmy-part.is-warn .garmy-bar-fill, .garmy-part.is-stopped .garmy-bar-fill { background: var(--text-warning); }
+.garmy-part.is-waiting .garmy-bar { opacity: 0.5; }
+.garmy-summary { display: flex; align-items: center; gap: var(--size-4-3); flex-wrap: wrap; margin-top: var(--size-4-3); padding: var(--size-4-3) var(--size-4-4); border: 1px solid var(--background-modifier-border); border-left: 3px solid var(--text-success); border-radius: var(--radius-m); background: var(--background-secondary); }
+.garmy-summary-icon { display: flex; color: var(--text-success); }
+.garmy-summary-icon .svg-icon { width: 22px; height: 22px; }
+.garmy-summary-text { flex: 1 1 14em; min-width: 0; }
+.garmy-loaded { font-weight: var(--font-semibold); font-size: var(--font-ui-medium); }
 .garmy-ok { color: var(--text-success); }
-.garmy-warn, .garmy-message { color: var(--text-warning); }
-.garmy-progress { margin: var(--size-4-2) 0; font-variant-numeric: tabular-nums; }
-.garmy-preview { max-height: 52vh; overflow-y: auto; border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); padding: var(--size-4-3); margin: var(--size-4-3) 0; }
-.garmy-key { width: 100%; }
+.garmy-period-label { font-size: var(--font-ui-small); color: var(--text-muted); }
+.garmy-summary-warn { margin-top: var(--size-2-2); font-size: var(--font-ui-small); color: var(--text-warning); }
+@keyframes garmy-spin { to { transform: rotate(360deg); } }
+
+/* Step 3 */
+.garmy-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--size-4-3); }
+.garmy-card, .garmy-chip { position: relative; cursor: pointer; border: 1px solid var(--background-modifier-border); background: var(--background-primary); transition: border-color 0.12s ease, background-color 0.12s ease; }
+.garmy-card { display: flex; flex-direction: column; gap: var(--size-4-2); padding: var(--size-4-4); border-radius: var(--radius-l); }
+.garmy-card:hover, .garmy-chip:hover { border-color: var(--background-modifier-border-hover); background: var(--background-secondary); }
+.garmy-card:has(input:checked), .garmy-chip:has(input:checked) { border-color: var(--interactive-accent); background: color-mix(in srgb, var(--interactive-accent) 9%, var(--background-primary)); box-shadow: 0 0 0 1px var(--interactive-accent); }
+.garmy-wizard input.garmy-check { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.garmy-card-icon { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: var(--radius-m); background: var(--background-modifier-hover); color: var(--text-muted); }
+.garmy-card:has(input:checked) .garmy-card-icon { background: var(--interactive-accent); color: var(--text-on-accent); }
+.garmy-card-icon .svg-icon { width: 18px; height: 18px; }
+.garmy-card-title { font-weight: var(--font-semibold); font-size: var(--font-ui-medium); }
+.garmy-card-desc { font-size: var(--font-ui-smaller); color: var(--text-muted); line-height: var(--line-height-normal); }
+.garmy-mark { display: none; align-items: center; justify-content: center; border-radius: 50%; background: var(--interactive-accent); color: var(--text-on-accent); }
+.garmy-mark .svg-icon { stroke-width: 3; }
+.garmy-card .garmy-mark { position: absolute; top: var(--size-4-3); right: var(--size-4-3); width: 20px; height: 20px; }
+.garmy-card .garmy-mark .svg-icon { width: 12px; height: 12px; }
+.garmy-card:has(input:checked) .garmy-mark, .garmy-chip:has(input:checked) .garmy-mark { display: inline-flex; }
+.garmy-chips { display: flex; flex-wrap: wrap; gap: var(--size-4-2); }
+.garmy-chip { display: inline-flex; align-items: center; gap: var(--size-2-3); padding: var(--size-2-3) var(--size-4-3); border-radius: 999px; font-size: var(--font-ui-small); }
+.garmy-chip-emoji { font-size: var(--font-ui-medium); line-height: 1; }
+.garmy-chip .garmy-mark { width: 16px; height: 16px; margin-left: var(--size-2-1); }
+.garmy-chip .garmy-mark .svg-icon { width: 10px; height: 10px; }
+.garmy-empty-hint { display: none; color: var(--text-warning); }
+.garmy-empty-hint.is-visible { display: block; }
+.garmy-options { margin-top: var(--size-4-5); border-top: 1px solid var(--background-modifier-border); padding-top: var(--size-4-2); }
+.garmy-options > summary { cursor: pointer; padding: var(--size-2-2) 0; font-size: var(--font-ui-small); font-weight: var(--font-semibold); color: var(--text-muted); }
+.garmy-options > summary:hover { color: var(--text-normal); }
+.garmy-options-body .setting-item:first-child { border-top: 0; }
+
+/* Step 4 */
+.garmy-frame { margin: var(--size-4-3) 0 0; border: 1px solid var(--background-modifier-border); border-radius: var(--radius-l); overflow: hidden; background: var(--background-primary); box-shadow: var(--shadow-s); }
+.garmy-frame-bar { display: flex; align-items: center; gap: var(--size-2-3); padding: var(--size-2-3) var(--size-4-3); border-bottom: 1px solid var(--background-modifier-border); background: var(--background-secondary); }
+.garmy-frame-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--background-modifier-border-hover); }
+.garmy-frame-title { margin-left: var(--size-4-2); font-size: var(--font-ui-smaller); color: var(--text-muted); }
+.garmy-preview { max-height: min(46vh, 440px); overflow-y: auto; padding: var(--size-4-4); }
+.garmy-preview-wait { color: var(--text-muted); font-size: var(--font-ui-small); padding: var(--size-4-4) 0; text-align: center; }
+.garmy-preview.is-rendering .garmy-preview-wait { animation: garmy-pulse 1.4s ease-in-out infinite; }
+@keyframes garmy-pulse { 50% { opacity: 0.45; } }
+.garmy-warn { margin-top: 0; }
+
+/* Settings tab */
+.garmy-keystatus { display: flex; align-items: center; gap: var(--size-2-3); }
+.garmy-keystatus.is-saved { color: var(--text-success); }
+.garmy-keystatus-icon { display: inline-flex; }
+.garmy-keystatus-icon .svg-icon { width: 16px; height: 16px; }
+.garmy-keystatus-sub { margin-top: var(--size-2-1); color: var(--text-muted); }
+
+/* Phones and coarse pointers */
+@media (max-width: 600px) {
+  .garmy-wizard { width: 100vw; max-width: 100vw; }
+  .garmy-wizard { max-height: calc(100dvh - 90px); }
+  .garmy-head { padding: var(--size-4-4) var(--size-4-4) var(--size-4-2); }
+  .garmy-stepper { padding: var(--size-4-2) var(--size-4-4) var(--size-4-3); }
+  .garmy-body { padding: var(--size-4-4); }
+  .garmy-footer { flex-wrap: wrap; padding: var(--size-4-3) var(--size-4-4) calc(var(--size-4-3) + env(safe-area-inset-bottom)); }
+  .garmy-footer .garmy-back { margin-right: 0; }
+  .garmy-footer button { flex: 1 1 0; }
+  .garmy-footer button.mod-cta { order: -1; flex: 1 1 100%; }
+  .garmy-cols { grid-template-columns: minmax(0, 1fr); gap: var(--size-4-4); }
+  .garmy-steps-item:not(.is-current) .garmy-steps-label { display: none; }
+  .garmy-steps-btn { padding-right: var(--size-2-1); }
+  .garmy-key-row { flex-direction: column; }
+  .garmy-cards { grid-template-columns: minmax(0, 1fr); }
+  .garmy-preview { max-height: 38vh; }
+  .garmy-part-state { min-width: 4em; }
+  .garmy-saved { flex-direction: column; align-items: stretch; }
+}
+@media (max-width: 600px), (pointer: coarse) {
+  .garmy-wizard :is(button.garmy-btn, button.garmy-callout-action, select.garmy-period, input.garmy-key, .garmy-footer button) { min-height: 44px; }
+  button.garmy-steps-btn, .garmy-steps-btn { min-height: 44px; min-width: 44px; justify-content: center; }
+  .garmy-chip { min-height: 44px; padding-inline: var(--size-4-4); }
+  .garmy-options > summary { min-height: 44px; display: flex; align-items: center; }
+  .garmy-media-toggle { width: 44px; height: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .garmy-part.is-loading .garmy-part-icon .svg-icon, .garmy-preview.is-rendering .garmy-preview-wait { animation: none; }
+  .garmy-bar-fill, .garmy-card, .garmy-chip { transition: none; }
+}
