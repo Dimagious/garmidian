@@ -4,6 +4,10 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-06
+
+First release for the community catalog.
+
 ### Added
 
 - `fundingUrl` and a repository Sponsor button for Buy Me a Coffee. Donations are optional and unlock nothing.

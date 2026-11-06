@@ -1,6 +1,6 @@
 {
   "name": "garmidian",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Garmin dashboard builder for Obsidian: paste a Personal API key, pick sports and metrics, insert a ready Dashy dashboard.",
   "main": "main.js",
   "type": "module",
