@@ -15,6 +15,14 @@ updates:
     commit-message:
       prefix: "chore(deps)"
       prefix-development: "chore(deps-dev)"
+    ignore:
+      # typescript-eslint and eslint-plugin-obsidianmd do not support TypeScript 7 yet: the whole group
+      # failed `npm ci` on it. Revisit when their peer ranges allow it.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      # Obsidian runs on its own Electron; ours only drives it for the e2e suite and moves with Dashy's.
+      - dependency-name: "electron"
+        update-types: ["version-update:semver-major"]
     groups:
       # One pull request, one lockfile. Separate ones conflict with each other
       # the moment the first is merged.

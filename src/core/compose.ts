@@ -33,7 +33,10 @@ const fence = (lang: string, head: string[], rows?: Row[]): string =>
 const series = (rows: Row[], key = "series"): string => `${key}:\n` + list(rows);
 
 const RANGES = [7, 14, 30, 60, 90];
-const rangeFor = (span: number): number | null => RANGES.filter((r) => r <= span).at(-1) ?? null;
+const rangeFor = (span: number): number | null => {
+  const fit = RANGES.filter((r) => r <= span);
+  return fit[fit.length - 1] ?? null; // not Array.at: the target is ES2020
+};
 export function niceUp(x: number): number {
   if (x <= 0) return 0;
   const mag = 10 ** Math.floor(Math.log10(x));
