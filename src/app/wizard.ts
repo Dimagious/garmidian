@@ -1,10 +1,14 @@
 import { Component, MarkdownRenderer, Modal, Notice, Setting, MarkdownView, setIcon, type App } from "obsidian";
-import { GarminClient, GarminError, iso, type Progress } from "../api/client";
+import { GarminError, type CancelToken, type Progress } from "../api/client";
 import { SPORTS, T, type Lang } from "../core/catalog";
 import { activeSports, compose } from "../core/compose";
 import { buildProfile } from "../core/profile";
 import type { DataProfile, DayRecord } from "../core/types";
 import { UI, type Ui } from "./i18n";
+import { SYNC_UI, type SyncUi } from "./i18n-sync";
+import { addDays, localDate } from "../core/dates";
+import { splitComposed, wrapRegion, type RegionMeta } from "../core/region";
+import { overwriteFrom } from "../core/merge";
 import { mountMediaSlot } from "./media-slot";
 import { readRows, uniquePath, writeDays } from "./storage";
 import type GarmyPlugin from "../main";
@@ -55,6 +59,8 @@ export class WizardModal extends Modal {
   }
 
   private get ui(): Ui { return UI[this.lang]; }
+  private get sync(): SyncUi { return SYNC_UI[this.lang]; }
+  private cancelToken: CancelToken = { cancelled: false };
 
   onOpen(): void {
     this.renderer.load();
@@ -208,8 +214,10 @@ export class WizardModal extends Modal {
     this.notice = null;
     this.render();
     try {
-      await new GarminClient(this.plugin.http, key).verify();
+      await this.plugin.newClient(key).verify();
       this.plugin.setKey(key);
+      this.plugin.settings.keyProblem = "";
+      await this.plugin.saveSettings();
       this.keyDraft = "";
       this.checking = false;
       this.go("load");
@@ -254,6 +262,8 @@ export class WizardModal extends Modal {
     this.liveEl = status.createDiv({ cls: "garmy-sr", attr: { role: "status" } });
     this.paintParts();
 
+    const cancel = this.button(foot, this.sync.cancel, "garmy-cancel", () => { this.cancelToken.cancelled = true; cancel.disabled = true; }, "ghost");
+    cancel.hidden = !this.loading;
     const b = this.button(foot, ui.start, "garmy-load", () => void this.load(status, b), "cta");
     if (this.loading) { b.disabled = true; b.setText(ui.starting); }
     return heading;
@@ -285,17 +295,22 @@ export class WizardModal extends Modal {
   private async load(status: HTMLElement, btn: HTMLButtonElement): Promise<void> {
     const ui = this.ui;
     if (this.loading) return;
+    if (this.plugin.syncing) { this.notice = { kind: "warn", title: ui.errStopTitle, body: this.sync.busy }; this.render(); return; }
     this.loading = true;
+    this.plugin.syncing = true;
+    this.cancelToken = { cancelled: false };
     this.notice = null;
     this.resetParts();
+    const cancelBtn = this.contentEl.querySelector<HTMLButtonElement>(".garmy-cancel");
+    if (cancelBtn) { cancelBtn.hidden = false; cancelBtn.disabled = false; }
     btn.disabled = true;
     btn.setText(ui.starting);
     this.contentEl.querySelector<HTMLSelectElement>(".garmy-period")?.setAttr("disabled", "");
     this.contentEl.querySelectorAll<HTMLButtonElement>(".garmy-steps-btn").forEach((x) => x.setAttr("disabled", ""));
     this.paintParts();
-    const client = new GarminClient(this.plugin.http, this.plugin.getKey());
-    const to = iso(Date.now());
-    const from = iso(Date.now() - (this.periodDays - 1) * 864e5);
+    const client = this.plugin.newClient();
+    const to = localDate(Date.now());
+    const from = addDays(to, -(this.periodDays - 1));
     const onProgress = (p: Progress): void => {
       const state: PartState = p.done >= p.total ? "done" : "loading";
       this.parts.set(p.step, { state, done: p.done, total: p.total });
@@ -303,25 +318,29 @@ export class WizardModal extends Modal {
       this.paintParts();
     };
     try {
-      const res = await client.backfill(from, to, onProgress);
+      const res = await client.backfill(from, to, onProgress, this.cancelToken);
       this.warnings = res.warnings;
       for (const p of PARTS) if (res.warnings.some((w) => w.startsWith(p))) { const v = this.parts.get(p); if (v) this.parts.set(p, { ...v, state: "warn" }); }
       this.paintParts();
-      const w = await writeDays(this.app, this.plugin.settings.dataFolder, res.records);
+      const w = await writeDays(this.app, this.plugin.settings.dataFolder, res.records, { overwriteFrom: overwriteFrom(to) });
       this.rows = res.records;
       this.profile = buildProfile(res.records);
-      this.plugin.settings.lastSync = to;
-      await this.plugin.saveSettings();
+      await this.plugin.recordSync(to);
       this.loading = false;
+      this.plugin.syncing = false;
       btn.setText(ui.start);
       this.showSummary(status, res.records.length, w.created, from, to);
     } catch (e) {
       this.loading = false;
+      this.plugin.syncing = false;
+      if (e instanceof GarminError && e.kind === "auth") { this.plugin.settings.keyProblem = to; await this.plugin.saveSettings(); }
       for (const p of PARTS) { const v = this.parts.get(p); if (v?.state === "loading") this.parts.set(p, { ...v, state: "stopped" }); }
-      console.error("Garmy: loading stopped", e);
       const kind = e instanceof GarminError ? e.kind : "other";
+      if (kind !== "cancelled") console.error("Garmy: loading stopped", e);
       const retry: NoticeAction = { label: ui.errRetry, run: () => this.go("load") };
-      this.notice = kind === "auth"
+      this.notice = kind === "cancelled"
+        ? { kind: "warn", title: this.sync.cancelledTitle, body: this.sync.cancelledBody }
+        : kind === "auth"
         ? { kind: "error", title: ui.errStopTitle, body: ui.stoppedAuth, action: { label: ui.errNewKey, run: () => this.go("key") } }
         : kind === "rate" ? { kind: "warn", title: ui.errStopTitle, body: ui.stoppedRate, action: retry }
           : kind === "network" ? { kind: "error", title: ui.errStopTitle, body: ui.stoppedNet, action: retry }
@@ -360,7 +379,7 @@ export class WizardModal extends Modal {
 
   private groupAvailable(g: string): boolean {
     const c = this.profile.count;
-    if (g === "recovery") return ["sleep_score", "sleep_duration", "hrv", "resting_hr", "stress", "training_readiness"].some((f) => (c[f] ?? 0) > 0);
+    if (g === "recovery") return ["sleep_score", "sleep_duration", "hrv", "body_battery", "resting_hr", "stress", "training_readiness"].some((f) => (c[f] ?? 0) > 0);
     if (g === "activity") return (c.steps ?? 0) > 0 || (c.distance_km ?? 0) > 0;
     return activeSports(this.profile).length > 0;
   }
@@ -370,7 +389,14 @@ export class WizardModal extends Modal {
     const ui = this.ui;
     const heading = this.stepHead(body, ui.chooseTitle, ui.chooseIntro);
     const empty = body.createDiv({ cls: "garmy-hint garmy-empty-hint", text: ui.nothingChosen, attr: { role: "status" } });
-    const refresh = (): void => { empty.toggleClass("is-visible", this.choices.groups.size === 0 && this.choices.sports.size === 0); };
+    let previewBtn: HTMLButtonElement | null = null;
+    // Training cards need at least one sport; the other groups stand on their own.
+    const nothingToShow = (): boolean => !(this.choices.groups.has("recovery") || this.choices.groups.has("activity") || (this.choices.groups.has("training") && this.choices.sports.size > 0));
+    const refresh = (): void => {
+      const none = nothingToShow();
+      empty.toggleClass("is-visible", none);
+      if (previewBtn) previewBtn.disabled = none;
+    };
 
     const cards = body.createDiv({ cls: "garmy-cards", attr: { role: "group" } });
     this.labelBy(cards, heading);
@@ -409,36 +435,45 @@ export class WizardModal extends Modal {
     const inner = more.createDiv({ cls: "garmy-options-body" });
     new Setting(inner).setName(ui.races).setDesc(ui.racesHint).addText((t) => t.setValue(this.choices.races).onChange((v) => { this.choices.races = v.trim(); }));
     new Setting(inner).setName(ui.language).addDropdown((d) => d.addOption("ru", "Русский").addOption("en", "English").setValue(this.choices.lang).onChange((v) => { this.choices.lang = v === "ru" ? "ru" : "en"; }));
-    refresh();
 
     this.button(foot, ui.back, "garmy-back", () => this.go("load"), "ghost");
-    this.button(foot, ui.preview, "garmy-preview-btn", () => this.go("preview"), "cta");
+    previewBtn = this.button(foot, ui.preview, "garmy-preview-btn", () => this.go("preview"), "cta");
+    refresh();
     return heading;
   }
 
   // ---- 4. preview + insert
+  private meta: RegionMeta = { v: 1, source: "", groups: [], sports: [], lang: "en", races: null };
+
   private build(): string {
     const races = this.choices.races && this.app.vault.getAbstractFileByPath(this.choices.races) ? this.choices.races : null;
-    return compose(this.profile, {
-      source: this.plugin.settings.dataFolder, lang: this.choices.lang,
-      groups: [...this.choices.groups], sports: [...this.choices.sports], races,
-    }).markdown;
+    this.meta = { v: 1, source: this.plugin.settings.dataFolder, groups: [...this.choices.groups], sports: [...this.choices.sports], lang: this.choices.lang, races };
+    return compose(this.profile, { source: this.meta.source, lang: this.meta.lang, groups: this.meta.groups, sports: this.meta.sports, races }).markdown;
   }
 
   private renderPreview(body: HTMLElement, foot: HTMLElement): HTMLElement {
     const ui = this.ui;
     this.markdown = this.build();
     const heading = this.stepHead(body, ui.previewTitle, ui.previewIntro);
-    if (!this.plugin.hasDashy()) {
-      const warn = body.createDiv({ cls: "garmy-callout is-warn garmy-warn", attr: { role: "note" } });
-      setIcon(warn.createDiv({ cls: "garmy-callout-icon", attr: { "aria-hidden": "true" } }), "triangle-alert");
-      const t = warn.createDiv({ cls: "garmy-callout-text" });
-      t.createDiv({ cls: "garmy-callout-title", text: ui.noDashyTitle });
-      t.createDiv({ cls: "garmy-callout-body", text: ui.noDashy });
-      mountMediaSlot(this.app, t, {
-        file: "media/help-dashy.gif", pluginDir: this.pluginDir(), caption: ui.mediaDashyCaption, alt: ui.mediaDashyAlt,
-        playLabel: ui.mediaPlay, stopLabel: ui.mediaStop, illustration: "plugin", hideWhenMissing: true,
+    const dashy = this.plugin.dashyState();
+    if (dashy !== "ready") {
+      const missing = dashy === "missing";
+      const callout = this.buildNotice({
+        kind: "warn",
+        title: missing ? ui.noDashyTitle : this.sync.dashyDisabledTitle,
+        body: missing ? ui.noDashy : this.sync.dashyDisabled,
+        action: missing
+          ? { label: this.sync.dashyMissingAction, run: () => { window.open("obsidian://show-plugin?id=dashsidian"); } }
+          : { label: this.sync.dashyEnable, run: () => { void this.plugin.enableDashy().then(() => this.render()); } },
       });
+      callout.addClass("garmy-warn");
+      body.appendChild(callout);
+      if (missing) {
+        mountMediaSlot(this.app, callout.querySelector<HTMLElement>(".garmy-callout-text") ?? callout, {
+          file: "media/help-dashy.gif", pluginDir: this.pluginDir(), caption: ui.mediaDashyCaption, alt: ui.mediaDashyAlt,
+          playLabel: ui.mediaPlay, stopLabel: ui.mediaStop, illustration: "plugin", hideWhenMissing: true,
+        });
+      }
     }
     const frame = body.createDiv({ cls: "garmy-frame" });
     const bar = frame.createDiv({ cls: "garmy-frame-bar" });
@@ -466,7 +501,8 @@ export class WizardModal extends Modal {
   private async createNote(): Promise<void> {
     const name = this.choices.lang === "ru" ? "Дашборд Garmin" : "Garmin dashboard";
     const path = await uniquePath(this.app, this.plugin.settings.notesFolder, name);
-    const file = await this.app.vault.create(path, this.markdown);
+    const parts = splitComposed(this.markdown);
+    const file = await this.app.vault.create(path, `${parts.frontmatter}\n\n${parts.title}\n\n${wrapRegion(parts.body, this.meta)}\n`);
     await this.app.workspace.getLeaf(false).openFile(file);
     new Notice(this.ui.created + path);
     this.close();
@@ -475,7 +511,7 @@ export class WizardModal extends Modal {
   private insertIntoActive(): void {
     const view = this.app.workspace.getActiveViewOfType(MarkdownView);
     if (!view) { this.notice = { kind: "warn", title: this.ui.errNoNoteTitle, body: this.ui.noActive }; this.render(); return; }
-    view.editor.replaceSelection(this.stripFrontmatter(this.markdown));
+    view.editor.replaceSelection(wrapRegion(splitComposed(this.markdown).body, this.meta) + "\n");
     new Notice(this.ui.inserted);
     this.close();
   }

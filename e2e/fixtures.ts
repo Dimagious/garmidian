@@ -101,12 +101,13 @@ export async function openWizard(win: Page): Promise<void> {
  * steps, resting HR, stress, sleep, HRV and a run every third day. No swimming, cycling or readiness,
  * so the wizard must not offer them. `mode` picks a failure instead: 401, offline or 429.
  */
-export async function fakeGarmin(win: Page, days: number, mode: "ok" | "401" | "offline" | "429" = "ok"): Promise<void> {
-    await win.evaluate(([n, m]) => {
+export async function fakeGarmin(win: Page, days: number, mode: "ok" | "401" | "offline" | "429" = "ok", delayMs = 0): Promise<void> {
+    await win.evaluate(([n, m, delay]) => {
         const g = globalThis as unknown as { app: { plugins: { plugins: Record<string, { http: unknown }> } } };
         const plugin = g.app.plugins.plugins.garmidian;
         if (!plugin) throw new Error("garmidian is not loaded");
-        const iso = (ms: number): string => new Date(ms).toISOString().slice(0, 10);
+        const pad = (x: number): string => String(x).padStart(2, "0");
+        const iso = (ms: number): string => { const d = new Date(ms); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
         const dates: string[] = [];
         for (let i = (n as number) - 1; i >= 0; i--) dates.push(iso(Date.now() - i * 864e5));
         const within = (url: string): string[] => {
@@ -115,7 +116,7 @@ export async function fakeGarmin(win: Page, days: number, mode: "ok" | "401" | "
             const b = q.searchParams.get("endDate") ?? url.split("/").slice(-1)[0] ?? "";
             return dates.filter((d) => d >= a && d <= b);
         };
-        plugin.http = (req: { url: string; method: string }) => {
+        const respond = (req: { url: string; method: string }): Promise<{ status: number; text: string }> => {
             if (m === "offline") return Promise.reject(new Error("offline"));
             if (m === "401") return Promise.resolve({ status: 401, text: "" });
             if (m === "429") return Promise.resolve({ status: 429, text: "" });
@@ -123,7 +124,7 @@ export async function fakeGarmin(win: Page, days: number, mode: "ok" | "401" | "
             if (req.method === "POST") return Promise.resolve({ status: 200, text: "jwt" });
             const u = req.url;
             if (u.includes("dailysummaries")) {
-                return json({ data: within(u).map((d, i) => ({ calendarDate: d, movement: { steps: { value: 6000 + (i % 7) * 900, distanceInMeters: 5000 } }, heartRate: { restingValue: 48 + (i % 4) }, stress: { avgLevel: 22 + (i % 9) } })) });
+                return json({ data: within(u).map((d, i) => ({ calendarDate: d, movement: { steps: { value: 6000 + (i % 7) * 900, distanceInMeters: 5000 } }, heartRate: { restingValue: 48 + (i % 4) }, stress: { avgLevel: 22 + (i % 9) }, bodyBattery: { maxValue: 70 + (i % 20), minValue: 25 } })) });
             }
             if (u.includes("dailySleepSummariesByDate")) {
                 return json(within(u).map((d, i) => ({ calendarDate: d, sleepTimeSeconds: 25200 + (i % 5) * 1200, sleepScores: { overall: { value: 72 + (i % 15) } } })));
@@ -134,7 +135,8 @@ export async function fakeGarmin(win: Page, days: number, mode: "ok" | "401" | "
             }
             return Promise.resolve({ status: 404, text: "" });
         };
-    }, [days, mode]);
+        plugin.http = (req: { url: string; method: string }) => (delay ? new Promise((r) => setTimeout(r, delay as number)).then(() => respond(req)) : respond(req));
+    }, [days, mode, delayMs] as const);
 }
 
 /** Dashy diagnostics and unrendered blocks inside a container, after scrolling it so lazy blocks draw. */

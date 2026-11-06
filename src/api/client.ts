@@ -10,13 +10,19 @@ export interface HttpRequest { url: string; method: "GET" | "POST"; headers: Rec
 export interface HttpResponse { status: number; text: string }
 export type Http = (req: HttpRequest) => Promise<HttpResponse>;
 
-export type GarminErrorKind = "auth" | "rate" | "network" | "http" | "parse";
+export type GarminErrorKind = "auth" | "rate" | "network" | "http" | "parse" | "cancelled";
 export class GarminError extends Error {
   constructor(public readonly kind: GarminErrorKind, message: string, public readonly status?: number) {
     super(message);
     this.name = "GarminError";
   }
 }
+
+/** Starts a timer; the promise rejects when it fires, `cancel` stops it. */
+export type Scheduler = (ms: number) => { expired: Promise<never>; cancel: () => void };
+/** Set `cancelled` to stop a running backfill before its next request. */
+export interface CancelToken { cancelled: boolean }
+export const REQUEST_TIMEOUT_MS = 30_000;
 
 export interface Progress { step: "daily" | "sleep" | "hrv" | "activities"; done: number; total: number }
 export interface BackfillResult { records: DayRecord[]; warnings: string[]; requests: number }
@@ -41,14 +47,22 @@ export class GarminClient {
     private readonly apiKey: string,
     private readonly now: () => number = Date.now,
     private readonly sleep: (ms: number) => Promise<void> = (t) => new Promise((r) => window.setTimeout(r, t)),
+    private readonly schedule?: Scheduler,
   ) {}
 
+  private cancel: CancelToken | null = null;
+
   private async send(req: HttpRequest): Promise<HttpResponse> {
+    if (this.cancel?.cancelled) throw new GarminError("cancelled", "Cancelled");
     this.requests++;
+    const timer = this.schedule?.(REQUEST_TIMEOUT_MS);
     try {
-      return await this.http(req);
+      return await (timer ? Promise.race([this.http(req), timer.expired]) : this.http(req));
     } catch (e) {
+      if (e instanceof GarminError) throw e;
       throw new GarminError("network", `No connection to Garmin: ${e instanceof Error ? e.message : String(e)}`);
+    } finally {
+      timer?.cancel();
     }
   }
 
@@ -93,17 +107,22 @@ export class GarminClient {
    * Everything the dashboards need for [from, to]: one call per year for daily summaries and HRV,
    * one per 31 days for sleep, one per 200 activities. A failed optional part becomes a warning.
    */
-  async backfill(from: string, to: string, onProgress: (p: Progress) => void = () => undefined): Promise<BackfillResult> {
+  async backfill(from: string, to: string, onProgress: (p: Progress) => void = () => undefined, cancel?: CancelToken): Promise<BackfillResult> {
+    this.cancel = cancel ?? null;
     const days: DayMap = new Map();
     const warnings: string[] = [];
+    let succeeded = 0;
+    const outage: { first: GarminError | null } = { first: null };
+    const failed = (e: unknown, label: string): void => {
+      if (e instanceof GarminError && (e.kind === "auth" || e.kind === "cancelled")) throw e; // a dead key or a cancel stops everything
+      if (!outage.first && e instanceof GarminError) outage.first = e;
+      warnings.push(`${label}: ${e instanceof Error ? e.message : String(e)}`);
+    };
     const part = async (step: Progress["step"], ranges: Array<[string, string]>, run: (a: string, b: string) => Promise<void>): Promise<void> => {
       let done = 0;
       onProgress({ step, done, total: ranges.length });
       for (const [a, b] of ranges) {
-        try { await run(a, b); } catch (e) {
-          if (e instanceof GarminError && e.kind === "auth") throw e; // a dead key stops everything
-          warnings.push(`${step} ${a}..${b}: ${e instanceof Error ? e.message : String(e)}`);
-        }
+        try { await run(a, b); succeeded++; } catch (e) { failed(e, `${step} ${a}..${b}`); }
         onProgress({ step, done: ++done, total: ranges.length });
       }
     };
@@ -117,9 +136,9 @@ export class GarminClient {
       let batch: unknown;
       try {
         batch = await this.getJson(`/activitylist-service/activities/search/activities?start=${start}&limit=200&startDate=${from}&endDate=${to}`);
+        succeeded++;
       } catch (e) {
-        if (e instanceof GarminError && e.kind === "auth") throw e;
-        warnings.push(`activities page ${page}: ${e instanceof Error ? e.message : String(e)}`);
+        failed(e, `activities page ${page}`);
         break;
       }
       const n = Array.isArray(batch) ? batch.length : 0;
@@ -128,6 +147,8 @@ export class GarminClient {
       if (n < 200) break;
       start += 200;
     }
+    // Nothing came back at all: that is an outage, not an empty account, and the user must hear it as one.
+    if (succeeded === 0 && outage.first) throw outage.first;
     mapActivities(activities, days);
     return { records: toRecords(days), warnings, requests: this.requests };
   }

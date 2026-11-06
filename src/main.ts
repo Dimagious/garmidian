@@ -1,17 +1,39 @@
 import { Notice, Plugin, getLanguage, requestUrl } from "obsidian";
-import { GarminClient, iso, type Http } from "./api/client";
+import { GarminClient, GarminError, type Http, type Scheduler } from "./api/client";
 import type { Lang } from "./core/catalog";
+import { addDays, daysBetween, localDate } from "./core/dates";
+import { overwriteFrom } from "./core/merge";
 import { WizardModal } from "./app/wizard";
 import { UI } from "./app/i18n";
+import { SYNC_UI } from "./app/i18n-sync";
 import { writeDays } from "./app/storage";
 import { GarmySettingTab } from "./app/settings";
+import { rebuildActiveDashboard } from "./app/rebuild";
 
-export interface GarmySettings { dataFolder: string; notesFolder: string; racesFolder: string; lastSync: string }
-const DEFAULTS: GarmySettings = { dataFolder: "Garmy/data", notesFolder: "Garmy", racesFolder: "", lastSync: "" };
+export interface GarmySettings {
+  dataFolder: string; notesFolder: string; racesFolder: string;
+  /** Local date of the last successful sync, and when it ran. */
+  lastSync: string; lastSyncAt: number;
+  /** Hours between automatic syncs; 0 turns them off. */
+  syncHours: number;
+  /** Local date on which Garmin rejected the key, or "" while the key works. */
+  keyProblem: string;
+}
+const DEFAULTS: GarmySettings = { dataFolder: "Garmy/data", notesFolder: "Garmy", racesFolder: "", lastSync: "", lastSyncAt: 0, syncHours: 6, keyProblem: "" };
 const SECRET_ID = "garmy-garmin-api-key";
+const DASHY_ID = "dashsidian";
+const FIRST_SYNC_DAYS = 14;
+const MAX_SYNC_DAYS = 60;
+const AUTO_CHECK_MS = 30 * 60 * 1000;
+const STARTUP_DELAY_MS = 5000;
+
+export type DashyState = "ready" | "disabled" | "missing";
+interface PluginsApi { plugins?: Record<string, unknown>; manifests?: Record<string, unknown>; enablePlugin?: (id: string) => Promise<void> }
 
 export default class GarmyPlugin extends Plugin {
   settings: GarmySettings = { ...DEFAULTS };
+  /** True while a sync or the wizard's load is running, so two never write the same notes at once. */
+  syncing = false;
 
   /** Transport through Obsidian's requestUrl: no CORS, works on mobile. */
   readonly http: Http = async (req) => {
@@ -19,33 +41,102 @@ export default class GarmyPlugin extends Plugin {
     return { status: r.status, text: r.text };
   };
 
+  /** requestUrl cannot be aborted, so a silent server is cut off by racing it against a timer. */
+  readonly schedule: Scheduler = (ms) => {
+    let id = 0;
+    const expired = new Promise<never>((_, reject) => {
+      id = window.setTimeout(() => reject(new GarminError("network", "Garmin did not answer in time")), ms);
+    });
+    return { expired, cancel: () => window.clearTimeout(id) };
+  };
+
   async onload(): Promise<void> {
     this.settings = { ...DEFAULTS, ...(await this.loadData() as Partial<GarmySettings> | null) };
     this.addRibbonIcon("layout-dashboard", UI[this.lang()].ribbon, () => this.openWizard());
     this.addCommand({ id: "open-wizard", name: "Build a Garmin dashboard", callback: () => this.openWizard() });
-    this.addCommand({ id: "sync-recent", name: "Sync the last 14 days from Garmin", callback: () => void this.syncRecent() });
+    this.addCommand({ id: "sync-recent", name: "Sync the latest days from Garmin", callback: () => void this.syncNow(true) });
+    this.addCommand({ id: "rebuild-dashboard", name: "Rebuild the dashboard in this note", callback: () => void rebuildActiveDashboard(this.app, this.lang()) });
     this.addSettingTab(new GarmySettingTab(this.app, this));
+    this.app.workspace.onLayoutReady(() => {
+      window.setTimeout(() => void this.maybeAutoSync(), STARTUP_DELAY_MS);
+      this.registerInterval(window.setInterval(() => void this.maybeAutoSync(), AUTO_CHECK_MS));
+    });
   }
 
   lang(): Lang { return getLanguage().startsWith("ru") ? "ru" : "en"; }
   getKey(): string { return this.app.secretStorage.getSecret(SECRET_ID) ?? ""; }
   setKey(key: string): void { this.app.secretStorage.setSecret(SECRET_ID, key); }
-  hasDashy(): boolean { return Boolean((this.app as unknown as { plugins?: { plugins?: Record<string, unknown> } }).plugins?.plugins?.dashsidian); }
   async saveSettings(): Promise<void> { await this.saveData(this.settings); }
-
+  newClient(key: string = this.getKey()): GarminClient { return new GarminClient(this.http, key, Date.now, undefined, this.schedule); }
   openWizard(): void { new WizardModal(this.app, this, this.lang()).open(); }
 
-  async syncRecent(): Promise<void> {
-    const key = this.getKey();
-    if (!key) { new Notice("Garmy: no key. Run the wizard first."); return; }
+  dashyState(): DashyState {
+    const p = (this.app as unknown as { plugins?: PluginsApi }).plugins;
+    if (p?.plugins?.[DASHY_ID]) return "ready";
+    return p?.manifests?.[DASHY_ID] ? "disabled" : "missing";
+  }
+
+  async enableDashy(): Promise<void> {
+    await (this.app as unknown as { plugins?: PluginsApi }).plugins?.enablePlugin?.(DASHY_ID);
+  }
+
+  /** Called after any successful load, from the wizard or from a sync. */
+  async recordSync(today: string): Promise<void> {
+    this.settings.lastSync = today;
+    this.settings.lastSyncAt = Date.now();
+    this.settings.keyProblem = "";
+    await this.saveSettings();
+  }
+
+  private async maybeAutoSync(): Promise<void> {
+    const s = this.settings;
+    if (s.syncHours <= 0 || s.keyProblem || !this.getKey()) return;
+    if (Date.now() - s.lastSyncAt < s.syncHours * 3600e3) return;
+    await this.syncNow(false);
+  }
+
+  /** Refreshes the days since the last sync (plus a margin) and the three most recent ones are overwritten. */
+  async syncNow(manual: boolean): Promise<void> {
+    const text = SYNC_UI[this.lang()];
+    if (this.syncing) { if (manual) new Notice(text.walkBusy); return; }
+    if (!this.getKey()) { if (manual) new Notice(text.noticeNoKey); return; }
+    this.syncing = true;
     try {
-      const res = await new GarminClient(this.http, key).backfill(iso(Date.now() - 13 * 864e5), iso(Date.now()));
-      const w = await writeDays(this.app, this.settings.dataFolder, res.records);
-      this.settings.lastSync = iso(Date.now());
-      await this.saveSettings();
-      new Notice(`Garmy: ${res.records.length} days, ${w.created} new, ${w.updated} updated`);
+      const today = localDate(Date.now());
+      const back = this.settings.lastSync
+        ? Math.min(MAX_SYNC_DAYS, Math.max(3, daysBetween(this.settings.lastSync, today) + 3))
+        : FIRST_SYNC_DAYS;
+      const res = await this.newClient().backfill(addDays(today, -back), today);
+      await writeDays(this.app, this.settings.dataFolder, res.records, { overwriteFrom: overwriteFrom(today) });
+      await this.recordSync(today);
+      if (manual) new Notice(text.noticeSynced(res.records.length));
     } catch (e) {
-      new Notice(`Garmy: ${e instanceof Error ? e.message : String(e)}`);
+      await this.onSyncError(e, manual);
+    } finally {
+      this.syncing = false;
     }
+  }
+
+  private async onSyncError(e: unknown, manual: boolean): Promise<void> {
+    const text = SYNC_UI[this.lang()];
+    const kind = e instanceof GarminError ? e.kind : "other";
+    if (kind === "auth") {
+      const first = !this.settings.keyProblem;
+      this.settings.keyProblem = localDate(Date.now());
+      await this.saveSettings();
+      if (first || manual) this.noticeWithAction(text.noticeKeyRejected, text.noticeReplaceKey);
+      return;
+    }
+    console.error("Garmy: sync failed", e);
+    if (!manual) return; // a background failure is retried on its own; only a click earns a message
+    new Notice(kind === "network" ? text.noticeOffline : kind === "rate" ? text.noticeRate : text.noticeFailed);
+  }
+
+  private noticeWithAction(message: string, label: string): void {
+    const notice = new Notice(createFragment((f) => {
+      f.createDiv({ text: message });
+      const b = f.createEl("button", { text: label, cls: "mod-cta" });
+      b.addEventListener("click", () => { notice.hide(); this.openWizard(); });
+    }), 0);
   }
 }

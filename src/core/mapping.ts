@@ -17,7 +17,7 @@ function slot(days: DayMap, date: string): Record<string, number | string> {
 }
 
 /**
- * /usersummary-service/v2/dailysummaries -> steps, resting_hr, stress.
+ * /usersummary-service/v2/dailysummaries -> steps, resting_hr, stress, body_battery (the day's highest value).
  * Distance is deliberately not read: the range endpoints only report walking distance, while the
  * full daily distance exists only in the per-day endpoint (one request per day).
  */
@@ -34,6 +34,8 @@ export function mapDailySummaries(json: Json, days: DayMap): void {
     if (rhr !== null) out.resting_hr = rhr;
     const stress = num(rec(r.stress)?.avgLevel);
     if (stress !== null && stress >= 0) out.stress = stress; // -1 means "not measured"
+    const battery = num(rec(r.bodyBattery)?.maxValue);
+    if (battery !== null) out.body_battery = battery;
   }
 }
 

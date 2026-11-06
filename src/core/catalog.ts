@@ -10,6 +10,7 @@ export const METRICS: Record<string, MetricDef> = {
   sleep_duration:     { icon: "🛏", color: "blue",   better: "up",   group: "recovery", unit: "" },
   hrv:                { icon: "💓", color: "green",  better: "up",   group: "recovery", unit: "ms" },
   resting_hr:         { icon: "❤️", color: "red",    better: "down", group: "recovery", unit: "bpm" },
+  body_battery:       { icon: "⚡", color: "cyan",   better: "up",   group: "recovery", unit: "" },
   training_readiness: { icon: "🔋", color: "blue",   better: "up",   group: "recovery", unit: "" },
   stress:             { icon: "😰", color: "orange", better: "down", group: "recovery", unit: "" },
   steps:              { icon: "🚶", color: "blue",   better: "up",   group: "activity", unit: "" },
@@ -31,7 +32,7 @@ export const UNITS: Record<Lang, Record<string, string>> = {
 export const T: Record<Lang, Record<string, string>> = {
   ru: {
     sleep_score: "Сон", sleep_duration: "Длительность сна", hrv: "HRV", resting_hr: "Пульс покоя",
-    training_readiness: "Готовность", stress: "Стресс", steps: "Шаги", distance_km: "Дистанция",
+    training_readiness: "Готовность", body_battery: "Body Battery", stress: "Стресс", steps: "Шаги", distance_km: "Дистанция",
     run: "Бег", bike: "Вело", swim: "Плавание", strength: "Силовые",
     latestNight: "последняя ночь", latest: "последний замер", days: " дн.",
     now: "Сейчас", weekVsUsual: "7 дней к моей норме", week: "7 дней", trends: "Динамика",
@@ -48,7 +49,7 @@ export const T: Record<Lang, Record<string, string>> = {
   },
   en: {
     sleep_score: "Sleep", sleep_duration: "Sleep duration", hrv: "HRV", resting_hr: "Resting HR",
-    training_readiness: "Readiness", stress: "Stress", steps: "Steps", distance_km: "Distance",
+    training_readiness: "Readiness", body_battery: "Body Battery", stress: "Stress", steps: "Steps", distance_km: "Distance",
     run: "Run", bike: "Bike", swim: "Swim", strength: "Strength",
     latestNight: "last night", latest: "last reading", days: " d",
     now: "Now", weekVsUsual: "7 days vs my usual", week: "7 days", trends: "Trends",

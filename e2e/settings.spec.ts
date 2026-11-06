@@ -2,7 +2,12 @@ import { test, expect, setKey } from "./fixtures";
 import type { ElectronApplication, Page } from "@playwright/test";
 
 async function openSettings(app: ElectronApplication, win: Page): Promise<Page> {
-    for (let attempt = 0; attempt < 3; attempt += 1) {
+    // On a cold start the tab is registered a moment after the window is up; opening Settings earlier shows no Garmy entry.
+    await expect.poll(() => win.evaluate(() => {
+        const a = (globalThis as unknown as { app: { setting?: { pluginTabs?: Array<{ id: string }> } } }).app;
+        return a.setting?.pluginTabs?.some((t) => t.id === "garmidian") ?? false;
+    }), { timeout: 15_000 }).toBe(true);
+    for (let attempt = 0; attempt < 4; attempt += 1) {
         const opened = app.waitForEvent("window", { timeout: 8_000 }).catch(() => null);
         await win.evaluate(() => (globalThis as unknown as { app: { commands: { executeCommandById(id: string): boolean } } }).app.commands.executeCommandById("app:open-settings"));
         const sw = (await opened) ?? app.windows().find((w) => w !== win) ?? win;

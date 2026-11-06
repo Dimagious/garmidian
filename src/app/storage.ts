@@ -1,4 +1,5 @@
 import { TFile, normalizePath, type App } from "obsidian";
+import { changesFor } from "../core/merge";
 import type { DayRecord } from "../core/types";
 
 const DAY = /^(\d{4}-\d{2}-\d{2})\.md$/;
@@ -14,20 +15,28 @@ async function ensureFolder(app: App, folder: string): Promise<void> {
 }
 
 export interface WriteResult { created: number; updated: number; untouched: number }
+export interface WriteOptions {
+  /** Days on or after this date are overwritten with Garmin's latest numbers; earlier ones only get gaps filled. */
+  overwriteFrom?: string;
+}
 
-/** One note per day. An existing note keeps every non-empty field; only missing ones are added. */
-export async function writeDays(app: App, folder: string, records: DayRecord[]): Promise<WriteResult> {
+/**
+ * One note per day. See core/merge.ts for which fields change. A note that would not change is not
+ * rewritten: a year of identical files would otherwise churn the sync of iCloud or git for nothing.
+ */
+export async function writeDays(app: App, folder: string, records: DayRecord[], opts: WriteOptions = {}): Promise<WriteResult> {
   await ensureFolder(app, folder);
   const res: WriteResult = { created: 0, updated: 0, untouched: 0 };
   for (const { date, fields } of records) {
     const path = normalizePath(`${folder}/${date}.md`);
+    const overwrite = opts.overwriteFrom !== undefined && date >= opts.overwriteFrom;
     const existing = app.vault.getAbstractFileByPath(path);
     if (existing instanceof TFile) {
+      const cached = app.metadataCache.getFileCache(existing)?.frontmatter;
+      if (cached && Object.keys(changesFor(cached, fields, overwrite)).length === 0) { res.untouched++; continue; }
       let changed = false;
       await app.fileManager.processFrontMatter(existing, (fm: Record<string, unknown>) => {
-        for (const [k, v] of Object.entries(fields)) {
-          if (fm[k] === undefined || fm[k] === null || fm[k] === "") { fm[k] = v; changed = true; }
-        }
+        for (const [k, v] of Object.entries(changesFor(fm, fields, overwrite))) { fm[k] = v; changed = true; }
       });
       if (changed) res.updated++; else res.untouched++;
     } else {

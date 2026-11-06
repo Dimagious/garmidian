@@ -41,6 +41,8 @@ node tools/tour.mjs --days=30                                     # screenshots 
 
 - Obsidian collects `getSettingDefinitions()` early for search. Anything that can change (is a key saved?) must be read inside the row's `render`, not outside it.
 - Timers go through `window.setTimeout`; DOM and media queries through `activeDocument` / `activeWindow` (popout windows). The scorecard gate checks this.
+- "Today" is the local day (`core/dates.ts`), never `toISOString()`. Date arithmetic goes through `addDays`.
+- The three latest days are overwritten on sync, older days only filled (`core/merge.ts`, ADR 0005).
 - A day split across two activity pages must be summed after all pages are read, not per page.
 - Do not write `distance_km`: range endpoints give walking distance, not the day's total.
 - Never print or store the key. Tests use a fake key; the live spec reads the Keychain.

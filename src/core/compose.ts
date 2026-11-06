@@ -102,7 +102,7 @@ export function compose(p: DataProfile, o: ComposeOptions): ComposeResult {
 
   if (p.span < 7) out.push(`> ${t.waitWeek} ${p.days}.`);
 
-  const rec = groups.includes("recovery") ? avail(["sleep_score", "sleep_duration", "hrv", "resting_hr", "training_readiness", "stress"]) : [];
+  const rec = groups.includes("recovery") ? avail(["sleep_score", "sleep_duration", "hrv", "body_battery", "resting_hr", "training_readiness", "stress"]) : [];
   if (rec.length) {
     head(t.recovery);
     add("recovery.now", fence("stats", ["columns: 3", "source: " + src], rec.map((f): Row => ({ label: lbl(f), field: f, agg: "latest", unit: unit(f), icon: METRICS[f]!.icon }))));
@@ -115,7 +115,7 @@ export function compose(p: DataProfile, o: ComposeOptions): ComposeResult {
       }))));
     } else skip("recovery.week", `span ${p.span} < 7`);
     if (R !== null) {
-      const a = avail(["sleep_score", "training_readiness"]);
+      const a = avail(["sleep_score", "training_readiness", "body_battery"]);
       if (a.length) add("recovery.chart.scores", fence("dashy-chart", ["source: " + src, `range: ${R}d`, "agg: avg", "title: " + q(t.chartRecovery), series(a.map((f) => ({ field: f, label: lbl(f), color: colorOf(f) })))]));
       const b = avail(["hrv", "resting_hr"]);
       if (b.length) add("recovery.chart.hr", fence("dashy-chart", ["source: " + src, `range: ${R}d`, "agg: avg", "title: " + q(t.chartHr), series(b.map((f) => ({ field: f, label: lbl(f), color: colorOf(f) })))]));

@@ -12,10 +12,10 @@ describe("mapping", () => {
   it("maps daily summaries, skips unmeasured stress and does not invent a distance", () => {
     const days: DayMap = new Map();
     mapDailySummaries({ data: [
-      { calendarDate: "2026-11-01", movement: { steps: { value: 9000, distanceInMeters: 7123 } }, heartRate: { restingValue: 48 }, stress: { avgLevel: 27 } },
+      { calendarDate: "2026-11-01", movement: { steps: { value: 9000, distanceInMeters: 7123 } }, heartRate: { restingValue: 48 }, stress: { avgLevel: 27 }, bodyBattery: { maxValue: 94, minValue: 35 } },
       { calendarDate: "2026-11-02", movement: { steps: { value: 0, distanceInMeters: 0 } }, stress: { avgLevel: -1 } },
     ] }, days);
-    expect(days.get("2026-11-01")).toEqual({ steps: 9000, resting_hr: 48, stress: 27 });
+    expect(days.get("2026-11-01")).toEqual({ steps: 9000, resting_hr: 48, stress: 27, body_battery: 94 });
     expect(days.get("2026-11-02")).toEqual({ steps: 0 });
   });
   it("maps sleep score and duration text", () => {
@@ -63,6 +63,12 @@ describe("compose", () => {
     expect(r.log.blocks).toEqual(["recovery.now", "activity.cards", "training.cards"]);
     expect(r.markdown).toContain("неделя данных");
     expect(r.markdown).not.toContain("dashy-chart");
+  });
+  it("Body Battery appears in the cards and the score chart only when the data has it", () => {
+    const with_ = compose(buildProfile(rows(40, (i) => ({ ...full(i), body_battery: 80 }))), { source: SRC }).markdown;
+    expect(with_).toContain("field: body_battery, agg: latest");
+    expect(with_).toMatch(/field: body_battery, label: Body Battery/);
+    expect(compose(buildProfile(rows(40, full)), { source: SRC }).markdown).not.toContain("body_battery");
   });
   it("never writes a block for a missing field or unused sport", () => {
     const r = compose(buildProfile(rows(40, full)), { source: SRC });

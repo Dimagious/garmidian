@@ -4,6 +4,27 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ## [Unreleased]
 
+### Added
+
+- Automatic sync: shortly after Obsidian starts and then every 6, 12 or 24 hours (or off), plus a "Sync now" button in settings. A sync loads the days since the last one with a margin of three, capped at 60.
+- The three most recent days are overwritten on every sync, so numbers written part-way through a day are corrected. Older days only get missing properties filled.
+- A rejected or expired key is remembered: settings show it with a "Replace key" button, and a notice offers the same once.
+- Loading can be cancelled, and a request that gets no answer in 30 seconds becomes a "no connection" error instead of hanging.
+- "Rebuild the dashboard in this note": the dashboard lives between two invisible comment markers, and the command regenerates only that part from the data on disk with the original choices.
+- Body Battery: the day's highest value is saved as `body_battery` and shown in the recovery cards and the score chart. It comes with the daily summaries, so it costs no extra request.
+- The preview warns when Dashy is turned off and can turn it on, or opens its page in the community browser when it is not installed.
+
+### Fixed
+
+- "Today" is the user's local day. It was the UTC day, which is wrong for the first hours of a day in Europe and the evening in the Americas.
+- A load where every request failed now reports the outage instead of "no data yet".
+- "Show the dashboard" is disabled while nothing is selected.
+- Sync notices name the actual problem (no connection, rate limit, rejected key) instead of showing a raw error.
+
+### Changed
+
+- Notes whose content would not change are no longer rewritten, which keeps iCloud and git quiet.
+
 ## [0.1.0] - 2026-11-06
 
 First prototype, not yet in the community catalog.
