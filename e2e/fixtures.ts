@@ -35,8 +35,8 @@ export const test = base.extend<Fixtures>({
         const dir = fs.mkdtempSync(path.join(os.tmpdir(), "garmidian-e2e-vault-"));
         const vault = path.join(dir, "vault");
         fs.cpSync(PRISTINE, vault, { recursive: true, dereference: true });
-        // Pin kilometers: a fresh install picks miles for an en-US machine, and the pictures and specs must not depend on the machine.
-        fs.writeFileSync(path.join(vault, ".obsidian", "plugins", "garmidian", "data.json"), JSON.stringify({ units: "metric" }));
+        // Pin kilometers and English: a fresh install picks miles for an en-US machine and follows the machine language, and the pictures and specs must not depend on the machine.
+        fs.writeFileSync(path.join(vault, ".obsidian", "plugins", "garmidian", "data.json"), JSON.stringify({ units: "metric", language: "en" }));
         await use(vault);
         removeTree(dir);
     },
