@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A steps dashboard in Obsidian: streaks, a monthly goal and a year map · Garmy</title>
+<meta name="description" content="Best and current 10,000 step streaks, days over 10,000 this month, a goal for the month, weekly averages and a year map from the steps Garmy writes into your daily notes.">
+<link rel="canonical" href="https://dimagious.github.io/garmidian/guides/garmin-steps-streak-obsidian/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='7' fill='%232bb5a3'/%3E%3Cpolyline points='5.5,17 10.5,17 13,11 16.5,22.5 19.5,14 21.5,17 26.5,17' fill='none' stroke='%2305211d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='7' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3Crect x='12.5' y='24.5' width='7' height='2' rx='1' fill='%2305211d' fill-opacity='.8'/%3E%3Crect x='21' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Garmy">
+<meta property="og:url" content="https://dimagious.github.io/garmidian/guides/garmin-steps-streak-obsidian/">
+<meta property="og:title" content="A steps dashboard in Obsidian: streaks, a monthly goal and a year map">
+<meta property="og:description" content="Best and current 10,000 step streaks, days over 10,000 this month, a goal for the month, weekly averages and a year map from the steps Garmy writes into your daily notes.">
+<meta property="og:image" content="https://dimagious.github.io/garmidian/img/tpl-steps-a-light.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1720">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A steps dashboard in Obsidian: streaks, a monthly goal and a year map">
+<meta name="twitter:description" content="Best and current 10,000 step streaks, days over 10,000 this month, a goal for the month, weekly averages and a year map from the steps Garmy writes into your daily notes.">
+<meta name="twitter:image" content="https://dimagious.github.io/garmidian/img/tpl-steps-a-light.png">
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/guides.css">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "A steps dashboard in Obsidian: streaks, a monthly goal and a year map", "step": [{"@type": "HowToStep", "name": "The average day and the streaks", "text": "stats with agg: avg, max, current_streak and streak at 10,000."}, {"@type": "HowToStep", "name": "This month", "text": "A stats block with period: month and a count where steps >= 10000."}, {"@type": "HowToStep", "name": "A goal for the month", "text": "A progress block with a goal from your last 28 days."}, {"@type": "HowToStep", "name": "Daily and weekly bars", "text": "dashy-chart bars with a goal line, daily and averaged by week."}, {"@type": "HowToStep", "name": "A year map", "text": "A heatmap with bands from 7,000 to 14,000."}]}
+</script>
+</head>
+<body>
+<!--shell:top tab="Steps dashboard"-->
+
+    <main class="note guide" id="note">
+      <article class="file" style="padding-top:34px">
+        <div class="crumb">Guides/garmin-steps-streak-obsidian.md</div>
+        <h1 class="inline-title">A steps dashboard in Obsidian: streaks, a monthly goal and a year map</h1>
+
+        <div class="props" aria-label="Properties">
+          <div class="props-title"><svg><use href="#i-list"/></svg>Properties</div>
+          <div class="prop"><div class="k"><svg><use href="#i-tag"/></svg>blocks</div><div class="v"><span class="pill">stats</span><span class="pill">progress</span><span class="pill">dashy-chart</span><span class="pill">heatmap</span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-text"/></svg>fields</div><div class="v"><code>steps</code></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs Dashy</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs a Garmin key</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-hash"/></svg>checked on</div><div class="v">Garmy {{version}}</div></div>
+        </div>
+
+        <p class="lede">How many steps you take on an average day, how long you have been over 10,000 in a row, how this month compares with the last, and a map of the whole year. All from the one number Garmy writes into your daily notes.</p>
+
+
+        <nav class="toc" aria-label="On this page">
+          <b>ON THIS PAGE</b>
+          <ol>
+            <li><a href="#cards">The average day and the streaks</a></li>
+            <li><a href="#month">This month</a></li>
+            <li><a href="#goal">A goal for the month</a></li>
+            <li><a href="#bars">Daily and weekly bars</a></li>
+            <li><a href="#year">A year map</a></li>
+            <li><a href="#related">Related guides</a></li>
+          </ol>
+        </nav>
+
+        <h2 class="step" id="cards" data-short="The average day and the streaks"><span class="n">1</span>The average day and the streaks</h2>
+        <p>Garmy writes <code>steps</code> into every day note. Pick <strong>Steps</strong> in the wizard. The first row is four cards: your average day over the last 7 days against your usual, the best day of the last 30, the 10,000 step streak you are on and the best one on record.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Steps.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 4
+source: Garmy/data
+items:
+  - { label: Steps per day, field: steps, agg: avg, period: 7d, precision: 0, icon: 🚶, compare: usual, better: up, trend: 30d }
+  - { label: "Best day, 30 days", field: steps, agg: max, period: 30d, icon: 🏆 }
+  - { label: "10,000 streak", field: steps, agg: current_streak, at_least: 10000, unit: " d", icon: 🔥 }
+  - { label: "Best 10,000 streak", field: steps, agg: streak, at_least: 10000, unit: " d", icon: 🥇 }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>agg: current_streak</code><span>The run going on now. Today never breaks it: a day not finished yet leaves the run counted up to yesterday.</span></li>
+          <li><code>agg: streak</code><span>The longest run on record. Label it that way, it is not the current one.</span></li>
+          <li><code>at_least: 10000</code><span>A day counts only from 10,000 steps up.</span></li>
+          <li><code>compare: usual</code><span>Needs <code>agg: avg</code>. The average of every earlier day is the usual level.</span></li>
+        </ul>
+        <figure class="shot">
+          <picture><img src="../../img/tpl-steps-a-light.png" width="2400" height="1720" alt="A steps dashboard: average steps per day, best day, current and best 10,000 step streak, this month and a goal"></picture>
+          <figcaption>The steps page on demo data.</figcaption>
+        </figure>
+        <h2 class="step" id="month" data-short="This month"><span class="n">2</span>This month</h2>
+        <p>Steps this month against the same stretch of last month, the days over 10,000 and the average day.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Steps.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 3
+source: Garmy/data
+period: month
+items:
+  - { label: Steps this month, field: steps, agg: sum, icon: 🚶, compare: true, better: up }
+  - { label: "Days with 10,000+", agg: count, where: "steps &gt;= 10000", icon: 🎯 }
+  - { label: Steps per day, field: steps, agg: avg, precision: 0, icon: 📈 }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>agg: count</code><span>Counts days. <code>where: "steps >= 10000"</code> keeps only the days that reached it.</span></li>
+          <li><code>period: month</code><span>The current calendar month, written once on the block.</span></li>
+        </ul>
+        <h2 class="step" id="goal" data-short="A goal for the month"><span class="n">3</span>A goal for the month</h2>
+        <p>The goal is your last 28 days plus a tenth, rounded up to a number a person would pick. It is a bar, not a target someone else chose.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Steps.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```progress
+source: Garmy/data
+period: month
+items:
+  - { label: Steps this month, field: steps, agg: sum, goal: 250000, icon: 🚶 }
+```</code></pre>
+        </div>
+        <h2 class="step" id="bars" data-short="Daily and weekly bars"><span class="n">4</span>Daily and weekly bars</h2>
+        <p>Steps per day as bars with a dashed line at 10,000. With 28 days of data a second chart averages the days of each week.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Steps.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```dashy-chart
+source: Garmy/data
+field: steps
+type: bar
+range: 90d
+goal: 10000
+label: Steps
+title: Steps per day
+```</code></pre>
+        </div>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Steps.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```dashy-chart
+source: Garmy/data
+field: steps
+type: bar
+agg: avg
+bucket: week
+range: 119d
+goal: 10000
+label: Steps
+title: Average steps per week
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>goal: 10000</code><span>A dashed reference line. The y axis always stretches to show it.</span></li>
+          <li><code>agg: avg</code><span>With <code>bucket: week</code>, the average steps of a day in each week.</span></li>
+        </ul>
+        <figure class="shot">
+          <picture><img src="../../img/tpl-steps-b-light.png" width="2400" height="1720" loading="lazy" alt="Steps per day as bars with a goal line, weekly average steps and a year map of steps"></picture>
+          <figcaption>Daily and weekly bars.</figcaption>
+        </figure>
+        <h2 class="step" id="year" data-short="A year map"><span class="n">5</span>A year map</h2>
+        <p>One cell per day for the last 365 days, shaded in bands from 7,000 to 14,000 steps. It appears once you have 30 days of data.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Steps.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```heatmap
+source: Garmy/data
+field: steps
+color: blue
+range: 365d
+bands: [14000, 10000, 7000]
+title: Steps
+```</code></pre>
+        </div>
+        <p>Change the numbers in <code>bands</code> to fit your own days. Thresholds go from the top down.</p>
+
+        <h2 id="related" data-short="Related guides">Related guides</h2>
+        <div class="cards small">
+          <a class="card" href="../garmin-dashboard-templates-obsidian/">
+            <div class="thumb"><picture><img src="../../img/wizard-library-light.png" width="1632" height="1952" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Eleven Garmin dashboards for Obsidian</span><p class="card-promise">Sleep, HRV, steps, one page per sport, triathlon, race build, weekly and monthly reviews: what each shows and what it needs.</p></div>
+          </a>
+          <a class="card" href="../garmin-sleep-hrv-dashboard/">
+            <div class="thumb"><picture><img src="../../img/dashboard-2-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Garmin sleep and HRV dashboard in Obsidian</span><p class="card-promise">Sleep score, sleep duration, HRV, resting heart rate and Body Battery as cards and charts in one note.</p></div>
+          </a>
+          <a class="card" href="../obsidian-triathlon-training-log/">
+            <div class="thumb"><picture><img src="../../img/dashboard-5-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">A triathlon training log in Obsidian from Garmin</span><p class="card-promise">Run, bike, swim and strength per week, a month calendar, a year map by sport and monthly goals.</p></div>
+          </a>
+        </div>
+
+        <div class="next">
+          <p>Install Garmy and Dashy, load your history and pick Steps in the third step.</p>
+          <div class="actions">
+            <a class="btn primary" href="../../#install"><svg><use href="#i-plug"/></svg>Install Garmy</a><a class="btn" href="../garmin-dashboard-templates-obsidian/">All the dashboards</a>
+          </div>
+        </div>
+
+        <footer class="note-foot">
+          <span>MIT © Dmitriy Yurkin</span>
+          <a href="../../guides/">All guides</a>
+          <a href="https://github.com/Dimagious/garmidian">GitHub</a>
+          <a href="https://community.obsidian.md/plugins/garmidian">Plugin listing</a>
+          <a href="https://github.com/Dimagious/garmidian/issues">Something wrong on this page?</a>
+          <span class="legal">Garmy is not affiliated with Garmin. Data source: Garmin.</span>
+        </footer>
+      </article>
+    </main>
+<!--shell:bottom-->
+</body>
+</html>

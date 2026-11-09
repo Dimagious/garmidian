@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eleven Garmin dashboards for Obsidian: which one to pick · Garmy</title>
+<meta name="description" content="Garmy's wizard offers a library of dashboards: sleep, HRV, steps, one page per sport, triathlon, race build, weekly and monthly reviews. What each shows and what it needs.">
+<link rel="canonical" href="https://dimagious.github.io/garmidian/guides/garmin-dashboard-templates-obsidian/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='7' fill='%232bb5a3'/%3E%3Cpolyline points='5.5,17 10.5,17 13,11 16.5,22.5 19.5,14 21.5,17 26.5,17' fill='none' stroke='%2305211d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='7' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3Crect x='12.5' y='24.5' width='7' height='2' rx='1' fill='%2305211d' fill-opacity='.8'/%3E%3Crect x='21' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Garmy">
+<meta property="og:url" content="https://dimagious.github.io/garmidian/guides/garmin-dashboard-templates-obsidian/">
+<meta property="og:title" content="Eleven Garmin dashboards for Obsidian: which one to pick">
+<meta property="og:description" content="Garmy's wizard offers a library of dashboards: sleep, HRV, steps, one page per sport, triathlon, race build, weekly and monthly reviews. What each shows and what it needs.">
+<meta property="og:image" content="https://dimagious.github.io/garmidian/img/wizard-library-light.png">
+<meta property="og:image:width" content="1632">
+<meta property="og:image:height" content="1952">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Eleven Garmin dashboards for Obsidian: which one to pick">
+<meta name="twitter:description" content="Garmy's wizard offers a library of dashboards: sleep, HRV, steps, one page per sport, triathlon, race build, weekly and monthly reviews. What each shows and what it needs.">
+<meta name="twitter:image" content="https://dimagious.github.io/garmidian/img/wizard-library-light.png">
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/guides.css">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "Eleven Garmin dashboards for Obsidian: which one to pick", "step": [{"@type": "HowToStep", "name": "Open the library", "text": "The third wizard step starts with a choice of dashboard; cards without data are greyed out with the reason."}, {"@type": "HowToStep", "name": "Pick by question", "text": "Sleep, HRV, steps, one page per sport, triathlon, race build, weekly and monthly review, year."}, {"@type": "HowToStep", "name": "A sport page adapts", "text": "Run, bike and swim show distance, strength shows time and sessions, and each pairs with different recovery signals."}, {"@type": "HowToStep", "name": "The kind stays in the note", "text": "The garmy property stores the kind, so a rebuild builds the same dashboard."}, {"@type": "HowToStep", "name": "Edit freely", "text": "The dashboard is plain Dashy blocks between two markers."}]}
+</script>
+</head>
+<body>
+<!--shell:top tab="Garmin dashboards"-->
+
+    <main class="note guide" id="note">
+      <article class="file" style="padding-top:34px">
+        <div class="crumb">Guides/garmin-dashboard-templates-obsidian.md</div>
+        <h1 class="inline-title">Eleven Garmin dashboards for Obsidian: which one to pick</h1>
+
+        <div class="props" aria-label="Properties">
+          <div class="props-title"><svg><use href="#i-list"/></svg>Properties</div>
+          <div class="prop"><div class="k"><svg><use href="#i-tag"/></svg>blocks</div><div class="v"><span class="pill">wizard</span><span class="pill">stats</span><span class="pill">heatmap</span><span class="pill">progress</span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-text"/></svg>fields</div><div class="v"><code>garmy</code></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs Dashy</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs a Garmin key</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-hash"/></svg>checked on</div><div class="v">Garmy {{version}}</div></div>
+        </div>
+
+        <p class="lede">Garmy does not build one dashboard. The wizard offers a library: a morning glance, sleep, recovery, steps, a page per sport, triathlon, a race build, a weekly and a monthly review and the year. This page shows what each one is for, so you can pick the one that answers your question.</p>
+
+
+        <nav class="toc" aria-label="On this page">
+          <b>ON THIS PAGE</b>
+          <ol>
+            <li><a href="#library">Open the library</a></li>
+            <li><a href="#pick">Pick by the question you have</a></li>
+            <li><a href="#sport">A sport page changes with the sport</a></li>
+            <li><a href="#kept">The kind stays in the note</a></li>
+            <li><a href="#keep">Keep what you like and change the rest</a></li>
+            <li><a href="#related">Related guides</a></li>
+          </ol>
+        </nav>
+
+        <h2 class="step" id="library" data-short="Open the library"><span class="n">1</span>Open the library</h2>
+        <p>Run <strong>Garmy: Build a Garmin dashboard</strong>. The third step starts with <strong>Kind of dashboard</strong>. Every card is one dashboard. A card whose data is missing is greyed out and says what it waits for, for example <em>Needs two of swim, bike and run</em>. The list follows your data, so a sport you never do is not offered at all.</p>
+        <figure class="shot">
+          <picture><img src="../../img/film-library.gif" width="820" height="837" loading="lazy" alt="The wizard choice step: the cards Everything, Sleep, Run, Triathlon, Race build and Weekly review are selected one after another"></picture>
+          <figcaption>The choice step, clicking through six kinds. Demo data.</figcaption>
+        </figure>
+        <figure class="shot">
+          <picture><img src="../../img/wizard-library-light.png" width="1632" height="1952" loading="lazy" alt="The wizard choice step with cards for Everything, Morning glance, Sleep, HRV and recovery, Steps, Run, Bike, Swim and Strength"></picture>
+          <figcaption>The library on a year of demo data. The first card is the dashboard Garmy always built.</figcaption>
+        </figure>
+        <h2 class="step" id="pick" data-short="Pick by the question you have"><span class="n">2</span>Pick by the question you have</h2>
+        <p>Each dashboard answers one question. This is the whole list.</p>
+        <div class="table-wrap">
+          <table class="cmp">
+            <thead><tr><th>You ask</th><th class="us">Pick</th><th>Needs</th></tr></thead>
+            <tbody>
+              <tr><td>How am I doing this morning?</td><td data-h="Pick" class="us"><span>Morning glance</span></td><td data-h="Needs">any data</td></tr>
+              <tr><td>Did I sleep enough, and how often well?</td><td data-h="Pick" class="us"><span>Sleep</span></td><td data-h="Needs">sleep score or duration</td></tr>
+              <tr><td>Am I recovering?</td><td data-h="Pick" class="us"><span>HRV and recovery</span></td><td data-h="Needs">HRV, resting heart rate, Body Battery or stress</td></tr>
+              <tr><td>Do I move enough?</td><td data-h="Pick" class="us"><span>Steps</span></td><td data-h="Needs">steps</td></tr>
+              <tr><td>How is my running, riding, swimming, lifting?</td><td data-h="Pick" class="us"><span>Run, Bike, Swim, Strength</span></td><td data-h="Needs">that sport</td></tr>
+              <tr><td>How balanced is my triathlon training?</td><td data-h="Pick" class="us"><span>Triathlon</span></td><td data-h="Needs">two of swim, bike, run</td></tr>
+              <tr><td>Am I ready for the race?</td><td data-h="Pick" class="us"><span>Race build</span></td><td data-h="Needs">a race date or a folder</td></tr>
+              <tr><td>What did this week do?</td><td data-h="Pick" class="us"><span>Weekly review</span></td><td data-h="Needs">any data</td></tr>
+              <tr><td>What did this month do?</td><td data-h="Pick" class="us"><span>Monthly review</span></td><td data-h="Needs">any data</td></tr>
+              <tr><td>Where did the year go?</td><td data-h="Pick" class="us"><span>Year so far</span></td><td data-h="Needs">60 days</td></tr>
+              <tr><td>Everything at once</td><td data-h="Pick" class="us"><span>Everything</span></td><td data-h="Needs">any data</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="font-size:14.5px">The year page needs 60 days because its monthly bars mean little before that. Everything else works from the first week; charts and comparisons appear as the days accumulate.</p>
+        <h2 class="step" id="sport" data-short="A sport page changes with the sport"><span class="n">3</span>A sport page changes with the sport</h2>
+        <p>The Run, Bike, Swim and Strength cards are one dashboard that adapts. A run page counts distance, time, sessions and the longest run, and pairs the weekly bars with HRV and resting heart rate. A strength page has no distance. It counts time and sessions, and pairs them with sleep score and Body Battery, because lifting is recovered from differently.</p>
+        <figure class="shot">
+          <picture><img src="../../img/tpl-run-a-light.png" width="2400" height="1720" loading="lazy" alt="A run dashboard: distance, time, sessions and longest run for the last 7 days, then this month and a monthly goal"></picture>
+          <figcaption>The run page.</figcaption>
+        </figure>
+        <figure class="shot">
+          <picture><img src="../../img/tpl-strength-a-light.png" width="2400" height="1720" loading="lazy" alt="A strength dashboard: time and sessions with no distance"></picture>
+          <figcaption>The strength page, with no distance cards.</figcaption>
+        </figure>
+        <ul class="keynotes">
+          <li><code>km, mi, yd</code><span>In miles mode a run and a ride are in miles and a swim page counts in yards, because a pool is measured in yards. <a href="../garmin-running-dashboard-obsidian/">The running guide</a> goes through it.</span></li>
+          <li><code>sessions</code><span>Days with minutes in that sport, so two runs on one day count once.</span></li>
+        </ul>
+        <h2 class="step" id="kept" data-short="The kind stays in the note"><span class="n">4</span>The kind stays in the note</h2>
+        <p>Garmy writes the kind into the note's <code>garmy</code> property next to the choices it was built with. <strong>Rebuild the dashboard in this note</strong> reads it and builds the same kind again, so a sleep page stays a sleep page and a triathlon page picks up a sport you start later.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Sleep.md (properties)</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">garmy: "1|Garmy/data|||en|||sleep"</code></pre>
+        </div>
+        <p>A note made before the library has no kind in it and rebuilds as the overview, exactly as before.</p>
+        <h2 class="step" id="keep" data-short="Keep what you like and change the rest"><span class="n">5</span>Keep what you like and change the rest</h2>
+        <p>Everything Garmy writes is ordinary Dashy blocks in an ordinary note. Edit colours and labels, delete a block, move the dashboard to your home page. Only the part between the <code>%% garmy:start %%</code> and <code>%% garmy:end %%</code> markers is replaced by a rebuild. <strong>Morning glance</strong> is the one built to live on a home page: four numbers from last night with two weeks behind each.</p>
+        <figure class="shot">
+          <picture><img src="../../img/tpl-glance-a-light.png" width="2400" height="1720" loading="lazy" alt="Morning glance: sleep, HRV, resting heart rate and Body Battery with a small trend, then the week against your usual"></picture>
+          <figcaption>Morning glance on demo data.</figcaption>
+        </figure>
+
+        <h2 id="related" data-short="Related guides">Related guides</h2>
+        <div class="cards small">
+          <a class="card" href="../garmin-running-dashboard-obsidian/">
+            <div class="thumb"><picture><img src="../../img/tpl-run-a-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">A running dashboard in Obsidian from Garmin</span><p class="card-promise">Weekly distance, sessions per week, the longest run and a monthly goal, in kilometers or miles.</p></div>
+          </a>
+          <a class="card" href="../obsidian-weekly-review-garmin/">
+            <div class="thumb"><picture><img src="../../img/tpl-week-a-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">A weekly and monthly review in Obsidian with Garmin data</span><p class="card-promise">A note named for its week counts that week against your usual, whenever you open it.</p></div>
+          </a>
+          <a class="card" href="../obsidian-triathlon-training-log/">
+            <div class="thumb"><picture><img src="../../img/dashboard-5-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">A triathlon training log in Obsidian from Garmin</span><p class="card-promise">Run, bike, swim and strength per week, a month calendar, a year map by sport and monthly goals.</p></div>
+          </a>
+        </div>
+
+        <div class="next">
+          <p>Install Garmy and Dashy, load your history and pick a dashboard in the third step.</p>
+          <div class="actions">
+            <a class="btn primary" href="../../#install"><svg><use href="#i-plug"/></svg>Install Garmy</a><a class="btn" href="../garmin-running-dashboard-obsidian/">The running guide</a>
+          </div>
+        </div>
+
+        <footer class="note-foot">
+          <span>MIT © Dmitriy Yurkin</span>
+          <a href="../../guides/">All guides</a>
+          <a href="https://github.com/Dimagious/garmidian">GitHub</a>
+          <a href="https://community.obsidian.md/plugins/garmidian">Plugin listing</a>
+          <a href="https://github.com/Dimagious/garmidian/issues">Something wrong on this page?</a>
+          <span class="legal">Garmy is not affiliated with Garmin. Data source: Garmin.</span>
+        </footer>
+      </article>
+    </main>
+<!--shell:bottom-->
+</body>
+</html>

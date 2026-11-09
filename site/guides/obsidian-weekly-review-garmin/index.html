@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A weekly and monthly review in Obsidian with Garmin data · Garmy</title>
+<meta name="description" content="A note named for its week counts that week against your usual level, whenever you open it. Weekly and monthly reviews from Garmin data with period: note.">
+<link rel="canonical" href="https://dimagious.github.io/garmidian/guides/obsidian-weekly-review-garmin/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='7' fill='%232bb5a3'/%3E%3Cpolyline points='5.5,17 10.5,17 13,11 16.5,22.5 19.5,14 21.5,17 26.5,17' fill='none' stroke='%2305211d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='7' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3Crect x='12.5' y='24.5' width='7' height='2' rx='1' fill='%2305211d' fill-opacity='.8'/%3E%3Crect x='21' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Garmy">
+<meta property="og:url" content="https://dimagious.github.io/garmidian/guides/obsidian-weekly-review-garmin/">
+<meta property="og:title" content="A weekly and monthly review in Obsidian with Garmin data">
+<meta property="og:description" content="A note named for its week counts that week against your usual level, whenever you open it. Weekly and monthly reviews from Garmin data with period: note.">
+<meta property="og:image" content="https://dimagious.github.io/garmidian/img/tpl-week-a-light.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1720">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A weekly and monthly review in Obsidian with Garmin data">
+<meta name="twitter:description" content="A note named for its week counts that week against your usual level, whenever you open it. Weekly and monthly reviews from Garmin data with period: note.">
+<meta name="twitter:image" content="https://dimagious.github.io/garmidian/img/tpl-week-a-light.png">
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/guides.css">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "A weekly and monthly review in Obsidian with Garmin data", "step": [{"@type": "HowToStep", "name": "Name the note for the week", "text": "A note named 2026-W46 is that week; period: note counts it."}, {"@type": "HowToStep", "name": "Week against your usual", "text": "Stats with period: note and compare: usual."}, {"@type": "HowToStep", "name": "Streak outside the week", "text": "A current_streak block without a period."}, {"@type": "HowToStep", "name": "Charts for that week", "text": "dashy-chart and heatmap with range: note."}, {"@type": "HowToStep", "name": "The monthly review", "text": "The same blocks in a note named 2026-11."}]}
+</script>
+</head>
+<body>
+<!--shell:top tab="Weekly review"-->
+
+    <main class="note guide" id="note">
+      <article class="file" style="padding-top:34px">
+        <div class="crumb">Guides/obsidian-weekly-review-garmin.md</div>
+        <h1 class="inline-title">A weekly and monthly review in Obsidian with Garmin data</h1>
+
+        <div class="props" aria-label="Properties">
+          <div class="props-title"><svg><use href="#i-list"/></svg>Properties</div>
+          <div class="prop"><div class="k"><svg><use href="#i-tag"/></svg>blocks</div><div class="v"><span class="pill">stats</span><span class="pill">dashy-chart</span><span class="pill">heatmap</span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-text"/></svg>fields</div><div class="v"><code>sleep_score</code> <code>hrv</code> <code>resting_hr</code> <code>steps</code> <code>run_min</code></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs Dashy</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs a Garmin key</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-hash"/></svg>checked on</div><div class="v">Garmy {{version}}</div></div>
+        </div>
+
+        <p class="lede">One dashboard that counts its own week. Put it in a note named for the week and it shows that week against your usual level, whether you open it on Sunday evening or a month later. The same works for a month.</p>
+
+
+        <nav class="toc" aria-label="On this page">
+          <b>ON THIS PAGE</b>
+          <ol>
+            <li><a href="#name">Name the note for the week</a></li>
+            <li><a href="#usual">The week against your usual</a></li>
+            <li><a href="#streak">Keep the streak outside the week</a></li>
+            <li><a href="#charts">Charts and a calendar for that week</a></li>
+            <li><a href="#month">The monthly review</a></li>
+            <li><a href="#related">Related guides</a></li>
+          </ol>
+        </nav>
+
+        <h2 class="step" id="name" data-short="Name the note for the week"><span class="n">1</span>Name the note for the week</h2>
+        <p>Dashy reads the dates a block counts from the name of the note it sits in. A note named <code>2026-W46</code> is that ISO week, a note named <code>2026-11</code> is that month. With <code>period: note</code> the same block is right in every week's note, however late you open it.</p>
+        <p>Pick <strong>Weekly review</strong> in the wizard and Garmy creates the note under that name, for the current week. If you already keep weekly notes with Periodic Notes, open one and use <strong>Insert into the current note</strong> instead. Dashy also reads the week format set in Periodic Notes.</p>
+        <p class="muted" style="font-size:14.5px">If a note with the name already exists, Garmy says so and does not create <code>2026-W46 2</code>, because that name would not be a week.</p>
+        <h2 class="step" id="usual" data-short="The week against your usual"><span class="n">2</span>The week against your usual</h2>
+        <p>Recovery cards average sleep score, HRV, resting heart rate and Body Battery over the week and compare each with your usual level, the average of every earlier day. Training cards sum distance per sport and compare with the week before.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>2026-W46.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 4
+source: Garmy/data
+period: note
+items:
+  - { label: Sleep, field: sleep_score, agg: avg, precision: 0, icon: 💤, compare: usual, better: up }
+  - { label: HRV, field: hrv, agg: avg, precision: 0, unit: " ms", icon: 💓, compare: usual, better: up }
+  - { label: Resting HR, field: resting_hr, agg: avg, precision: 0, unit: " bpm", icon: ❤️, compare: usual, better: down }
+  - { label: Body Battery, field: body_battery, agg: avg, precision: 0, icon: ⚡, compare: usual, better: up }
+```</code></pre>
+        </div>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>2026-W46.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 4
+source: Garmy/data
+period: note
+items:
+  - { label: Run, field: run_km, agg: sum, precision: 1, unit: " km", icon: 🏃, compare: true, better: up }
+  - { label: Bike, field: bike_km, agg: sum, precision: 0, unit: " km", icon: 🚴, compare: true, better: up }
+  - { label: Swim, field: swim_km, agg: sum, precision: 1, unit: " km", icon: 🏊, compare: true, better: up }
+  - { label: Strength, field: strength_min, agg: sum, precision: 0, icon: 🏋️, compare: true, better: up }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>period: note</code><span>The week the note's name stands for, written once on the block.</span></li>
+          <li><code>compare: usual</code><span>Needs <code>agg: avg</code>. The usual level never includes the week it is compared with.</span></li>
+          <li><code>better: down</code><span>Resting heart rate and stress colour a fall green.</span></li>
+        </ul>
+        <figure class="shot">
+          <picture><img src="../../img/tpl-week-a-light.png" width="2400" height="1720" alt="A weekly review: recovery cards with changes against the usual level and training cards per sport"></picture>
+          <figcaption>The weekly review on demo data.</figcaption>
+        </figure>
+        <h2 class="step" id="streak" data-short="Keep the streak outside the week"><span class="n">3</span>Keep the streak outside the week</h2>
+        <p>A streak counts back from today, so it cannot live in a block that looks at one week. Garmy puts the 10,000 step streak in a block of its own with no period.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>2026-W46.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 2
+source: Garmy/data
+period: note
+items:
+  - { label: Steps per day, field: steps, agg: avg, precision: 0, icon: 🚶, compare: true, better: up }
+  - { label: Steps, field: steps, agg: sum, icon: 👣 }
+```</code></pre>
+        </div>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>2026-W46.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 2
+source: Garmy/data
+items:
+  - { label: "10,000 streak", field: steps, agg: current_streak, at_least: 10000, unit: " d", icon: 🔥 }
+```</code></pre>
+        </div>
+        <h2 class="step" id="charts" data-short="Charts and a calendar for that week"><span class="n">4</span>Charts and a calendar for that week</h2>
+        <p>Charts take <code>range: note</code> and draw the seven days of the week. The calendar view puts a dot per sport under each day.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>2026-W46.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```dashy-chart
+source: Garmy/data
+field: steps
+type: bar
+range: note
+goal: 10000
+label: Steps
+title: Steps per day
+```</code></pre>
+        </div>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>2026-W46.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```heatmap
+source: Garmy/data
+range: note
+layout: calendar
+pick: max
+title: Month by day
+layers:
+  - { field: run_min, color: green, label: Run }
+  - { field: bike_min, color: blue, label: Bike }
+  - { field: swim_min, color: cyan, label: Swim }
+  - { field: strength_min, color: orange, label: Strength }
+```</code></pre>
+        </div>
+        <figure class="shot">
+          <picture><img src="../../img/tpl-week-b-light.png" width="2400" height="1720" loading="lazy" alt="Daily steps for the week as bars with a goal line, a recovery chart and a week calendar with a dot per sport"></picture>
+          <figcaption>Charts for the week.</figcaption>
+        </figure>
+        <h2 class="step" id="month" data-short="The monthly review"><span class="n">5</span>The monthly review</h2>
+        <p>The same idea over a month, in a note named <code>2026-11</code>. It has four recovery and movement cards, the training cards, a month calendar and two charts.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>2026-11.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 4
+source: Garmy/data
+period: note
+items:
+  - { label: Sleep, field: sleep_score, agg: avg, precision: 0, icon: 💤, compare: usual, better: up }
+  - { label: HRV, field: hrv, agg: avg, precision: 0, unit: " ms", icon: 💓, compare: usual, better: up }
+  - { label: Resting HR, field: resting_hr, agg: avg, precision: 0, unit: " bpm", icon: ❤️, compare: usual, better: down }
+  - { label: Stress, field: stress, agg: avg, precision: 0, icon: 😰, compare: usual, better: down }
+```</code></pre>
+        </div>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>2026-11.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```heatmap
+source: Garmy/data
+range: note
+layout: calendar
+pick: max
+title: Month by day
+layers:
+  - { field: run_min, color: green, label: Run }
+  - { field: bike_min, color: blue, label: Bike }
+  - { field: swim_min, color: cyan, label: Swim }
+  - { field: strength_min, color: orange, label: Strength }
+```</code></pre>
+        </div>
+        <figure class="shot">
+          <picture><img src="../../img/tpl-month-a-light.png" width="2400" height="1720" loading="lazy" alt="A monthly review with recovery cards, training cards and a calendar"></picture>
+          <figcaption>The monthly review on demo data.</figcaption>
+        </figure>
+
+        <h2 id="related" data-short="Related guides">Related guides</h2>
+        <div class="cards small">
+          <a class="card" href="../garmin-dashboard-templates-obsidian/">
+            <div class="thumb"><picture><img src="../../img/wizard-library-light.png" width="1632" height="1952" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Eleven Garmin dashboards for Obsidian</span><p class="card-promise">Sleep, HRV, steps, one page per sport, triathlon, race build, weekly and monthly reviews: what each shows and what it needs.</p></div>
+          </a>
+          <a class="card" href="../garmin-running-dashboard-obsidian/">
+            <div class="thumb"><picture><img src="../../img/tpl-run-a-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">A running dashboard in Obsidian from Garmin</span><p class="card-promise">Weekly distance, sessions per week, the longest run and a monthly goal, in kilometers or miles.</p></div>
+          </a>
+          <a class="card" href="../garmin-sleep-hrv-dashboard/">
+            <div class="thumb"><picture><img src="../../img/dashboard-2-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Garmin sleep and HRV dashboard in Obsidian</span><p class="card-promise">Sleep score, sleep duration, HRV, resting heart rate and Body Battery as cards and charts in one note.</p></div>
+          </a>
+        </div>
+
+        <div class="next">
+          <p>Install Garmy and Dashy, load your history and pick Weekly review or Monthly review.</p>
+          <div class="actions">
+            <a class="btn primary" href="../../#install"><svg><use href="#i-plug"/></svg>Install Garmy</a><a class="btn" href="../garmin-dashboard-templates-obsidian/">All the dashboards</a>
+          </div>
+        </div>
+
+        <footer class="note-foot">
+          <span>MIT © Dmitriy Yurkin</span>
+          <a href="../../guides/">All guides</a>
+          <a href="https://github.com/Dimagious/garmidian">GitHub</a>
+          <a href="https://community.obsidian.md/plugins/garmidian">Plugin listing</a>
+          <a href="https://github.com/Dimagious/garmidian/issues">Something wrong on this page?</a>
+          <span class="legal">Garmy is not affiliated with Garmin. Data source: Garmin.</span>
+        </footer>
+      </article>
+    </main>
+<!--shell:bottom-->
+</body>
+</html>

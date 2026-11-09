@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A race countdown and build-up in Obsidian from Garmin · Garmy</title>
+<meta name="description" content="Days to the start, four weeks of training against the four before, eight weeks of bars and how HRV and resting heart rate hold up. One date or a folder of races.">
+<link rel="canonical" href="https://dimagious.github.io/garmidian/guides/garmin-race-countdown-obsidian/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='7' fill='%232bb5a3'/%3E%3Cpolyline points='5.5,17 10.5,17 13,11 16.5,22.5 19.5,14 21.5,17 26.5,17' fill='none' stroke='%2305211d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='7' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3Crect x='12.5' y='24.5' width='7' height='2' rx='1' fill='%2305211d' fill-opacity='.8'/%3E%3Crect x='21' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Garmy">
+<meta property="og:url" content="https://dimagious.github.io/garmidian/guides/garmin-race-countdown-obsidian/">
+<meta property="og:title" content="A race countdown and build-up in Obsidian from Garmin">
+<meta property="og:description" content="Days to the start, four weeks of training against the four before, eight weeks of bars and how HRV and resting heart rate hold up. One date or a folder of races.">
+<meta property="og:image" content="https://dimagious.github.io/garmidian/img/tpl-race-a-light.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1720">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A race countdown and build-up in Obsidian from Garmin">
+<meta name="twitter:description" content="Days to the start, four weeks of training against the four before, eight weeks of bars and how HRV and resting heart rate hold up. One date or a folder of races.">
+<meta name="twitter:image" content="https://dimagious.github.io/garmidian/img/tpl-race-a-light.png">
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/guides.css">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "A race countdown and build-up in Obsidian from Garmin", "step": [{"@type": "HowToStep", "name": "A date or a folder", "text": "Give Garmy one date or a folder of race notes with a date property."}, {"@type": "HowToStep", "name": "Four weeks against four", "text": "A stats block with period: 28d and compare: true."}, {"@type": "HowToStep", "name": "Eight weeks of bars", "text": "A dashy-chart with bucket: week."}, {"@type": "HowToStep", "name": "How the body takes it", "text": "Recovery cards against your usual, and an HRV and resting heart rate chart."}, {"@type": "HowToStep", "name": "After the race", "text": "The countdown counts up; change the date and rebuild."}]}
+</script>
+</head>
+<body>
+<!--shell:top tab="Race countdown"-->
+
+    <main class="note guide" id="note">
+      <article class="file" style="padding-top:34px">
+        <div class="crumb">Guides/garmin-race-countdown-obsidian.md</div>
+        <h1 class="inline-title">A race countdown and build-up in Obsidian from Garmin</h1>
+
+        <div class="props" aria-label="Properties">
+          <div class="props-title"><svg><use href="#i-list"/></svg>Properties</div>
+          <div class="prop"><div class="k"><svg><use href="#i-tag"/></svg>blocks</div><div class="v"><span class="pill">countdown</span><span class="pill">stats</span><span class="pill">dashy-chart</span><span class="pill">heatmap</span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-text"/></svg>fields</div><div class="v"><code>date</code> <code>run_min</code> <code>bike_min</code> <code>swim_min</code> <code>hrv</code> <code>resting_hr</code></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs Dashy</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs a Garmin key</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-hash"/></svg>checked on</div><div class="v">Garmy {{version}}</div></div>
+        </div>
+
+        <p class="lede">Days to the start, what the last four weeks added up to against the four before, and how your recovery signals are holding. The Race build dashboard needs one date or one folder of race notes and writes the rest from your Garmin data.</p>
+
+
+        <nav class="toc" aria-label="On this page">
+          <b>ON THIS PAGE</b>
+          <ol>
+            <li><a href="#countdown">Give Garmy a date, or a folder of races</a></li>
+            <li><a href="#weeks">Four weeks against the four before</a></li>
+            <li><a href="#bars">Eight weeks of bars</a></li>
+            <li><a href="#body">How the body takes it</a></li>
+            <li><a href="#after">After the race</a></li>
+            <li><a href="#related">Related guides</a></li>
+          </ol>
+        </nav>
+
+        <h2 class="step" id="countdown" data-short="Give Garmy a date, or a folder of races"><span class="n">1</span>Give Garmy a date, or a folder of races</h2>
+        <p>The wizard has a field under <strong>Options</strong>: <em>Race date or races folder</em>. The <strong>Race build</strong> card is greyed out until it holds something. A single date is the quickest:</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Race build.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```countdown
+columns: 2
+items:
+  - { label: Next race, date: 2026-12-06, icon: 🏁 }
+```</code></pre>
+        </div>
+        <p>If you keep one note per race, with a <code>date</code> property each, give Garmy the folder instead. The countdown then points at the next race still ahead and shows that note's name.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Races/Berlin Marathon.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">---
+date: 2026-12-06
+---</code></pre>
+        </div>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Race build.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```countdown
+columns: 2
+items:
+  - { label: Next race, field: date, source: Races, pick: next, icon: 🏁 }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>date</code><span>One day, written as YYYY-MM-DD.</span></li>
+          <li><code>pick: next</code><span>Reads every note in the folder and counts to the soonest date from today on. A race that has passed is skipped.</span></li>
+        </ul>
+        <figure class="shot">
+          <picture><img src="../../img/tpl-race-a-light.png" width="2400" height="1720" alt="A race build dashboard: a countdown of 42 days, four weeks against the four before per sport and weekly bars"></picture>
+          <figcaption>The race build on demo data. The race is a date six weeks away.</figcaption>
+        </figure>
+        <h2 class="step" id="weeks" data-short="Four weeks against the four before"><span class="n">2</span>Four weeks against the four before</h2>
+        <p>One card per sport, in minutes, over the last 28 days. Each is compared with the 28 days before, so a build that has gone quiet shows up in red.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Race build.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 4
+source: Garmy/data
+period: 28d
+items:
+  - { label: Run, field: run_min, agg: sum, unit: " min", icon: 🏃, compare: true, better: up }
+  - { label: Bike, field: bike_min, agg: sum, unit: " min", icon: 🚴, compare: true, better: up }
+  - { label: Swim, field: swim_min, agg: sum, unit: " min", icon: 🏊, compare: true, better: up }
+  - { label: Strength, field: strength_min, agg: sum, unit: " min", icon: 🏋️, compare: true, better: up }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>period: 28d</code><span>A rolling window ending today.</span></li>
+          <li><code>compare: true</code><span>The change against the same stretch of the previous period.</span></li>
+          <li><code>unit: min</code><span>Minutes, not distance, so a swim and a ride sit on one scale.</span></li>
+        </ul>
+        <h2 class="step" id="bars" data-short="Eight weeks of bars"><span class="n">3</span>Eight weeks of bars</h2>
+        <p>The same minutes as weekly bars per sport, for the last eight weeks.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Race build.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```dashy-chart
+source: Garmy/data
+type: bar
+bucket: week
+range: 56d
+agg: sum
+title: "Last 8 weeks, minutes"
+series:
+  - { field: run_min, label: Run, color: green }
+  - { field: bike_min, label: Bike, color: blue }
+  - { field: swim_min, label: Swim, color: cyan }
+  - { field: strength_min, label: Strength, color: orange }
+```</code></pre>
+        </div>
+        <figure class="shot">
+          <picture><img src="../../img/tpl-race-b-light.png" width="2400" height="1720" loading="lazy" alt="Weekly training minutes per sport, a recovery row and a month calendar"></picture>
+          <figcaption>Weekly bars, recovery and the month calendar.</figcaption>
+        </figure>
+        <h2 class="step" id="body" data-short="How the body takes it"><span class="n">4</span>How the body takes it</h2>
+        <p>Sleep score, HRV, resting heart rate and Body Battery over the last 7 days, each against your usual level, then HRV with resting heart rate over the last 30 days. A rising resting heart rate with a falling HRV during a heavy block is what you are looking for.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Race build.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 4
+source: Garmy/data
+period: 7d
+items:
+  - { label: HRV, field: hrv, agg: avg, precision: 0, unit: " ms", icon: 💓, compare: usual, better: up }
+  - { label: Resting HR, field: resting_hr, agg: avg, precision: 0, unit: " bpm", icon: ❤️, compare: usual, better: down }
+  - { label: Sleep, field: sleep_score, agg: avg, precision: 0, icon: 💤, compare: usual, better: up }
+  - { label: Body Battery, field: body_battery, agg: avg, precision: 0, icon: ⚡, compare: usual, better: up }
+```</code></pre>
+        </div>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Race build.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```dashy-chart
+source: Garmy/data
+range: 30d
+agg: avg
+title: HRV / Resting HR
+series:
+  - { field: hrv, label: HRV, color: green }
+  - { field: resting_hr, label: Resting HR, color: red }
+```</code></pre>
+        </div>
+        <p class="muted" style="font-size:14.5px">This is a picture of your own numbers. It does not tell you what to do about them.</p>
+        <h2 class="step" id="after" data-short="After the race"><span class="n">5</span>After the race</h2>
+        <p>The countdown counts up after the date, so the card still says how long ago the race was. Change the date in the options and rebuild the dashboard for the next one. The kind is stored in the note, so <strong>Rebuild the dashboard in this note</strong> keeps it a race build.</p>
+
+        <h2 id="related" data-short="Related guides">Related guides</h2>
+        <div class="cards small">
+          <a class="card" href="../obsidian-triathlon-training-log/">
+            <div class="thumb"><picture><img src="../../img/dashboard-5-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">A triathlon training log in Obsidian from Garmin</span><p class="card-promise">Run, bike, swim and strength per week, a month calendar, a year map by sport and monthly goals.</p></div>
+          </a>
+          <a class="card" href="../garmin-dashboard-templates-obsidian/">
+            <div class="thumb"><picture><img src="../../img/wizard-library-light.png" width="1632" height="1952" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Eleven Garmin dashboards for Obsidian</span><p class="card-promise">Sleep, HRV, steps, one page per sport, triathlon, race build, weekly and monthly reviews: what each shows and what it needs.</p></div>
+          </a>
+          <a class="card" href="../garmin-sleep-hrv-dashboard/">
+            <div class="thumb"><picture><img src="../../img/dashboard-2-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Garmin sleep and HRV dashboard in Obsidian</span><p class="card-promise">Sleep score, sleep duration, HRV, resting heart rate and Body Battery as cards and charts in one note.</p></div>
+          </a>
+        </div>
+
+        <div class="next">
+          <p>Install Garmy and Dashy, load your history and pick Race build in the third step.</p>
+          <div class="actions">
+            <a class="btn primary" href="../../#install"><svg><use href="#i-plug"/></svg>Install Garmy</a><a class="btn" href="../obsidian-triathlon-training-log/">The training log guide</a>
+          </div>
+        </div>
+
+        <footer class="note-foot">
+          <span>MIT © Dmitriy Yurkin</span>
+          <a href="../../guides/">All guides</a>
+          <a href="https://github.com/Dimagious/garmidian">GitHub</a>
+          <a href="https://community.obsidian.md/plugins/garmidian">Plugin listing</a>
+          <a href="https://github.com/Dimagious/garmidian/issues">Something wrong on this page?</a>
+          <span class="legal">Garmy is not affiliated with Garmin. Data source: Garmin.</span>
+        </footer>
+      </article>
+    </main>
+<!--shell:bottom-->
+</body>
+</html>

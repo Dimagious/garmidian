@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A running dashboard in Obsidian from Garmin · Garmy</title>
+<meta name="description" content="Weekly distance, sessions per week, the longest run, a monthly goal and a year map from run_km and run_min, in kilometers or miles.">
+<link rel="canonical" href="https://dimagious.github.io/garmidian/guides/garmin-running-dashboard-obsidian/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='7' fill='%232bb5a3'/%3E%3Cpolyline points='5.5,17 10.5,17 13,11 16.5,22.5 19.5,14 21.5,17 26.5,17' fill='none' stroke='%2305211d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='7' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3Crect x='12.5' y='24.5' width='7' height='2' rx='1' fill='%2305211d' fill-opacity='.8'/%3E%3Crect x='21' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Garmy">
+<meta property="og:url" content="https://dimagious.github.io/garmidian/guides/garmin-running-dashboard-obsidian/">
+<meta property="og:title" content="A running dashboard in Obsidian from Garmin">
+<meta property="og:description" content="Weekly distance, sessions per week, the longest run, a monthly goal and a year map from run_km and run_min, in kilometers or miles.">
+<meta property="og:image" content="https://dimagious.github.io/garmidian/img/tpl-run-a-light.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1720">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A running dashboard in Obsidian from Garmin">
+<meta name="twitter:description" content="Weekly distance, sessions per week, the longest run, a monthly goal and a year map from run_km and run_min, in kilometers or miles.">
+<meta name="twitter:image" content="https://dimagious.github.io/garmidian/img/tpl-run-a-light.png">
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/guides.css">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "A running dashboard in Obsidian from Garmin", "step": [{"@type": "HowToStep", "name": "Distance and minutes", "text": "Garmy writes run_km and run_min into one note per day."}, {"@type": "HowToStep", "name": "This week and this month", "text": "A stats block with sum, count and max, compared with the previous period."}, {"@type": "HowToStep", "name": "Weekly distance and sessions", "text": "A dashy-chart with bucket: week, and a count chart with where: run_min > 0."}, {"@type": "HowToStep", "name": "A monthly goal and recovery", "text": "A progress block with a goal from your last 28 days, and an HRV and resting heart rate chart."}, {"@type": "HowToStep", "name": "Miles", "text": "Switch Distance units; run_mi replaces run_km and a rebuild redraws the page."}]}
+</script>
+</head>
+<body>
+<!--shell:top tab="Running dashboard"-->
+
+    <main class="note guide" id="note">
+      <article class="file" style="padding-top:34px">
+        <div class="crumb">Guides/garmin-running-dashboard-obsidian.md</div>
+        <h1 class="inline-title">A running dashboard in Obsidian from Garmin</h1>
+
+        <div class="props" aria-label="Properties">
+          <div class="props-title"><svg><use href="#i-list"/></svg>Properties</div>
+          <div class="prop"><div class="k"><svg><use href="#i-tag"/></svg>blocks</div><div class="v"><span class="pill">stats</span><span class="pill">dashy-chart</span><span class="pill">progress</span><span class="pill">heatmap</span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-text"/></svg>fields</div><div class="v"><code>run_km</code> <code>run_mi</code> <code>run_min</code></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs Dashy</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs a Garmin key</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-hash"/></svg>checked on</div><div class="v">Garmy {{version}}</div></div>
+        </div>
+
+        <p class="lede">Weekly distance, sessions per week, the longest run, a monthly goal and what your recovery says, all from the distance and minutes Garmy writes into your daily notes. Pick <strong>Run</strong> in the wizard and Garmy writes the blocks. This page explains each one so you can change it.</p>
+
+
+        <nav class="toc" aria-label="On this page">
+          <b>ON THIS PAGE</b>
+          <ol>
+            <li><a href="#data">Distance and minutes, one number per day</a></li>
+            <li><a href="#week">This week and this month</a></li>
+            <li><a href="#weeks">Weekly distance and sessions</a></li>
+            <li><a href="#goal">A monthly goal and what recovery says</a></li>
+            <li><a href="#miles">Miles instead of kilometers</a></li>
+            <li><a href="#related">Related guides</a></li>
+          </ol>
+        </nav>
+
+        <h2 class="step" id="data" data-short="Distance and minutes, one number per day"><span class="n">1</span>Distance and minutes, one number per day</h2>
+        <p>Garmy sums every run of a day into <code>run_km</code> and <code>run_min</code>. Trail, treadmill, track and virtual runs count as runs. A day without a run has no property.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmy/data/2026-11-04.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">---
+run_km: 8.2
+run_min: 45
+---</code></pre>
+        </div>
+        <p class="muted" style="font-size:14.5px">Example values. In miles mode the distance is <code>run_mi</code> instead (step 5).</p>
+        <h2 class="step" id="week" data-short="This week and this month"><span class="n">2</span>This week and this month</h2>
+        <p>Run <strong>Garmy: Build a Garmin dashboard</strong> and pick <strong>Run</strong> in the third step. The first block is four cards for the last 7 days, each compared with the 7 days before once you have 14 days of data.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Run.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 4
+source: Garmy/data
+items:
+  - { label: Distance, field: run_km, agg: sum, period: 7d, precision: 1, unit: " km", icon: 🏃, sub: 7 days, compare: true, better: up }
+  - { label: Time, field: run_min, agg: sum, period: 7d, unit: " min", icon: ⏱, sub: 7 days, compare: true, better: up }
+  - { label: Sessions, agg: count, where: "run_min &gt; 0", period: 7d, icon: 📅, sub: 7 days, compare: true, better: up }
+  - { label: Longest, field: run_km, agg: max, period: 90d, precision: 1, unit: " km", icon: 🏆, sub: 90 d }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>agg: count</code><span>Sessions: the days with minutes. <code>where: "run_min > 0"</code> keeps only those days, so a rest day is not a session.</span></li>
+          <li><code>agg: max</code><span>The longest run in the last 90 days, from the distance field.</span></li>
+          <li><code>compare: true</code><span>Shows the change against the same stretch of the previous period, to date.</span></li>
+        </ul>
+        <figure class="shot">
+          <picture><img src="../../img/tpl-run-a-light.png" width="2400" height="1720" alt="Run cards for the last 7 days with distance, time, sessions and the longest run, then this month and a monthly goal"></picture>
+          <figcaption>The run page on demo data.</figcaption>
+        </figure>
+        <p>Under it comes a second row for the calendar month: distance, sessions and the days you have run in a row.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Run.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 3
+source: Garmy/data
+items:
+  - { label: Distance, field: run_km, agg: sum, period: month, precision: 1, unit: " km", icon: 🏃, compare: true, better: up }
+  - { label: Sessions, agg: count, where: "run_min &gt; 0", period: month, icon: 📅 }
+  - { label: Days in a row, field: run_min, agg: current_streak, at_least: 1, unit: " d", icon: 🔥 }
+```</code></pre>
+        </div>
+        <h2 class="step" id="weeks" data-short="Weekly distance and sessions"><span class="n">3</span>Weekly distance and sessions</h2>
+        <p>With 28 days of data the charts group by week. The distance bars carry a dashed goal line taken from your own last four weeks, plus a tenth.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Run.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```dashy-chart
+source: Garmy/data
+field: run_km
+type: bar
+bucket: week
+range: 119d
+agg: sum
+color: green
+label: Weekly distance
+unit: km
+precision: 1
+goal: 20
+title: Weekly distance
+```</code></pre>
+        </div>
+        <p>Sessions per week is a chart that counts days instead of adding numbers:</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Run.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```dashy-chart
+source: Garmy/data
+where: "run_min &gt; 0"
+type: bar
+bucket: week
+range: 119d
+agg: count
+color: green
+label: Sessions
+title: Sessions per week
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>agg: count</code><span>Needs no <code>field</code>: it counts the days left after <code>where</code>.</span></li>
+          <li><code>bucket: week</code><span>One bar per week. The last bar is still running and is drawn lighter.</span></li>
+        </ul>
+        <figure class="shot">
+          <picture><img src="../../img/tpl-run-b-light.png" width="2400" height="1720" loading="lazy" alt="Weekly run distance as bars with a goal line, sessions per week, a month calendar and a year map"></picture>
+          <figcaption>Weekly distance, sessions and the calendar.</figcaption>
+        </figure>
+        <h2 class="step" id="goal" data-short="A monthly goal and what recovery says"><span class="n">4</span>A monthly goal and what recovery says</h2>
+        <p>The goal is your last 28 days plus a tenth, rounded up to a number a person would pick: 110 km becomes 120, not 200.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Run.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```progress
+source: Garmy/data
+period: month
+items:
+  - { label: Run, field: run_km, agg: sum, goal: 80, unit: " km", icon: 🏃 }
+```</code></pre>
+        </div>
+        <p>The page ends with HRV and resting heart rate over the same stretch, because a hard week usually shows there first.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Run.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```dashy-chart
+source: Garmy/data
+range: 90d
+agg: avg
+title: HRV / Resting HR
+series:
+  - { field: hrv, label: HRV, color: green }
+  - { field: resting_hr, label: Resting HR, color: red }
+```</code></pre>
+        </div>
+        <h2 class="step" id="miles" data-short="Miles instead of kilometers"><span class="n">5</span>Miles instead of kilometers</h2>
+        <p>Open Garmy in settings and set <strong>Distance units</strong> to miles, or switch it in the wizard under Options. Garmy fills <code>run_mi</code>, <code>bike_mi</code> and <code>swim_yd</code> into the notes you already have, with no request to Garmin, and keeps the kilometer properties, so you can switch back. Rebuild the dashboard and the same page is drawn in miles.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard - Run.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 4
+source: Garmy/data
+items:
+  - { label: Distance, field: run_mi, agg: sum, period: 7d, precision: 1, unit: " mi", icon: 🏃, sub: 7 days, compare: true, better: up }
+  - { label: Time, field: run_min, agg: sum, period: 7d, unit: " min", icon: ⏱, sub: 7 days, compare: true, better: up }
+  - { label: Sessions, agg: count, where: "run_min &gt; 0", period: 7d, icon: 📅, sub: 7 days, compare: true, better: up }
+  - { label: Longest, field: run_mi, agg: max, period: 90d, precision: 1, unit: " mi", icon: 🏆, sub: 90 d }
+```</code></pre>
+        </div>
+        <p>A fresh install on an en-US machine starts in miles. An update keeps kilometers.</p>
+        <figure class="shot">
+          <picture><img src="../../img/tpl-run-miles-a-light.png" width="2400" height="1720" loading="lazy" alt="The run page in miles"></picture>
+          <figcaption>The same page in miles.</figcaption>
+        </figure>
+
+        <h2 id="related" data-short="Related guides">Related guides</h2>
+        <div class="cards small">
+          <a class="card" href="../garmin-dashboard-templates-obsidian/">
+            <div class="thumb"><picture><img src="../../img/wizard-library-light.png" width="1632" height="1952" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Eleven Garmin dashboards for Obsidian</span><p class="card-promise">Sleep, HRV, steps, one page per sport, triathlon, race build, weekly and monthly reviews: what each shows and what it needs.</p></div>
+          </a>
+          <a class="card" href="../obsidian-triathlon-training-log/">
+            <div class="thumb"><picture><img src="../../img/dashboard-5-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">A triathlon training log in Obsidian from Garmin</span><p class="card-promise">Run, bike, swim and strength per week, a month calendar, a year map by sport and monthly goals.</p></div>
+          </a>
+          <a class="card" href="../obsidian-weekly-review-garmin/">
+            <div class="thumb"><picture><img src="../../img/tpl-week-a-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">A weekly and monthly review in Obsidian with Garmin data</span><p class="card-promise">A note named for its week counts that week against your usual, whenever you open it.</p></div>
+          </a>
+        </div>
+
+        <div class="next">
+          <p>Install Garmy and Dashy, load your history and pick Run in the third step.</p>
+          <div class="actions">
+            <a class="btn primary" href="../../#install"><svg><use href="#i-plug"/></svg>Install Garmy</a><a class="btn" href="../garmin-dashboard-templates-obsidian/">All the dashboards</a>
+          </div>
+        </div>
+
+        <footer class="note-foot">
+          <span>MIT © Dmitriy Yurkin</span>
+          <a href="../../guides/">All guides</a>
+          <a href="https://github.com/Dimagious/garmidian">GitHub</a>
+          <a href="https://community.obsidian.md/plugins/garmidian">Plugin listing</a>
+          <a href="https://github.com/Dimagious/garmidian/issues">Something wrong on this page?</a>
+          <span class="legal">Garmy is not affiliated with Garmin. Data source: Garmin.</span>
+        </footer>
+      </article>
+    </main>
+<!--shell:bottom-->
+</body>
+</html>

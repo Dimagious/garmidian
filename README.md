@@ -55,6 +55,8 @@ Sleep, HRV, resting heart rate, Body Battery, steps, runs, rides, swims and stre
 
 The third step of the wizard is a library. Cards the data cannot fill yet are greyed out and say what they wait for, so the list is yours: lifting has no distance, a swim page counts in yards in miles mode, and a sport you never do is not offered.
 
+<img alt="The wizard choice step: the cards Everything, Sleep, Run, Triathlon, Race build and Weekly review are selected one after another" src="https://raw.githubusercontent.com/Dimagious/garmidian/HEAD/docs/screens/film-library.gif" width="70%">
+
 | Dashboard | What it shows | Needs |
 |---|---|---|
 | Everything | Recovery, movement and training in one dashboard | any data |
@@ -69,7 +71,7 @@ The third step of the wizard is a library. Cards the data cannot fill yet are gr
 | Monthly review | For a monthly note: that month day by day | any data |
 | Year so far | Totals, the longest effort per sport, months side by side, a year map | 60 days |
 
-The kind is stored in the note, so **Rebuild the dashboard in this note** builds the same kind again. A weekly or monthly review is named for its period (`2026-W45`, `2026-11`) because that name is how Dashy knows which days it counts; if you already keep weekly notes, use **Insert into the current note** inside one.
+The kind is stored in the note, so **Rebuild the dashboard in this note** builds the same kind again. A weekly or monthly review is named for its period (`2026-W45`, `2026-11`) because that name is how Dashy knows which days it counts; if you already keep weekly notes, use **Insert into the current note** inside one. The [guides](https://dimagious.github.io/garmidian/guides/) go through each: [the library](https://dimagious.github.io/garmidian/guides/garmin-dashboard-templates-obsidian/), [running](https://dimagious.github.io/garmidian/guides/garmin-running-dashboard-obsidian/), [weekly review](https://dimagious.github.io/garmidian/guides/obsidian-weekly-review-garmin/), [race build](https://dimagious.github.io/garmidian/guides/garmin-race-countdown-obsidian/) and [steps](https://dimagious.github.io/garmidian/guides/garmin-steps-streak-obsidian/).
 
 ## Seven languages
 

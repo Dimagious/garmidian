@@ -38,6 +38,19 @@ Step-by-step pages, one question each, with the YAML Garmy writes:
 - A weekly training heatmap in Obsidian (year by sport, month calendar, weekly
   bars from run_min, bike_min, swim_min and strength_min):
   https://dimagious.github.io/garmidian/guides/weekly-training-heatmap-obsidian/
+- Eleven Garmin dashboards for Obsidian (the wizard's library: glance, sleep,
+  recovery, steps, one page per sport, triathlon, race build, weekly and
+  monthly review, year):
+  https://dimagious.github.io/garmidian/guides/garmin-dashboard-templates-obsidian/
+- A running dashboard in Obsidian from Garmin (weekly distance, sessions,
+  monthly goal, miles):
+  https://dimagious.github.io/garmidian/guides/garmin-running-dashboard-obsidian/
+- A weekly and monthly review in Obsidian with Garmin data (period: note):
+  https://dimagious.github.io/garmidian/guides/obsidian-weekly-review-garmin/
+- A race countdown and build-up in Obsidian from Garmin:
+  https://dimagious.github.io/garmidian/guides/garmin-race-countdown-obsidian/
+- A steps dashboard in Obsidian (streaks, monthly goal, year map):
+  https://dimagious.github.io/garmidian/guides/garmin-steps-streak-obsidian/
 
 ## Documentation
 
