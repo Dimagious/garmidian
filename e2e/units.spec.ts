@@ -66,8 +66,10 @@ test.describe("distance units", () => {
         expect(await win.locator(".garmy-preview").innerText()).toMatch(/\bmi\b/);
 
         await win.locator(".garmy-create").click();
-        const path = await win.evaluate(() => (globalThis as unknown as { app: { workspace: { getActiveFile(): { path: string } | null } } }).app.workspace.getActiveFile()?.path ?? "");
-        expect(path).toMatch(/^Garmy\/Garmin dashboard/);
+        const activePath = (): Promise<string> => win.evaluate(() => (globalThis as unknown as { app: { workspace: { getActiveFile(): { path: string } | null } } }).app.workspace.getActiveFile()?.path ?? "");
+        // the note is written after Dashy has checked its blocks, so it opens a moment after the click
+        await expect.poll(activePath, { timeout: 15_000 }).toMatch(/^Garmy\/Garmin dashboard/);
+        const path = await activePath();
         const text = await win.evaluate((p) => {
             const a = (globalThis as unknown as { app: { vault: { getAbstractFileByPath(p: string): unknown; read(f: unknown): Promise<string> } } }).app;
             return a.vault.read(a.vault.getAbstractFileByPath(p));
