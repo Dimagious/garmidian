@@ -1,6 +1,6 @@
 // Dashboards about the body: a morning glance, sleep, recovery and steps. Each writes only the blocks its data supports.
 import { METRICS } from "./catalog";
-import { fence, niceUp, q, series, type Row } from "./blocks";
+import { fence, q, series, type Row } from "./blocks";
 import type { Ctx } from "./ctx";
 import { has } from "./profile";
 
@@ -110,7 +110,7 @@ export function steps(c: Ctx): void {
   }
   if (p.span >= 28) {
     const base = p.sumLast("steps", 28);
-    if (base > 0) add("steps.goal", fence("progress", ["source: " + src, "period: month"], [{ label: t.stepsMonth, field: "steps", agg: "sum", goal: niceUp(base * 1.1), icon: "🚶" }]));
+    if (base > 0) add("steps.goal", fence("progress", ["source: " + src, "period: month"], [{ label: t.stepsMonth, field: "steps", agg: "sum", goal: c.monthGoal(base), icon: "🚶" }]));
   } else c.skip("steps.goal", `span ${p.span} < 28`);
 
   if (R !== null) add("steps.chart.days", fence("dashy-chart", ["source: " + src, "field: steps", "type: bar", `range: ${R}d`, "goal: 10000", "label: " + q(t.steps), "title: " + q(t.chartSteps)]));

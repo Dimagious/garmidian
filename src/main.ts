@@ -6,6 +6,7 @@ import { ISO_FORMAT } from "./core/dayname";
 import { overwriteFrom } from "./core/merge";
 import { defaultUnits } from "./core/units";
 import { shouldAutoSync, syncWindowDays } from "./core/schedule";
+import { USUAL_GOAL_SCHEMA, readDashyApi, schemaAtLeast, type DashyApi } from "./core/dashy";
 import { WizardModal } from "./app/wizard";
 import { LANGS, SYNC_UI, UI, pickLang } from "./i18n";
 import { convertDays, writeDays } from "./app/storage";
@@ -62,7 +63,7 @@ export default class GarmyPlugin extends Plugin {
     this.addRibbonIcon("layout-dashboard", UI[this.lang()].ribbon, () => this.openWizard());
     this.addCommand({ id: "open-wizard", name: "Build a Garmin dashboard", callback: () => this.openWizard() });
     this.addCommand({ id: "sync-recent", name: "Sync the latest days from Garmin", callback: () => void this.syncNow(true) });
-    this.addCommand({ id: "rebuild-dashboard", name: "Rebuild the dashboard in this note", callback: () => void rebuildActiveDashboard(this.app, this.lang(), this.settings.units) });
+    this.addCommand({ id: "rebuild-dashboard", name: "Rebuild the dashboard in this note", callback: () => void rebuildActiveDashboard(this.app, this.lang(), this.settings.units, this.goalUsual()) });
     this.addSettingTab(new GarmySettingTab(this.app, this));
     this.app.workspace.onLayoutReady(() => this.startAutoSync());
   }
@@ -111,6 +112,17 @@ export default class GarmyPlugin extends Plugin {
     const p = (this.app as unknown as { plugins?: PluginsApi }).plugins;
     if (p?.plugins?.[DASHY_ID]) return "ready";
     return p?.manifests?.[DASHY_ID] ? "disabled" : "missing";
+  }
+
+  /** Dashy's public API, read fresh each time: Dashy may load after Garmy, be turned off or be updated. Null before Dashy 2.2.0. */
+  dashyApi(): DashyApi | null {
+    return readDashyApi((this.app as unknown as { plugins?: PluginsApi }).plugins?.plugins?.[DASHY_ID]);
+  }
+
+  /** The installed Dashy knows `goal: usual`. An older one would show an error in the bar. */
+  goalUsual(): boolean {
+    const api = this.dashyApi();
+    return api !== null && schemaAtLeast(api.schemaVersion, USUAL_GOAL_SCHEMA);
   }
 
   async enableDashy(): Promise<void> {

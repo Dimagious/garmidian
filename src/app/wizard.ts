@@ -2,6 +2,7 @@ import { Component, MarkdownRenderer, Modal, Notice, Setting, MarkdownView, norm
 import { GarminError, type CancelToken, type Progress } from "../api/client";
 import { SPORTS } from "../core/catalog";
 import { activeSports, compose } from "../core/compose";
+import { brokenBlocks, wasNotChecked } from "../core/dashy";
 import { isRaceDate } from "../core/blocks";
 import { listTemplates, type TemplateOption } from "../core/templates";
 import { buildProfile } from "../core/profile";
@@ -584,7 +585,7 @@ export class WizardModal extends Modal {
       lang: this.choices.lang, races, ...(this.sourceFolder !== null && this.plugin.dailyFormat() !== ISO_FORMAT ? { dayFormat: this.plugin.dailyFormat() } : {}),
       ...(overview ? {} : { template: tpl }),
     };
-    return compose(this.profile, { source: this.meta.source, lang: this.meta.lang, groups: this.meta.groups, sports: [...this.choices.sports], races, units: this.plugin.settings.units, template: tpl }).markdown;
+    return compose(this.profile, { source: this.meta.source, lang: this.meta.lang, groups: this.meta.groups, sports: [...this.choices.sports], races, units: this.plugin.settings.units, template: tpl, goalUsual: this.plugin.goalUsual() }).markdown;
   }
 
   private renderPreview(body: HTMLElement, foot: HTMLElement): HTMLElement {
@@ -627,7 +628,7 @@ export class WizardModal extends Modal {
     });
 
     this.button(foot, ui.back, "garmy-back", () => this.go("choose"), "ghost");
-    this.button(foot, ui.insertNote, "garmy-insert", () => this.insertIntoActive());
+    this.button(foot, ui.insertNote, "garmy-insert", () => void this.insertIntoActive());
     this.button(foot, ui.createNote, "garmy-create", () => void this.createNote(), "cta");
     return heading;
   }
@@ -663,19 +664,41 @@ export class WizardModal extends Modal {
       return;
     }
     const path = await uniquePath(this.app, this.plugin.settings.notesFolder, name);
-    const file = await this.app.vault.create(path, withMeta(`${parts.frontmatter}\n\n${parts.title}\n\n${wrapRegion(parts.body)}\n`, this.meta));
+    const text = withMeta(`${parts.frontmatter}\n\n${parts.title}\n\n${wrapRegion(parts.body)}\n`, this.meta);
+    const problem = await this.dashyProblem(text, path);
+    const file = await this.app.vault.create(path, text);
     await this.app.workspace.getLeaf(false).openFile(file);
     new Notice(this.ui.created + path);
+    if (problem) new Notice(`${this.ui.blocksProblem} ${problem}`, 12000);
     this.close();
   }
 
-  private insertIntoActive(): void {
+  /** Asks Dashy 2.2 to draw the blocks off screen before they are written, and returns what it says about the first broken one. */
+  private async dashyProblem(text: string, path: string): Promise<string | null> {
+    const api = this.plugin.dashyApi();
+    if (!api) return null;
+    try {
+      let blocks = await api.check(text, path);
+      if (wasNotChecked(blocks)) blocks = await api.check(text, path);
+      const bad = brokenBlocks(blocks)[0];
+      if (!bad) return null;
+      return bad.findings.find((f) => f.level === "error")?.message ?? bad.lang;
+    } catch (e) {
+      console.warn("Garmy: Dashy could not check the blocks", e);
+      return null;
+    }
+  }
+
+  private async insertIntoActive(): Promise<void> {
     const view = this.app.workspace.getActiveViewOfType(MarkdownView);
     if (!view) { this.notice = { kind: "warn", title: this.ui.errNoNoteTitle, body: this.ui.noActive }; this.render(); return; }
-    view.editor.replaceSelection(wrapRegion(splitComposed(this.markdown).body) + "\n");
+    const body = wrapRegion(splitComposed(this.markdown).body) + "\n";
+    const problem = await this.dashyProblem(body, view.file?.path ?? "");
+    view.editor.replaceSelection(body);
     const target = view.file;
     if (target) void this.app.fileManager.processFrontMatter(target, (fm: Record<string, unknown>) => { fm.garmy = encodeMeta(this.meta); });
     new Notice(this.ui.inserted);
+    if (problem) new Notice(`${this.ui.blocksProblem} ${problem}`, 12000);
     this.close();
   }
 }

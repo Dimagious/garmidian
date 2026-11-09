@@ -12,6 +12,7 @@ export const ja: Locale = {
   keyLabel: "Personal APIキー", keyPlaceholder: "キーを貼り付け", keySaved: "キーはすでに保存されています。そのまま進むか、別のキーを貼り付けてください。", keyCheck: "確認して続行", keyChecking: "確認中...", keyShow: "表示", keyHide: "非表示",
   keyBad: "Garminがキーを受け付けませんでした。全体をコピーできているか、期限が切れていないか確認してください。", keyNet: "Garminに接続できません。接続を確認して、もう一度お試しください。", keyRate: "Garminから待つよう求められました。1分ほど待ってから、もう一度お試しください。", keyEmpty: "上の欄にキーを貼り付けてください。",
   mediaKeyCaption: "場所：Garmin Connect、設定、Personal API Key。", mediaKeyAlt: "Garmin Connectの設定にあるPersonal API Keyのページ", mediaDashyCaption: "Dashyのインストール方法", mediaDashyAlt: "短い動画：Dashyプラグインのインストール", mediaPlay: "動画を再生", mediaStop: "動画を停止",
+  blocksProblem: "Dashyがこのブロックの問題を報告しています:",
   errBadTitle: "キーが受け付けられません", errNetTitle: "Garminに接続できません", errRateTitle: "Garminから待つよう求められました", errEmptyTitle: "キーがありません", errStopTitle: "読み込みが停止しました", errNoDataTitle: "データがありません", errNoNoteTitle: "開いているノートがありません", errRenderTitle: "プレビューを表示できませんでした",
   errNewKey: "別のキーを貼り付ける", errRetry: "もう一度試す",
   loadTitle: "履歴を読み込む", loadIntro: "履歴を読み込み、1日1ノートとして保存します。ダッシュボードはオフラインでも動作します。", loadWait: "読み込みが終わるまで、このウィンドウを開いたままにしてください。", period: "期間", days30: "30日", days90: "90日", days365: "1年", start: "読み込む", starting: "読み込み中...", useSaved: "保存済みのデータを使う", savedInfo: "保存済みの日数：",

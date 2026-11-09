@@ -19,6 +19,7 @@ export interface Ui {
   keyLabel: string; keyPlaceholder: string; keySaved: string; keyCheck: string; keyChecking: string; keyShow: string; keyHide: string;
   keyBad: string; keyNet: string; keyRate: string; keyEmpty: string;
   mediaKeyCaption: string; mediaKeyAlt: string; mediaDashyCaption: string; mediaDashyAlt: string; mediaPlay: string; mediaStop: string;
+  blocksProblem: string;
   errBadTitle: string; errNetTitle: string; errRateTitle: string; errEmptyTitle: string; errStopTitle: string; errNoDataTitle: string; errNoNoteTitle: string; errRenderTitle: string;
   errNewKey: string; errRetry: string;
   loadTitle: string; loadIntro: string; loadWait: string; period: string; days30: string; days90: string; days365: string; start: string; starting: string; useSaved: string; savedInfo: string;

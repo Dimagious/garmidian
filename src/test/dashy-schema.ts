@@ -35,7 +35,8 @@ function card(o: Obj, kind: "stats" | "progress", where: string, root: Obj, errs
   if (!CARD_AGGS.includes(agg)) errs.push(`${where}: unknown agg "${agg}"`);
   if (!["count", "streak", "current_streak"].includes(agg) && typeof o.field !== "string") errs.push(`${where}: agg ${agg} needs a field`);
   if (typeof o.label !== "string" || o.label === "") errs.push(`${where}: no label`);
-  if (kind === "progress" && !(typeof o.goal === "number" && o.goal > 0)) errs.push(`${where}: a bar needs a goal above zero`);
+  if (kind === "progress" && !(o.goal === "usual" || (typeof o.goal === "number" && o.goal > 0))) errs.push(`${where}: a bar needs a goal above zero`);
+  if (o.goal === "usual" && o.period === undefined && root.period === undefined) errs.push(`${where}: goal usual without a period`);
   if (o.compare !== undefined) {
     if (o.period === undefined && root.period === undefined) errs.push(`${where}: compare without a period`);
     if (agg === "streak" || agg === "current_streak") errs.push(`${where}: compare on a streak`);

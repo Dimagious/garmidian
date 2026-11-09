@@ -2,7 +2,8 @@
 // and the few helpers that write a heading, a block or a note about a block that was left out.
 import { METRICS, SPORTS, type Lang, type Units } from "./catalog";
 import { T, UNITS } from "../i18n";
-import { isRaceDate, rangeFor, series, type Row } from "./blocks";
+import { isRaceDate, niceUp, rangeFor, series, type Row } from "./blocks";
+import { USUAL_GOAL_MIN_DAYS } from "./dashy";
 import { did, has } from "./profile";
 import type { DataProfile } from "./types";
 import { distanceFor } from "./units";
@@ -22,6 +23,8 @@ export interface ComposeOptions {
   units?: Units;
   /** Which dashboard to build: "overview" (the default), "sport:run", "week" and so on. See templates.ts. */
   template?: string;
+  /** The installed Dashy knows `goal: usual`, so a month goal can follow the user's own past months. */
+  goalUsual?: boolean;
 }
 export interface ComposeResult {
   markdown: string;
@@ -67,6 +70,8 @@ export interface Ctx {
   layers: (list?: string[]) => string;
   /** the window of a training chart: weekly bars once a month of data exists, daily before that */
   trainingWindow: () => string[];
+  /** a month goal: `usual` where Dashy knows it and the history is long enough, else the last 28 days plus a tenth, rounded up */
+  monthGoal: (last28: number) => number | string;
   /** the countdown card for a race date or the next race note in a folder */
   raceCard: () => Row | null;
   /** frontmatter, the title and the line naming Garmin as the source */
@@ -110,6 +115,7 @@ export function makeCtx(p: DataProfile, o: ComposeOptions): Ctx {
       if (R === null) return [];
       return p.span >= 28 ? ["bucket: week", `range: ${Math.min(182, Math.max(28, Math.floor(p.span / 7) * 7))}d`] : [`range: ${R}d`];
     },
+    monthGoal: (last28) => (o.goalUsual && p.span >= USUAL_GOAL_MIN_DAYS ? "usual" : niceUp(last28 * 1.1)),
     raceCard: () => {
       if (!o.races) return null;
       return isRaceDate(o.races)

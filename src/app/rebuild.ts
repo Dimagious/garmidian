@@ -7,7 +7,7 @@ import { readRows } from "./storage";
 import type { Lang, Units } from "../core/catalog";
 
 /** Rebuilds the Garmy dashboard region of the open note from the data on disk, with the choices it was built with. */
-export async function rebuildActiveDashboard(app: App, lang: Lang, units: Units = "metric"): Promise<void> {
+export async function rebuildActiveDashboard(app: App, lang: Lang, units: Units = "metric", goalUsual = false): Promise<void> {
   const text = SYNC_UI[lang];
   const file = app.workspace.getActiveViewOfType(MarkdownView)?.file;
   if (!file) { new Notice(text.rebuildNoNote); return; }
@@ -18,7 +18,7 @@ export async function rebuildActiveDashboard(app: App, lang: Lang, units: Units 
   const exists = (path: string): boolean => app.vault.getAbstractFileByPath(path) !== null;
   let outcome = "";
   await app.vault.process(file, (data) => {
-    const r = rebuildNote(data, rows, exists, units);
+    const r = rebuildNote(data, rows, exists, units, goalUsual);
     outcome = r.kind;
     return r.kind === "ok" ? r.text : data;
   });

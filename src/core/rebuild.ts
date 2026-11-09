@@ -17,14 +17,14 @@ export type RebuildResult =
  * @param folderExists  tells whether the races folder named in the region still exists
  * @param units      the user's current choice: a rebuild follows it, so switching to miles and rebuilding redraws in miles
  */
-export function rebuildNote(note: string, rows: DayRecord[], folderExists: (path: string) => boolean, units: Units = "metric"): RebuildResult {
+export function rebuildNote(note: string, rows: DayRecord[], folderExists: (path: string) => boolean, units: Units = "metric", goalUsual = false): RebuildResult {
   const meta = readRegionMeta(note);
   if (!meta) return { kind: "no-region" };
   const profile = buildProfile(rows);
   if (profile.days === 0) return { kind: "no-data" };
   // a race can be one date, which needs no folder; a folder that has since been renamed is dropped
   const races = meta.races && (isRaceDate(meta.races) || folderExists(meta.races)) ? meta.races : null;
-  const composed = compose(profile, { source: meta.source, lang: meta.lang, groups: meta.groups, sports: Object.keys(SPORTS).filter((k) => !meta.noSports.includes(k)), races, units, template: meta.template });
+  const composed = compose(profile, { source: meta.source, lang: meta.lang, groups: meta.groups, sports: Object.keys(SPORTS).filter((k) => !meta.noSports.includes(k)), races, units, template: meta.template, goalUsual });
   const text = replaceRegion(note, splitComposed(composed.markdown).body, { ...meta, races });
   return text === null ? { kind: "no-region" } : { kind: "ok", text, blocks: composed.log.blocks };
 }

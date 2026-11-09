@@ -80,7 +80,7 @@ function overview(p: DataProfile, o: ComposeOptions): ComposeResult {
         const d = distanceFor(p, s, units);
         const f = d?.field ?? sp.min;
         const base = p.sumLast(f, 28);
-        if (base > 0) goals.push({ label: lbl(s), field: f, agg: "sum", goal: niceUp(base * 1.1), unit: d ? u[d.unit] : "", icon: sp.icon });
+        if (base > 0) goals.push({ label: lbl(s), field: f, agg: "sum", goal: c.monthGoal(base), unit: d ? u[d.unit] : "", icon: sp.icon });
       }
       if (goals.length) { head(t.goals, 3); add("training.goals", fence("progress", ["source: " + src, "period: month", "columns: 2"], goals)); }
     } else skip("training.goals", `span ${p.span} < 28`);

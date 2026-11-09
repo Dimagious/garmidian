@@ -22,7 +22,7 @@ function goalRows(c: Ctx, list: string[]): Row[] {
   for (const s of list) {
     const v = volumeOf(c, s);
     const base = c.p.sumLast(v.field, 28);
-    if (base > 0) rows.push({ label: c.lbl(s), field: v.field, agg: "sum", goal: niceUp(base * 1.1), unit: v.unit, icon: SPORTS[s]!.icon });
+    if (base > 0) rows.push({ label: c.lbl(s), field: v.field, agg: "sum", goal: c.monthGoal(base), unit: v.unit, icon: SPORTS[s]!.icon });
   }
   return rows;
 }
