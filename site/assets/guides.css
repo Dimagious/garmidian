@@ -1,0 +1,121 @@
+/* Guides: components on top of site.css. Same tokens, no new colours. */
+
+/* ---------- a guide is one note, narrower than the home page ---------- */
+.note.guide { max-width: 820px; }
+.note.guide h1.inline-title { font-size: 40px; }
+.note.guide h2 { font-size: 24px; margin: 44px 0 10px; scroll-margin-top: 60px; }
+.note.guide h2 + p { margin-top: 0; }
+.note.guide .lede { font-size: 18px; }
+
+/* numbered step headings: the circle from .steps, on an h2 */
+h2.step { display: flex; align-items: baseline; gap: 12px; }
+h2.step .n {
+  flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-text);
+  font-size: 14px; font-weight: 600; display: inline-grid; place-items: center; transform: translateY(-3px);
+}
+
+/* "On this page": a quiet list right under the lede */
+.toc { margin: 22px 0 26px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-2); font-size: 14px; }
+.toc b { display: block; font-size: 12px; font-weight: 600; color: var(--faint); letter-spacing: .02em; margin-bottom: 4px; }
+.toc ol { margin: 0; padding-left: 20px; columns: 2; column-gap: 28px; }
+.toc li { break-inside: avoid; padding: 1px 0; }
+.toc a { color: var(--muted); text-decoration: none; }
+.toc a:hover { color: var(--accent-text); text-decoration: underline; }
+
+/* a code block that is a note, not a Dashy block (a Garmy day note, say): file path in the bar */
+.codeblock .bar .file { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.codeblock .bar .file svg { width: 13px; height: 13px; flex: none; }
+.codeblock .bar .file span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.codeblock.other { background: var(--bg-2); border-style: dashed; border-color: var(--border-strong); }
+.codeblock.other .bar { color: var(--muted); }
+/* a prompt is prose a reader has to read in full, so it wraps instead of scrolling */
+pre code.plain { color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; }
+.codeblock:has(code.plain) + p { margin-top: 14px; }
+
+/* key notes under a block: key on the left, plain words on the right */
+.keynotes { list-style: none; padding: 0; margin: 14px 0 0; border-top: 1px solid var(--border); }
+.keynotes li { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 15px; }
+.keynotes li > code:first-child { justify-self: start; align-self: start; }
+
+/* ---------- the comparison: tabs over the "other way" ---------- */
+.vs { margin: 16px 0 6px; }
+.seg { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-2); margin-bottom: 10px; }
+.seg button {
+  border: 0; background: transparent; padding: 5px 14px; border-radius: 6px; cursor: pointer; font-size: 14px; color: var(--muted);
+  font-family: "JetBrains Mono", monospace;
+}
+.seg button[aria-selected="true"] { background: var(--bg); color: var(--text); box-shadow: 0 1px 2px var(--active); }
+.vs-panel[hidden] { display: none; }
+.vs-panel ul { margin: 12px 0 0; padding-left: 20px; }
+.vs-panel li { margin-bottom: 4px; }
+/* without script both panels show, one after the other */
+.no-js .seg { display: none; }
+
+/* side by side table: Garmy and the other way */
+.table-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border); border-radius: 8px; }
+table.cmp { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 14px; }
+table.cmp th, table.cmp td { text-align: left; vertical-align: top; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+table.cmp tr:last-child td { border-bottom: 0; }
+table.cmp thead th { background: var(--bg-2); font-weight: 600; font-size: 13px; color: var(--muted); }
+table.cmp thead th.us { color: var(--accent-text); }
+table.cmp td:first-child { color: var(--muted); width: 26%; }
+table.cmp td.us { background: var(--accent-soft); }
+
+/* variations: small code cards, two to a row */
+.vars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 16px 0; }
+.var h3 { margin: 0 0 4px; font-size: 16px; }
+.var p { font-size: 14.5px; color: var(--muted); margin: 0 0 8px; }
+
+/* ---------- guide cards: index and "related" ---------- */
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 20px 0; }
+.card {
+  display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  background: var(--bg); color: var(--text); text-decoration: none; transition: border-color .15s;
+}
+a.card:hover { border-color: var(--accent); color: var(--text); }
+a.card:hover .card-title { color: var(--accent-text); }
+.card .thumb { aspect-ratio: 16 / 7; overflow: hidden; background: var(--bg-2); border-bottom: 1px solid var(--border); display: grid; place-items: center; padding: 14px 16px 0; }
+.card .thumb picture { display: block; width: 100%; height: 100%; }
+.card .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; border-radius: 6px 6px 0 0; }
+.card .body { padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.card-q { font: 500 12px "JetBrains Mono", monospace; color: var(--faint); }
+.card-title { font-size: 17px; font-weight: 600; line-height: 1.3; }
+.card-promise { font-size: 14.5px; color: var(--muted); margin: 0; }
+.card .meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; padding-top: 6px; }
+.card .meta .pill { font-family: "JetBrains Mono", monospace; font-size: 12px; }
+.badge { font-size: 11.5px; font-weight: 600; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--border-strong); color: var(--faint); }
+.card.planned { cursor: default; }
+.card .thumb.fit { padding: 12px 16px; }
+.card .thumb.fit img { object-fit: contain; object-position: center; border-radius: 6px; }
+.card.planned .thumb img { opacity: .55; }
+
+.cards.small { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.cards.small .thumb { aspect-ratio: 16 / 8; padding: 10px 10px 0; }
+.cards.small .card-title { font-size: 15px; }
+.cards.small .card-promise { font-size: 13.5px; }
+
+/* the end-of-guide nudge */
+.next { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 36px 0 0; padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-2); }
+.next p { margin: 0; flex: 1 1 260px; }
+.next .actions { margin: 0; }
+
+@media (max-width: 900px) {
+  .note.guide h1.inline-title { font-size: 32px; }
+  .note.guide h2 { font-size: 21px; margin-top: 36px; }
+  .vars, .cards, .cards.small { grid-template-columns: minmax(0, 1fr); }
+  .keynotes li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+}
+@media (max-width: 560px) {
+  .toc ol { columns: 1; }
+  .cards.small .thumb { display: none; }
+  /* the comparison table becomes one card per row: no sideways scroll on a phone */
+  .table-wrap { overflow: visible; border: 0; }
+  table.cmp { min-width: 0; }
+  table.cmp thead { display: none; }
+  table.cmp, table.cmp tbody, table.cmp tr, table.cmp td { display: block; width: auto; }
+  table.cmp tr { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+  table.cmp td { border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 8px; }
+  table.cmp td:first-child { display: block; width: auto; background: var(--bg-2); color: var(--text); font-weight: 600; }
+  table.cmp td[data-h]::before { content: attr(data-h); font: 500 12px "JetBrains Mono", monospace; color: var(--faint); padding-top: 2px; }
+  table.cmp td.us[data-h]::before { color: var(--accent-text); }
+}

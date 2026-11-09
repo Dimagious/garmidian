@@ -1,0 +1,49 @@
+# Garmy
+
+Garmy is an Obsidian plugin (id garmidian) that builds a dashboard from your
+own Garmin data inside a note. You paste a Garmin Personal API key, Garmy loads
+up to a year of history into one note per day, and a four-step wizard (key,
+load, choose, preview) picks sports and metrics and writes Dashy blocks
+(stats, dashy-chart, heatmap, progress, countdown) into a note. The note is
+plain markdown. Garmy needs the Dashy plugin to draw the blocks.
+
+The key stays in Obsidian's secure storage and requests go only to
+personal.connectapi.garmin.com. There is no telemetry. Garmy leaves out
+Training Readiness and VO2 max (Garmin's Personal API does not provide them)
+and does not write distance_km. It has not been tested on a phone yet.
+Garmy is not affiliated with Garmin. Data source: Garmin.
+
+Site: https://dimagious.github.io/garmidian/
+Repository: https://github.com/Dimagious/garmidian
+Community plugin listing: https://community.obsidian.md/plugins/garmidian
+Plugin id: garmidian
+
+## Guides
+
+Step-by-step pages, one question each, with the YAML Garmy writes:
+
+- All guides: https://dimagious.github.io/garmidian/guides/
+- Garmin sleep and HRV dashboard in Obsidian (six recovery cards, 7 day
+  averages against your usual, two line charts):
+  https://dimagious.github.io/garmidian/guides/garmin-sleep-hrv-dashboard/
+- Garmin Personal API key (where it lives in Garmin Connect, what Garmy reads
+  with it, what it cannot do):
+  https://dimagious.github.io/garmidian/guides/garmin-personal-api-key/
+- Garmin Connect to Obsidian without Health Sync (what Garmy does, and
+  existing-notes mode for notes Health Sync already wrote):
+  https://dimagious.github.io/garmidian/guides/garmin-to-obsidian-without-health-sync/
+- A triathlon training log in Obsidian (run, bike, swim and strength cards,
+  weekly bars, year map, monthly goals, race countdown):
+  https://dimagious.github.io/garmidian/guides/obsidian-triathlon-training-log/
+- A weekly training heatmap in Obsidian (year by sport, month calendar, weekly
+  bars from run_min, bike_min, swim_min and strength_min):
+  https://dimagious.github.io/garmidian/guides/weekly-training-heatmap-obsidian/
+
+## Documentation
+
+- README, what it does, install and disclosures:
+  https://raw.githubusercontent.com/Dimagious/garmidian/main/README.md
+- Changelog:
+  https://raw.githubusercontent.com/Dimagious/garmidian/main/CHANGELOG.md
+- Security policy:
+  https://raw.githubusercontent.com/Dimagious/garmidian/main/SECURITY.md

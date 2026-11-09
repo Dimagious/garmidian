@@ -19,6 +19,8 @@ Sleep, HRV, resting heart rate, Body Battery, steps, runs, rides, swims and stre
 
 **Install:** Settings, **Community plugins**, **Browse**, search for **Garmy**. Garmy draws its blocks with [Dashy](https://github.com/Dimagious/dashsidian), so install Dashy the same way. Then open the command palette and run **Garmy: Build a Garmin dashboard**.
 
+[Website](https://dimagious.github.io/garmidian/) · [Guides](https://dimagious.github.io/garmidian/guides/) · [Get a Garmin Personal API key](https://dimagious.github.io/garmidian/guides/garmin-personal-api-key/) · [Changelog](https://github.com/Dimagious/garmidian/blob/main/CHANGELOG.md)
+
 ## Why you might want it
 
 **You do not have to learn a query language.** Garmy writes the dashboard for you, out of ordinary Dashy blocks in an ordinary note. You can read it, edit it, move it to your home page, or stop using the plugin and keep everything.
@@ -99,6 +101,7 @@ npm run e2e                       # real Obsidian, fake Garmin (needs macOS Obsi
 GARMIN_LIVE=1 npm run e2e -- e2e/live.spec.ts   # real Garmin, key from the Keychain (service garmin-personal-api)
 npm run capture                   # retake the README pictures and clips (needs ffmpeg)
 npm run listing                   # rebuild the community directory pictures in docs/listing from the capture
+npm run site:check && npm run site:assemble   # the website in site/, deployed to GitHub Pages on a release tag
 ```
 
 Layers: `src/core` (mapping, data profile, dashboard composer, no I/O), `src/api` (client with injected transport), `src/i18n` (one file per language), `src/app` (wizard, note storage, sync, settings), `src/main.ts`. [Changelog](https://github.com/Dimagious/garmidian/blob/main/CHANGELOG.md).

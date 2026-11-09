@@ -18,7 +18,10 @@
     "e2e": "./scripts/e2e-setup.sh && env -u ELECTRON_RUN_AS_NODE playwright test",
     "capture": "node scripts/capture.mjs",
     "readme:check": "node scripts/readme-check.cjs",
-    "listing": "node tools/listing.mjs"
+    "listing": "node tools/listing.mjs",
+    "site:check": "node scripts/site-check.cjs",
+    "site:assemble": "node scripts/assemble-site.cjs",
+    "site:card": "node scripts/social-card.cjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

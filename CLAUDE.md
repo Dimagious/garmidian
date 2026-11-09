@@ -55,3 +55,10 @@ node tools/tour.mjs --days=30                                     # screenshots 
 - Never print or store the key. Tests use a fake key; the live spec reads the Keychain.
 - No em dashes anywhere (code, copy, docs).
 - Git: commits are authored by the developer only, no Claude trailers.
+
+## Сайт
+
+- `site/` - GitHub Pages в стиле Dashy (ribbon, дерево заметок, Cmd/Ctrl+K), свои цвета (teal) и знак Garmy. Общая оболочка `site/_shell.html`, страницы дописывают ее через `<!--shell:top tab="..."-->` и `<!--shell:bottom-->`. Одна страница `index.html` из секций-"файлов" и пять гайдов в `site/guides/`.
+- `npm run site:check` (битые картинки, якоря, тире, обязательные файлы, sitemap), `npm run site:assemble` собирает `_site/`: `site/` плюс картинки из `docs/screens`, `docs/listing` и `media/help-key.png` в `img/` (одна карта источников `listImageSources` в `scripts/site-check.cjs`).
+- Pages выкатывается по тегу `x.y.z` (`.github/workflows/pages.yml`), версия подставляется из `manifest.json`. Карточку для соцсетей рисует `npm run site:card` в `docs/screens/social-preview.png`; ту же картинку руками загрузить в GitHub Settings, Social preview.
+- Тексты на сайте: английский, без em/en-дефисов, примеры YAML брать из `compose`, а не писать от руки. Тег google-site-verification добавляется владельцем позже.

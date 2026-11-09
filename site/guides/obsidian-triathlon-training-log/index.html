@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A triathlon training log in Obsidian from Garmin · Garmy</title>
+<meta name="description" content="Run, bike, swim and strength per week, a month calendar, a year map by sport and monthly goals, built from your Garmin activities.">
+<link rel="canonical" href="https://dimagious.github.io/garmidian/guides/obsidian-triathlon-training-log/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='7' fill='%232bb5a3'/%3E%3Cpolyline points='5.5,17 10.5,17 13,11 16.5,22.5 19.5,14 21.5,17 26.5,17' fill='none' stroke='%2305211d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='7' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3Crect x='12.5' y='24.5' width='7' height='2' rx='1' fill='%2305211d' fill-opacity='.8'/%3E%3Crect x='21' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Garmy">
+<meta property="og:url" content="https://dimagious.github.io/garmidian/guides/obsidian-triathlon-training-log/">
+<meta property="og:title" content="A triathlon training log in Obsidian from Garmin">
+<meta property="og:description" content="Run, bike, swim and strength per week, a month calendar, a year map by sport and monthly goals, built from your Garmin activities.">
+<meta property="og:image" content="https://dimagious.github.io/garmidian/img/dashboard-5-light.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1720">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A triathlon training log in Obsidian from Garmin">
+<meta name="twitter:description" content="Run, bike, swim and strength per week, a month calendar, a year map by sport and monthly goals, built from your Garmin activities.">
+<meta name="twitter:image" content="https://dimagious.github.io/garmidian/img/dashboard-5-light.png">
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/guides.css">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "A triathlon training log in Obsidian from Garmin", "step": [{"@type": "HowToStep", "name": "Build the training part", "text": "Run the wizard, load your history and keep the Training group. Pick the sports."}, {"@type": "HowToStep", "name": "Read the cards", "text": "Cards show kilometres or minutes per sport for the last 7 days."}, {"@type": "HowToStep", "name": "Add weekly bars", "text": "A dashy-chart block with bucket: week shows minutes per sport per week."}, {"@type": "HowToStep", "name": "Add maps and goals", "text": "A month calendar, a year map by sport and monthly goals follow, as data allows."}, {"@type": "HowToStep", "name": "Count down to a race", "text": "Name a folder of race notes with a date property and Garmy adds a countdown."}]}
+</script>
+</head>
+<body>
+<!--shell:top tab="A triathlon training log"-->
+
+    <main class="note guide" id="note">
+      <article class="file" style="padding-top:34px">
+        <div class="crumb">Guides/obsidian-triathlon-training-log.md</div>
+        <h1 class="inline-title">A triathlon training log in Obsidian from Garmin</h1>
+
+        <div class="props" aria-label="Properties">
+          <div class="props-title"><svg><use href="#i-list"/></svg>Properties</div>
+          <div class="prop"><div class="k"><svg><use href="#i-tag"/></svg>sports</div><div class="v"><span class="pill">run</span><span class="pill">bike</span><span class="pill">swim</span><span class="pill">strength</span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-tag"/></svg>blocks</div><div class="v"><span class="pill">stats</span><span class="pill">dashy-chart</span><span class="pill">heatmap</span><span class="pill">progress</span><span class="pill">countdown</span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-text"/></svg>fields</div><div class="v"><code>run_km</code> <code>run_min</code> <code>bike_km</code> <code>bike_min</code> <code>swim_km</code> <code>swim_min</code> <code>strength_min</code></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs Dashy</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs a Garmin key</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-hash"/></svg>checked on</div><div class="v">Garmy {{version}}</div></div>
+        </div>
+
+        <p class="lede">Run, bike, swim and strength per week, a month calendar, a year map by sport and monthly goals, from the activities on your Garmin watch. Garmy loads the activities and writes the blocks. This page shows what they are and what each key does.</p>
+
+        <figure class="shot">
+          <picture><source data-dark srcset="../../img/dashboard-5-dark.png" media="(prefers-color-scheme: dark)"><img src="../../img/dashboard-5-light.png" width="2400" height="1720" alt="Weekly training minutes as grouped bars per sport and a November month calendar with a dot per sport"></picture>
+          <figcaption>Weekly bars and a month calendar, on demo data.</figcaption>
+        </figure>
+
+        <nav class="toc" aria-label="On this page">
+          <b>ON THIS PAGE</b>
+          <ol>
+            <li><a href="#reads">What Garmy reads from your watch</a></li>
+            <li><a href="#build">Build the training part</a></li>
+            <li><a href="#cards">Cards for the last 7 days</a></li>
+            <li><a href="#weeks">Weekly bars</a></li>
+            <li><a href="#maps">Month calendar and year map</a></li>
+            <li><a href="#goals">Monthly goals from your own numbers</a></li>
+            <li><a href="#races">A countdown to the next race</a></li>
+            <li><a href="#rebuild">Rebuild it as the season goes</a></li>
+            <li><a href="#related">Related guides</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="reads" data-short="What Garmy reads from your watch">What Garmy reads from your watch</h2>
+        <p>Garmy reads your Garmin activities and sums them per local day into seven properties. Several workouts on one day add up, even when Garmin returns them on different pages.</p>
+        <div class="table-wrap">
+          <table class="cmp">
+            <thead><tr><th>Sport</th><th class="us">Garmin activity types</th><th>Properties</th></tr></thead>
+            <tbody>
+              <tr><td>Run</td><td data-h="Types" class="us"><span><code>running</code> <code>trail_running</code> <code>treadmill_running</code> <code>track_running</code> <code>virtual_run</code> <code>street_running</code></span></td><td data-h="Properties"><span><code>run_km</code> <code>run_min</code></span></td></tr>
+              <tr><td>Bike</td><td data-h="Types" class="us"><span><code>cycling</code> <code>road_biking</code> <code>indoor_cycling</code> <code>mountain_biking</code> <code>gravel_cycling</code> <code>virtual_ride</code> <code>e_bike_fitness</code></span></td><td data-h="Properties"><span><code>bike_km</code> <code>bike_min</code></span></td></tr>
+              <tr><td>Swim</td><td data-h="Types" class="us"><span><code>lap_swimming</code> <code>open_water_swimming</code></span></td><td data-h="Properties"><span><code>swim_km</code> <code>swim_min</code></span></td></tr>
+              <tr><td>Strength</td><td data-h="Types" class="us"><span><code>strength_training</code></span></td><td data-h="Properties"><span><code>strength_min</code></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout warn">
+          <div class="callout-title"><svg><use href="#i-alert"/></svg>Multi-sport is not split</div>
+          <p>A triathlon recorded as one multi-sport activity is not divided into swim, bike and run, so it adds nothing to those three sports. Other activity types, such as hiking or yoga, are not counted either. Record the legs as separate activities if you want them in the log.</p>
+        </div>
+
+        <h2 class="step" id="build" data-short="Build the training part"><span class="n">1</span>Build the training part</h2>
+        <p>Run <b>Garmy: Build a Garmin dashboard</b>, load the period you want and on <b>Choose</b> keep <b>Training</b>. The <b>Sports</b> chips list only the sports found in your data, so a swim chip appears once a swim is in the history. Untick a sport to leave it out.</p>
+        <figure class="shot" style="max-width:560px">
+          <picture><img src="../../img/wizard-choose-light.png" width="1632" height="1324" loading="lazy" alt="The Choose step with Recovery, Movement and Training cards and Run, Bike, Swim and Strength chips selected"></picture>
+          <figcaption>The Choose step. Sports are listed from your own data.</figcaption>
+        </figure>
+
+        <h2 class="step" id="cards" data-short="Cards for the last 7 days"><span class="n">2</span>Cards for the last 7 days</h2>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 4
+source: Garmy/data
+period: 7d
+items:
+  - { label: Run, field: run_km, agg: sum, precision: 1, unit: " km", icon: 🏃, compare: true, better: up }
+  - { label: Bike, field: bike_km, agg: sum, precision: 0, unit: " km", icon: 🚴, compare: true, better: up }
+  - { label: Swim, field: swim_km, agg: sum, precision: 1, unit: " km", icon: 🏊, compare: true, better: up }
+  - { label: Strength, field: strength_min, agg: sum, precision: 0, icon: 🏋️, compare: true, better: up }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>period: 7d</code><span>The last 7 days.</span></li>
+          <li><code>agg: sum</code><span>Kilometres for run, bike and swim, minutes for strength.</span></li>
+          <li><code>compare: true</code><span>Shows the change against the period before. Written once you have 14 days of data.</span></li>
+          <li><code>precision</code><span>Decimals: one for run and swim, none for bike and strength.</span></li>
+        </ul>
+
+        <h2 class="step" id="weeks" data-short="Weekly bars"><span class="n">3</span>Weekly bars</h2>
+        <p>Minutes per sport, a bar group per week. With 28 days of data or more the bars are weekly. With less, Garmy draws daily bars.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```dashy-chart
+source: Garmy/data
+type: bar
+bucket: week
+range: 119d
+agg: sum
+title: Training minutes
+series:
+  - { field: run_min, label: Run, color: green }
+  - { field: bike_min, label: Bike, color: blue }
+  - { field: swim_min, label: Swim, color: cyan }
+  - { field: strength_min, label: Strength, color: orange }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>bucket: week</code><span>One group of bars per week.</span></li>
+          <li><code>range: 119d</code><span>Your history rounded down to whole weeks, at least 28 days and at most 182.</span></li>
+          <li><code>series</code><span>One bar per sport, coloured green, blue, cyan and orange.</span></li>
+        </ul>
+        <figure class="shot">
+          <picture><source data-dark srcset="../../img/dashboard-5-dark.png" media="(prefers-color-scheme: dark)"><img src="../../img/dashboard-5-light.png" width="2400" height="1720" loading="lazy" alt="Weekly training minutes as grouped bars for run, bike, swim and strength, and a November month calendar"></picture>
+          <figcaption>Weekly bars and the month calendar, on demo data.</figcaption>
+        </figure>
+
+        <h2 class="step" id="maps" data-short="Month calendar and year map"><span class="n">4</span>Month calendar and year map</h2>
+        <p>Two heatmaps follow. The month calendar needs 7 days of data, the year map 60. Each day is coloured by the sport with the most minutes that day. <a href="../weekly-training-heatmap-obsidian/">The heatmap guide</a> goes through both.</p>
+
+        <h2 class="step" id="goals" data-short="Monthly goals from your own numbers"><span class="n">5</span>Monthly goals from your own numbers</h2>
+        <p>Garmy sums each sport over your last 28 days, adds 10 percent and rounds up to a round number. That becomes the goal for the calendar month. It needs 28 days of data, and a sport with nothing in those 28 days gets no goal.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```progress
+source: Garmy/data
+period: month
+columns: 2
+items:
+  - { label: Run, field: run_km, agg: sum, goal: 200, unit: " km", icon: 🏃 }
+  - { label: Bike, field: bike_km, agg: sum, goal: 500, unit: " km", icon: 🚴 }
+  - { label: Swim, field: swim_km, agg: sum, goal: 10, unit: " km", icon: 🏊 }
+  - { label: Strength, field: strength_min, agg: sum, goal: 500, icon: 🏋️ }
+```</code></pre>
+        </div>
+        <figure class="shot">
+          <picture><img src="../../img/dashboard-6-light.png" width="2400" height="1720" loading="lazy" alt="A year map by sport and monthly goals for run, bike, swim and strength as progress bars"></picture>
+          <figcaption>The year map and the goals, on demo data.</figcaption>
+        </figure>
+
+        <h2 class="step" id="races" data-short="A countdown to the next race"><span class="n">6</span>A countdown to the next race</h2>
+        <p>In the wizard's <b>Options</b>, name a folder where every race is a note with a <code>date</code> property, such as <code>Races</code>. Garmy adds a countdown card.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span class="file"><svg><use href="#i-file"/></svg><span>Races/Half marathon.md</span></span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">---
+date: 2027-05-16
+---</code></pre>
+        </div>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```countdown
+columns: 2
+items:
+  - { label: Next race, field: date, source: Races, pick: next, icon: 🏁 }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>pick: next</code><span>Dashy reads <code>date</code> in every note of the folder and counts to the soonest one still ahead. The card shows that note's name.</span></li>
+          <li><code>source: Races</code><span>The folder you gave the wizard.</span></li>
+        </ul>
+        <p>If you leave the folder empty, the countdown is skipped.</p>
+
+        <h2 id="rebuild" data-short="Rebuild it as the season goes">Rebuild it as the season goes</h2>
+        <p>The first dashboard after a few days of data has cards only. Run <b>Garmy: Rebuild the dashboard in this note</b> after a month and the bars, year map and goals appear. A sport you start later is picked up too, unless you switched it off in the wizard.</p>
+
+
+        <h2 id="related" data-short="Related guides">Related guides</h2>
+        <div class="cards small">
+          <a class="card" href="../weekly-training-heatmap-obsidian/">
+            <div class="thumb"><picture><img src="../../img/dashboard-6-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">A weekly training heatmap in Obsidian</span><p class="card-promise">A year of training days coloured by sport, a month calendar and weekly bars, from the minutes Garmy writes into your daily notes.</p></div>
+          </a>
+          <a class="card" href="../garmin-sleep-hrv-dashboard/">
+            <div class="thumb"><picture><img src="../../img/dashboard-2-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Garmin sleep and HRV dashboard in Obsidian</span><p class="card-promise">Sleep score, sleep duration, HRV, resting heart rate and Body Battery as cards and charts in one note, from your own Garmin data.</p></div>
+          </a>
+          <a class="card" href="../garmin-personal-api-key/">
+            <div class="thumb"><picture><img src="../../img/help-key.png" width="1000" height="320" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Garmin Personal API key: where to find it and what it can do</span><p class="card-promise">Where to find the key in Garmin Connect, how long it lasts, which numbers Garmy reads with it and which Garmin does not provide.</p></div>
+          </a>
+        </div>
+
+        <div class="next">
+          <p>Install Garmy and Dashy, then run the wizard on your own activities.</p>
+          <div class="actions">
+            <a class="btn primary" href="../../#install"><svg><use href="#i-plug"/></svg>Install Garmy</a><a class="btn" href="../../#dashboards">Every dashboard part</a>
+          </div>
+        </div>
+
+        <footer class="note-foot">
+          <span>MIT © Dmitriy Yurkin</span>
+          <a href="../../guides/">All guides</a>
+          <a href="https://github.com/Dimagious/garmidian">GitHub</a>
+          <a href="https://community.obsidian.md/plugins/garmidian">Plugin listing</a>
+          <a href="https://github.com/Dimagious/garmidian/issues">Something wrong on this page?</a>
+          <span class="legal">Garmy is not affiliated with Garmin. Data source: Garmin.</span>
+        </footer>
+      </article>
+    </main>
+<!--shell:bottom-->
+</body>
+</html>

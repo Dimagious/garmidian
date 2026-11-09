@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Garmin Personal API key: where to find it and what it can do · Garmy</title>
+<meta name="description" content="Where to find the key in Garmin Connect, how long it lasts, which numbers Garmy reads with it and which Garmin does not provide.">
+<link rel="canonical" href="https://dimagious.github.io/garmidian/guides/garmin-personal-api-key/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='7' fill='%232bb5a3'/%3E%3Cpolyline points='5.5,17 10.5,17 13,11 16.5,22.5 19.5,14 21.5,17 26.5,17' fill='none' stroke='%2305211d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='7' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3Crect x='12.5' y='24.5' width='7' height='2' rx='1' fill='%2305211d' fill-opacity='.8'/%3E%3Crect x='21' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Garmy">
+<meta property="og:url" content="https://dimagious.github.io/garmidian/guides/garmin-personal-api-key/">
+<meta property="og:title" content="Garmin Personal API key: where to find it and what it can do">
+<meta property="og:description" content="Where to find the key in Garmin Connect, how long it lasts, which numbers Garmy reads with it and which Garmin does not provide.">
+<meta property="og:image" content="https://dimagious.github.io/garmidian/img/help-key.png">
+<meta property="og:image:width" content="1000">
+<meta property="og:image:height" content="320">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Garmin Personal API key: where to find it and what it can do">
+<meta name="twitter:description" content="Where to find the key in Garmin Connect, how long it lasts, which numbers Garmy reads with it and which Garmin does not provide.">
+<meta name="twitter:image" content="https://dimagious.github.io/garmidian/img/help-key.png">
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/guides.css">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "Garmin Personal API key: where to find it and what it can do", "step": [{"@type": "HowToStep", "name": "Open the Personal API Key page", "text": "In Garmin Connect, open Settings, then Personal API Key."}, {"@type": "HowToStep", "name": "Create the key", "text": "Accept the terms, create a key and pick how long it lives. Garmin shows the key only once, so copy it."}, {"@type": "HowToStep", "name": "Paste it into Garmy", "text": "Run Garmy: Build a Garmin dashboard and paste the key into the first step, then Check and continue."}]}
+</script>
+</head>
+<body>
+<!--shell:top tab="Garmin Personal API key"-->
+
+    <main class="note guide" id="note">
+      <article class="file" style="padding-top:34px">
+        <div class="crumb">Guides/garmin-personal-api-key.md</div>
+        <h1 class="inline-title">Garmin Personal API key: where to find it and what it can do</h1>
+
+        <div class="props" aria-label="Properties">
+          <div class="props-title"><svg><use href="#i-list"/></svg>Properties</div>
+          <div class="prop"><div class="k"><svg><use href="#i-text"/></svg>where</div><div class="v">Garmin Connect, Settings, Personal API Key</div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-hash"/></svg>lifetime</div><div class="v">you choose it when you create the key</div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>shown</div><div class="v">once</div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-hash"/></svg>token</div><div class="v">24 hours, handled by Garmy</div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-hash"/></svg>checked on</div><div class="v">Garmy {{version}}</div></div>
+        </div>
+
+        <p class="lede">A Personal API key is a long password that lets an app read your own Garmin data. You create it in Garmin Connect and choose how long it lives. Garmy needs one. This page says where to find it, what Garmy reads with it and what Garmin does not give out.</p>
+
+        <figure class="shot">
+          <picture><img src="../../img/help-key.png" width="1000" height="320" alt="The Personal API Key page in the Garmin Connect settings, with an active key and a Delete button"></picture>
+          <figcaption>Garmin Connect, Settings, Personal API Key.</figcaption>
+        </figure>
+
+        <nav class="toc" aria-label="On this page">
+          <b>ON THIS PAGE</b>
+          <ol>
+            <li><a href="#open">Open the Personal API Key page</a></li>
+            <li><a href="#create">Create the key</a></li>
+            <li><a href="#paste">Paste it into Garmy</a></li>
+            <li><a href="#reads">What Garmy reads with it</a></li>
+            <li><a href="#cannot">What it cannot do</a></li>
+            <li><a href="#lifetime">How long it lasts</a></li>
+            <li><a href="#kept">Where the key is kept</a></li>
+            <li><a href="#terms">Read the terms</a></li>
+            <li><a href="#related">Related guides</a></li>
+          </ol>
+        </nav>
+
+        <h2 class="step" id="open" data-short="Open the Personal API Key page"><span class="n">1</span>Open the Personal API Key page</h2>
+        <p>Open Garmin Connect in your browser, then <span class="path">Settings<i>›</i>Personal API Key</span>. The page is Garmin's, so Garmin can move it. If you cannot find it, search the Garmin Connect settings for the words "Personal API Key".</p>
+        <p>You need a Garmin Connect account. The same account your watch syncs to.</p>
+
+        <h2 class="step" id="create" data-short="Create the key"><span class="n">2</span>Create the key</h2>
+        <ol class="steps">
+          <li>Accept the terms.</li>
+          <li>Create a key and pick its lifetime.</li>
+          <li>Copy it. Garmin shows the key only once.</li>
+        </ol>
+        <p>The page in the picture above tells you why: for your privacy an existing key is not displayed. To generate a new key you must first delete the current one, and after you generate a new key the previous key no longer works. So paste the key into Garmy right away.</p>
+
+        <h2 class="step" id="paste" data-short="Paste it into Garmy"><span class="n">3</span>Paste it into Garmy</h2>
+        <p>Install Garmy, run <b>Garmy: Build a Garmin dashboard</b> and paste the key into the first step. <b>Check and continue</b> asks Garmin whether the key works before the wizard moves on.</p>
+        <figure class="shot" style="max-width:560px">
+          <picture><img src="../../img/wizard-key-light.png" width="1632" height="1686" loading="lazy" alt="The first wizard step: a safe-storage note, three steps for getting a key, a picture of the Garmin Connect page and the key field"></picture>
+          <figcaption>Step 1 of the wizard. The picture of Garmin's page is built into the plugin.</figcaption>
+        </figure>
+        <p>If something goes wrong, the wizard says one of three things:</p>
+        <ul class="keynotes">
+          <li><code>Not accepted</code><span>Garmin did not accept the key. Check that it was copied whole and has not expired. The fix is to paste another key.</span></li>
+          <li><code>No connection</code><span>Cannot reach Garmin. Check your connection and try again.</span></li>
+          <li><code>Wait</code><span>Garmin asks to wait. Try again in a minute.</span></li>
+        </ul>
+
+        <h2 id="reads" data-short="What Garmy reads with it">What Garmy reads with it</h2>
+        <p>Garmy exchanges the key for a token that is valid for 24 hours, then calls four Garmin services. A year of history takes about 17 requests.</p>
+        <div class="table-wrap">
+          <table class="cmp">
+            <thead><tr><th>Service</th><th class="us">What Garmy takes</th><th>Written as</th></tr></thead>
+            <tbody>
+              <tr><td><code>dailysummaries</code></td><td data-h="Takes" class="us"><span>Steps, resting heart rate, average stress, the day's highest Body Battery</span></td><td data-h="Written as"><span><code>steps</code> <code>resting_hr</code> <code>stress</code> <code>body_battery</code></span></td></tr>
+              <tr><td><code>dailySleepSummariesByDate</code></td><td data-h="Takes" class="us"><span>Overall sleep score, time asleep</span></td><td data-h="Written as"><span><code>sleep_score</code> <code>sleep_duration</code></span></td></tr>
+              <tr><td><code>hrv/daily</code></td><td data-h="Takes" class="us"><span>Last night's average HRV</span></td><td data-h="Written as"><span><code>hrv</code></span></td></tr>
+              <tr><td><code>activities/search</code></td><td data-h="Takes" class="us"><span>Runs, rides, swims and strength sessions: distance and duration, summed per day</span></td><td data-h="Written as"><span><code>run_km</code> <code>run_min</code> <code>bike_km</code> <code>bike_min</code> <code>swim_km</code> <code>swim_min</code> <code>strength_min</code></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="font-size:14.5px">All requests go to <code>personal.connectapi.garmin.com</code>, and nowhere else.</p>
+
+        <h2 id="cannot" data-short="What it cannot do">What it cannot do</h2>
+        <ul class="nope">
+          <li>Training Readiness. The Personal API does not provide it.</li>
+          <li>A VO2 max number. Same reason.</li>
+          <li>A full daily distance. The range endpoints report walking distance only, so Garmy does not write <code>distance_km</code> rather than show a wrong number.</li>
+          <li>Splitting a multi-sport activity into its sports.</li>
+        </ul>
+
+        <h2 id="lifetime" data-short="How long it lasts">How long it lasts</h2>
+        <p>You choose the lifetime when you create the key. When Garmin rejects the key, Garmy says so once and settings show <b>Replace key</b>. Create a new key in Garmin Connect and paste it in the wizard. The 24 hour token cannot be refreshed, so Garmy asks for a new one after 23 hours.</p>
+
+        <h2 id="kept" data-short="Where the key is kept">Where the key is kept</h2>
+        <p>It is kept in Obsidian's secure storage. It is never written to a note, to <code>data.json</code> or to a log, and error messages never contain it. <b>Forget key</b> in Garmy's settings removes it. The details are in <a href="https://github.com/Dimagious/garmidian/blob/main/SECURITY.md">SECURITY.md</a>.</p>
+
+        <h2 id="terms" data-short="Read the terms">Read the terms</h2>
+        <div class="callout warn">
+          <div class="callout-title"><svg><use href="#i-alert"/></svg>The terms are Garmin's</div>
+          <p>Garmin describes the Personal API as meant for individuals who want programmatic access to their own data, not for commercial applications serving multiple end users. Garmy has no server and no accounts: it runs on your computer with your own key. Read what you accept when you create a key.</p>
+        </div>
+
+
+        <h2 id="related" data-short="Related guides">Related guides</h2>
+        <div class="cards small">
+          <a class="card" href="../garmin-sleep-hrv-dashboard/">
+            <div class="thumb"><picture><img src="../../img/dashboard-2-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Garmin sleep and HRV dashboard in Obsidian</span><p class="card-promise">Sleep score, sleep duration, HRV, resting heart rate and Body Battery as cards and charts in one note, from your own Garmin data.</p></div>
+          </a>
+          <a class="card" href="../garmin-to-obsidian-without-health-sync/">
+            <div class="thumb"><picture><img src="../../img/wizard-key-light.png" width="1632" height="1686" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Garmin Connect to Obsidian without Health Sync</span><p class="card-promise">Two ways to get Garmin numbers into Obsidian notes. What Garmy does, what it leaves out, and how it works with notes Health Sync already wrote.</p></div>
+          </a>
+          <a class="card" href="../obsidian-triathlon-training-log/">
+            <div class="thumb"><picture><source data-dark srcset="../../img/dashboard-5-dark.png" media="(prefers-color-scheme: dark)"><img src="../../img/dashboard-5-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">A triathlon training log in Obsidian from Garmin</span><p class="card-promise">Run, bike, swim and strength per week, a month calendar, a year map by sport and monthly goals, built from your Garmin activities.</p></div>
+          </a>
+        </div>
+
+        <div class="next">
+          <p>Got the key? Install Garmy from Community plugins and paste it into the wizard.</p>
+          <div class="actions">
+            <a class="btn primary" href="../../#install"><svg><use href="#i-plug"/></svg>Install Garmy</a><a class="btn" href="../../#privacy">Privacy and network use</a>
+          </div>
+        </div>
+
+        <footer class="note-foot">
+          <span>MIT © Dmitriy Yurkin</span>
+          <a href="../../guides/">All guides</a>
+          <a href="https://github.com/Dimagious/garmidian">GitHub</a>
+          <a href="https://community.obsidian.md/plugins/garmidian">Plugin listing</a>
+          <a href="https://github.com/Dimagious/garmidian/issues">Something wrong on this page?</a>
+          <span class="legal">Garmy is not affiliated with Garmin. Data source: Garmin.</span>
+        </footer>
+      </article>
+    </main>
+<!--shell:bottom-->
+</body>
+</html>

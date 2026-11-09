@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A weekly training heatmap in Obsidian · Garmy</title>
+<meta name="description" content="A year of training days coloured by sport, a month calendar and weekly bars, from the minutes Garmy writes into your daily notes.">
+<link rel="canonical" href="https://dimagious.github.io/garmidian/guides/weekly-training-heatmap-obsidian/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='7' fill='%232bb5a3'/%3E%3Cpolyline points='5.5,17 10.5,17 13,11 16.5,22.5 19.5,14 21.5,17 26.5,17' fill='none' stroke='%2305211d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='7' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3Crect x='12.5' y='24.5' width='7' height='2' rx='1' fill='%2305211d' fill-opacity='.8'/%3E%3Crect x='21' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Garmy">
+<meta property="og:url" content="https://dimagious.github.io/garmidian/guides/weekly-training-heatmap-obsidian/">
+<meta property="og:title" content="A weekly training heatmap in Obsidian">
+<meta property="og:description" content="A year of training days coloured by sport, a month calendar and weekly bars, from the minutes Garmy writes into your daily notes.">
+<meta property="og:image" content="https://dimagious.github.io/garmidian/img/dashboard-6-light.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1720">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="A weekly training heatmap in Obsidian">
+<meta name="twitter:description" content="A year of training days coloured by sport, a month calendar and weekly bars, from the minutes Garmy writes into your daily notes.">
+<meta name="twitter:image" content="https://dimagious.github.io/garmidian/img/dashboard-6-light.png">
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/guides.css">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "A weekly training heatmap in Obsidian", "step": [{"@type": "HowToStep", "name": "Minutes per sport", "text": "Garmy writes run_min, bike_min, swim_min and strength_min into one note per day."}, {"@type": "HowToStep", "name": "A year by sport", "text": "A heatmap with layers and pick: max over 365 days colours each day by the sport with the most minutes."}, {"@type": "HowToStep", "name": "This month as a calendar", "text": "A heatmap with range: month and layout: calendar shows a dot per sport under each day."}, {"@type": "HowToStep", "name": "Weekly bars", "text": "A dashy-chart with bucket: week sums the minutes per week."}]}
+</script>
+</head>
+<body>
+<!--shell:top tab="A weekly training heatmap"-->
+
+    <main class="note guide" id="note">
+      <article class="file" style="padding-top:34px">
+        <div class="crumb">Guides/weekly-training-heatmap-obsidian.md</div>
+        <h1 class="inline-title">A weekly training heatmap in Obsidian</h1>
+
+        <div class="props" aria-label="Properties">
+          <div class="props-title"><svg><use href="#i-list"/></svg>Properties</div>
+          <div class="prop"><div class="k"><svg><use href="#i-tag"/></svg>blocks</div><div class="v"><span class="pill">heatmap</span><span class="pill">dashy-chart</span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-text"/></svg>fields</div><div class="v"><code>run_min</code> <code>bike_min</code> <code>swim_min</code> <code>strength_min</code></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs Dashy</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs a Garmin key</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-hash"/></svg>checked on</div><div class="v">Garmy {{version}}</div></div>
+        </div>
+
+        <p class="lede">A year of training days coloured by sport, this month as a calendar and minutes per week as bars. All three come from the minutes Garmy writes into your daily notes. Garmy writes the blocks, and this page shows what each key does so you can change them.</p>
+
+        <figure class="shot">
+          <picture><img src="../../img/dashboard-6-light.png" width="2400" height="1720" alt="A year map by sport and monthly goals for run, bike, swim and strength"></picture>
+          <figcaption>A year map by sport, on demo data.</figcaption>
+        </figure>
+
+        <nav class="toc" aria-label="On this page">
+          <b>ON THIS PAGE</b>
+          <ol>
+            <li><a href="#data">Minutes per sport, one number per day</a></li>
+            <li><a href="#year">A year, coloured by sport</a></li>
+            <li><a href="#month">This month as a calendar</a></li>
+            <li><a href="#weeks">Weekly bars</a></li>
+            <li><a href="#variations">Variations</a></li>
+            <li><a href="#where">Where to paste it</a></li>
+            <li><a href="#related">Related guides</a></li>
+          </ol>
+        </nav>
+
+        <h2 class="step" id="data" data-short="Minutes per sport, one number per day"><span class="n">1</span>Minutes per sport, one number per day</h2>
+        <p>Garmy writes <code>run_min</code>, <code>bike_min</code>, <code>swim_min</code> and <code>strength_min</code> into the day notes. A day without that sport has no property, so its cell stays empty. That is the whole input: every grid and bar on this page reads those four numbers.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span class="file"><svg><use href="#i-file"/></svg><span>Garmy/data/2026-11-04.md</span></span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">---
+strength_min: 50
+run_min: 45
+run_km: 8.2
+---</code></pre>
+        </div>
+        <p class="muted" style="font-size:14.5px">Example values.</p>
+
+        <h2 class="step" id="year" data-short="A year, coloured by sport"><span class="n">2</span>A year, coloured by sport</h2>
+        <p>One grid over the last 365 days. Each sport has a colour, and the sport with the most minutes on a day paints that day.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```heatmap
+source: Garmy/data
+range: 365d
+pick: max
+title: Year by sport
+layers:
+  - { field: run_min, color: green, label: Run }
+  - { field: bike_min, color: blue, label: Bike }
+  - { field: swim_min, color: cyan, label: Swim }
+  - { field: strength_min, color: orange, label: Strength }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>layers</code><span>One line per sport. A <code>color</code> and a <code>label</code> each.</span></li>
+          <li><code>pick: max</code><span>On a day with two sports, the one with more minutes paints the cell. Compare minutes with minutes. The tooltip still lists every sport with a value that day.</span></li>
+          <li><code>range: 365d</code><span>A rolling year ending today, in one grid, instead of one grid per calendar year.</span></li>
+        </ul>
+        <figure class="shot">
+          <picture><img src="../../img/dashboard-6-light.png" width="2400" height="1720" loading="lazy" alt="A year map by sport: green run days, blue bike days, cyan swim days and orange strength days, then monthly goals"></picture>
+          <figcaption>The year map, on demo data. It appears once you have 60 days of data.</figcaption>
+        </figure>
+
+        <h2 class="step" id="month" data-short="This month as a calendar"><span class="n">3</span>This month as a calendar</h2>
+        <p>The month view puts each day's number in a calendar cell and a dot under it for every sport trained that day, in the sport's colour. Days after today are dimmed.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```heatmap
+source: Garmy/data
+range: month
+layout: calendar
+pick: max
+title: Month by day
+layers:
+  - { field: run_min, color: green, label: Run }
+  - { field: bike_min, color: blue, label: Bike }
+  - { field: swim_min, color: cyan, label: Swim }
+  - { field: strength_min, color: orange, label: Strength }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>range: month</code><span>The current calendar month.</span></li>
+          <li><code>layout: calendar</code><span>A calendar instead of a year grid. It works with a window of one month or one week.</span></li>
+        </ul>
+        <figure class="shot">
+          <picture><source data-dark srcset="../../img/dashboard-5-dark.png" media="(prefers-color-scheme: dark)"><img src="../../img/dashboard-5-light.png" width="2400" height="1720" loading="lazy" alt="A November month calendar with a green dot on days 1, 3 and 5 and an orange dot on day 4, under weekly training bars"></picture>
+          <figcaption>The month calendar on demo data. It needs 7 days of data.</figcaption>
+        </figure>
+
+        <h2 class="step" id="weeks" data-short="Weekly bars"><span class="n">4</span>Weekly bars</h2>
+        <p>Minutes per sport per week, from the same four numbers. With 28 days of data or more Garmy groups the bars by week.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```dashy-chart
+source: Garmy/data
+type: bar
+bucket: week
+range: 119d
+agg: sum
+title: Training minutes
+series:
+  - { field: run_min, label: Run, color: green }
+  - { field: bike_min, label: Bike, color: blue }
+  - { field: swim_min, label: Swim, color: cyan }
+  - { field: strength_min, label: Strength, color: orange }
+```</code></pre>
+        </div>
+        <p><code>agg: sum</code> adds the minutes of the days in each week. A week without training stays an empty slot.</p>
+
+        <h2 id="variations" data-short="Variations">Variations</h2>
+        <div class="vars">
+          <div class="var">
+            <h3>One sport</h3>
+            <p>Running only, one colour, shaded by minutes.</p>
+            <div class="codeblock" data-code>
+          <div class="bar"><span>heatmap</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```heatmap
+source: Garmy/data
+field: run_min
+color: green
+range: 365d
+title: Running
+```</code></pre>
+        </div>
+          </div>
+          <div class="var">
+            <h3>Half a year</h3>
+            <p>The same sport layers over 182 days, a better fit for a narrow pane.</p>
+            <div class="codeblock" data-code>
+          <div class="bar"><span>heatmap</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```heatmap
+source: Garmy/data
+range: 182d
+pick: max
+title: Year by sport
+layers:
+  - { field: run_min, color: green, label: Run }
+  - { field: bike_min, color: blue, label: Bike }
+  - { field: swim_min, color: cyan, label: Swim }
+  - { field: strength_min, color: orange, label: Strength }
+```</code></pre>
+        </div>
+          </div>
+        </div>
+
+        <h2 id="where" data-short="Where to paste it">Where to paste it</h2>
+        <p>These blocks work in any note, not only the dashboard Garmy makes. Keep <code>source: Garmy/data</code> pointing at your day notes, and change it if you moved them in settings. Edit colours and labels freely. A rebuild only touches the part of a note between Garmy's two comment markers, so a heatmap you pasted elsewhere stays as you left it.</p>
+
+
+        <h2 id="related" data-short="Related guides">Related guides</h2>
+        <div class="cards small">
+          <a class="card" href="../obsidian-triathlon-training-log/">
+            <div class="thumb"><picture><source data-dark srcset="../../img/dashboard-5-dark.png" media="(prefers-color-scheme: dark)"><img src="../../img/dashboard-5-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">A triathlon training log in Obsidian from Garmin</span><p class="card-promise">Run, bike, swim and strength per week, a month calendar, a year map by sport and monthly goals, built from your Garmin activities.</p></div>
+          </a>
+          <a class="card" href="../garmin-sleep-hrv-dashboard/">
+            <div class="thumb"><picture><img src="../../img/dashboard-2-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Garmin sleep and HRV dashboard in Obsidian</span><p class="card-promise">Sleep score, sleep duration, HRV, resting heart rate and Body Battery as cards and charts in one note, from your own Garmin data.</p></div>
+          </a>
+          <a class="card" href="../garmin-to-obsidian-without-health-sync/">
+            <div class="thumb"><picture><img src="../../img/wizard-key-light.png" width="1632" height="1686" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Garmin Connect to Obsidian without Health Sync</span><p class="card-promise">Two ways to get Garmin numbers into Obsidian notes. What Garmy does, what it leaves out, and how it works with notes Health Sync already wrote.</p></div>
+          </a>
+        </div>
+
+        <div class="next">
+          <p>Install Garmy and Dashy, load your history and the heatmaps are in the dashboard.</p>
+          <div class="actions">
+            <a class="btn primary" href="../../#install"><svg><use href="#i-plug"/></svg>Install Garmy</a><a class="btn" href="../obsidian-triathlon-training-log/">The training log guide</a>
+          </div>
+        </div>
+
+        <footer class="note-foot">
+          <span>MIT © Dmitriy Yurkin</span>
+          <a href="../../guides/">All guides</a>
+          <a href="https://github.com/Dimagious/garmidian">GitHub</a>
+          <a href="https://community.obsidian.md/plugins/garmidian">Plugin listing</a>
+          <a href="https://github.com/Dimagious/garmidian/issues">Something wrong on this page?</a>
+          <span class="legal">Garmy is not affiliated with Garmin. Data source: Garmin.</span>
+        </footer>
+      </article>
+    </main>
+<!--shell:bottom-->
+</body>
+</html>

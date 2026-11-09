@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Garmin Connect to Obsidian without Health Sync · Garmy</title>
+<meta name="description" content="Two ways to get Garmin numbers into Obsidian notes. What Garmy does, what it leaves out, and how it works with notes Health Sync already wrote.">
+<link rel="canonical" href="https://dimagious.github.io/garmidian/guides/garmin-to-obsidian-without-health-sync/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='7' fill='%232bb5a3'/%3E%3Cpolyline points='5.5,17 10.5,17 13,11 16.5,22.5 19.5,14 21.5,17 26.5,17' fill='none' stroke='%2305211d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='7' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3Crect x='12.5' y='24.5' width='7' height='2' rx='1' fill='%2305211d' fill-opacity='.8'/%3E%3Crect x='21' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Garmy">
+<meta property="og:url" content="https://dimagious.github.io/garmidian/guides/garmin-to-obsidian-without-health-sync/">
+<meta property="og:title" content="Garmin Connect to Obsidian without Health Sync">
+<meta property="og:description" content="Two ways to get Garmin numbers into Obsidian notes. What Garmy does, what it leaves out, and how it works with notes Health Sync already wrote.">
+<meta property="og:image" content="https://dimagious.github.io/garmidian/img/d1-key.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="800">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Garmin Connect to Obsidian without Health Sync">
+<meta name="twitter:description" content="Two ways to get Garmin numbers into Obsidian notes. What Garmy does, what it leaves out, and how it works with notes Health Sync already wrote.">
+<meta name="twitter:image" content="https://dimagious.github.io/garmidian/img/d1-key.png">
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/guides.css">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "Garmin Connect to Obsidian without Health Sync", "step": [{"@type": "HowToStep", "name": "Build a dashboard from notes you already have", "text": "Open the Garmy wizard and click Look for those notes under the key field."}, {"@type": "HowToStep", "name": "Pick the folder", "text": "Garmy lists folders with at least five dated notes that carry two or more known metrics. Click one."}, {"@type": "HowToStep", "name": "Choose, preview, create", "text": "The wizard skips the key and the load. Choose what to show, preview it and create the note."}]}
+</script>
+</head>
+<body>
+<!--shell:top tab="Garmin Connect to Obsidian without Health Sync"-->
+
+    <main class="note guide" id="note">
+      <article class="file" style="padding-top:34px">
+        <div class="crumb">Guides/garmin-to-obsidian-without-health-sync.md</div>
+        <h1 class="inline-title">Garmin Connect to Obsidian without Health Sync</h1>
+
+        <div class="props" aria-label="Properties">
+          <div class="props-title"><svg><use href="#i-list"/></svg>Properties</div>
+          <div class="prop"><div class="k"><svg><use href="#i-tag"/></svg>compares</div><div class="v"><span class="pill">Garmy</span><span class="pill">Garmin Health Sync</span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-text"/></svg>data source</div><div class="v">Garmin's official Personal API</div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>works with existing notes</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>key needed for existing notes</div><div class="v"><span class="check off" aria-label="no"></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-hash"/></svg>checked on</div><div class="v">Garmy {{version}}</div></div>
+        </div>
+
+        <p class="lede">Garmin Health Sync is a good plugin. Garmy covers a different part: it builds the dashboard from your own Garmin data, and it loads that data from Garmin's official Personal API. This page says what each one does and how Garmy works with notes Health Sync already wrote.</p>
+
+        <figure class="shot">
+          <picture><img src="../../img/wizard-key-light.png" width="1632" height="1686" alt="The first step of the Garmy wizard in Obsidian"></picture>
+          <figcaption>Step 1 of the Garmy wizard.</figcaption>
+        </figure>
+
+        <nav class="toc" aria-label="On this page">
+          <b>ON THIS PAGE</b>
+          <ol>
+            <li><a href="#ways">Two ways to get the numbers</a></li>
+            <li><a href="#pick">Which one for what</a></li>
+            <li><a href="#garmy">What Garmy writes</a></li>
+            <li><a href="#existing">Build a dashboard from notes you already have</a></li>
+            <li><a href="#find">Pick the folder</a></li>
+            <li><a href="#build">Choose, preview, create</a></li>
+            <li><a href="#both">Running both</a></li>
+            <li><a href="#leaves-out">What Garmy leaves out</a></li>
+            <li><a href="#related">Related guides</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="ways" data-short="Two ways to get the numbers">Two ways to get the numbers</h2>
+        <ul>
+          <li><b>A plugin or script that writes Garmin numbers into your daily notes.</b> Garmin Health Sync is one. Your notes get properties such as <code>steps</code> or <code>sleep_score</code>, and you chart them any way you like.</li>
+          <li><b>Garmy.</b> It reads Garmin's official Personal API with a key you create in Garmin Connect. It never asks for your Garmin password. It writes one note per day under <code>Garmy/data</code> and then builds a dashboard of Dashy blocks from those notes.</li>
+        </ul>
+        <p>The two overlap in places. Health Sync is a good plugin, and if your notes already hold what you need, you may want nothing else. The part Garmy adds is the dashboard: a wizard picks sports and metrics, previews the result on your numbers and writes the blocks into a note.</p>
+
+        <h2 id="pick" data-short="Which one for what">Which one for what</h2>
+        <div class="table-wrap">
+          <table class="cmp">
+            <thead><tr><th>You want</th><th class="us">Use</th></tr></thead>
+            <tbody>
+              <tr><td>A ready dashboard from your numbers</td><td data-h="Use" class="us"><span>Garmy. The wizard writes it, and a rebuild later regenerates it.</span></td></tr>
+              <tr><td>Numbers already in your daily notes</td><td data-h="Use" class="us"><span>Keep them. Garmy can build the dashboard from those notes, no key and no loading.</span></td></tr>
+              <tr><td>Training Readiness or a VO2 max number</td><td data-h="Use" class="us"><span>Garmy cannot give you these: Garmin's Personal API has neither. Check what Health Sync writes.</span></td></tr>
+              <tr><td>A full daily distance</td><td data-h="Use" class="us"><span>Garmy writes no <code>distance_km</code>, because the range endpoints report walking distance only.</span></td></tr>
+              <tr><td>Your own charts</td><td data-h="Use" class="us"><span>Either. Garmy's note is plain YAML you can edit, and the day notes are plain properties.</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="garmy" data-short="What Garmy writes">What Garmy writes</h2>
+        <p>One note per day, with a property only when Garmin returns the number:</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span class="file"><svg><use href="#i-file"/></svg><span>Garmy/data/2026-11-06.md</span></span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">---
+steps: 10866
+resting_hr: 49
+stress: 32
+body_battery: 84
+sleep_score: 79
+sleep_duration: "7h 5min"
+hrv: 61
+run_km: 10.4
+run_min: 51
+---</code></pre>
+        </div>
+        <p class="muted" style="font-size:14.5px">Example values. The property names match the ones Health Sync notes carry, and <code>sleep_duration</code> is text like <code>7h 43min</code>, so a template that reads one reads the other.</p>
+
+        <h2 class="step" id="existing" data-short="Build a dashboard from notes you already have"><span class="n">1</span>Build a dashboard from notes you already have</h2>
+        <p>This is the mode for Health Sync users. Open <b>Garmy: Build a Garmin dashboard</b>. Under the key field, <b>Already have Garmin numbers in your notes?</b> has a <b>Look for those notes</b> button.</p>
+        <figure class="shot">
+          <picture><img src="../../img/d1-key.png" width="1200" height="800" loading="lazy" alt="The first wizard step with the key field and, below it, the section Already have Garmin numbers in your notes with a Look for those notes button"></picture>
+          <figcaption>The button is at the bottom of step 1.</figcaption>
+        </figure>
+        <h2 class="step" id="find" data-short="Pick the folder"><span class="n">2</span>Pick the folder</h2>
+        <p>Garmy lists the folders it found, with a note count: <b>Found in these folders</b>. Click one. A folder qualifies when:</p>
+        <ul>
+          <li>it holds at least five notes that count;</li>
+          <li>each note has a date in its name: <code>2026-11-06</code>, or the format of your daily notes from Daily notes or Periodic Notes, such as <code>06.11.2026</code>. Formats with month or weekday names are not read;</li>
+          <li>each note carries at least two metrics Garmy knows: <code>steps</code>, <code>resting_hr</code>, <code>stress</code>, <code>body_battery</code>, <code>sleep_score</code>, <code>sleep_duration</code>, <code>hrv</code>, <code>training_readiness</code>, <code>distance_km</code>, or the per sport fields <code>run_km</code>, <code>run_min</code>, <code>bike_km</code>, <code>bike_min</code>, <code>swim_km</code>, <code>swim_min</code>, <code>strength_min</code>.</li>
+        </ul>
+        <p class="muted" style="font-size:14.5px">The scan reads note properties from Obsidian's cache, opens no file and keeps nothing. It runs only when you click the button.</p>
+        <h2 class="step" id="build" data-short="Choose, preview, create"><span class="n">3</span>Choose, preview, create</h2>
+        <p>The wizard skips the key and the load and goes to <b>Choose</b>. It offers what the notes hold. If they carry <code>training_readiness</code> or <code>distance_km</code>, the dashboard uses them, which the Personal API route cannot. The dashboard's <code>source:</code> points at your folder, and the rebuild command reads that same folder later.</p>
+
+        <h2 id="both" data-short="Running both">Running both</h2>
+        <p>By default Garmy writes to <code>Garmy/data</code>, so the two never touch each other's notes. If you point Garmy's data folder at notes that already carry your values, Garmy fills missing properties in older days and overwrites the three most recent days with Garmin's latest numbers. Use the existing-notes mode instead when you only want the dashboard.</p>
+
+        <h2 id="leaves-out" data-short="What Garmy leaves out">What Garmy leaves out</h2>
+        <ul class="nope">
+          <li>Training Readiness and VO2 max, from Garmin's side.</li>
+          <li><code>distance_km</code>, for the reason above.</li>
+          <li>Coaching. It draws your numbers and does not interpret them.</li>
+          <li>Phones: not tested yet.</li>
+        </ul>
+
+
+        <h2 id="related" data-short="Related guides">Related guides</h2>
+        <div class="cards small">
+          <a class="card" href="../garmin-personal-api-key/">
+            <div class="thumb"><picture><img src="../../img/help-key.png" width="1000" height="320" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Garmin Personal API key: where to find it and what it can do</span><p class="card-promise">Where to find the key in Garmin Connect, how long it lasts, which numbers Garmy reads with it and which Garmin does not provide.</p></div>
+          </a>
+          <a class="card" href="../garmin-sleep-hrv-dashboard/">
+            <div class="thumb"><picture><img src="../../img/dashboard-2-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Garmin sleep and HRV dashboard in Obsidian</span><p class="card-promise">Sleep score, sleep duration, HRV, resting heart rate and Body Battery as cards and charts in one note, from your own Garmin data.</p></div>
+          </a>
+          <a class="card" href="../weekly-training-heatmap-obsidian/">
+            <div class="thumb"><picture><img src="../../img/dashboard-6-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">A weekly training heatmap in Obsidian</span><p class="card-promise">A year of training days coloured by sport, a month calendar and weekly bars, from the minutes Garmy writes into your daily notes.</p></div>
+          </a>
+        </div>
+
+        <div class="next">
+          <p>Install Garmy, then click Look for those notes in the first step.</p>
+          <div class="actions">
+            <a class="btn primary" href="../../#install"><svg><use href="#i-plug"/></svg>Install Garmy</a><a class="btn" href="../garmin-personal-api-key/">Get a Personal API key</a>
+          </div>
+        </div>
+
+        <footer class="note-foot">
+          <span>MIT © Dmitriy Yurkin</span>
+          <a href="../../guides/">All guides</a>
+          <a href="https://github.com/Dimagious/garmidian">GitHub</a>
+          <a href="https://community.obsidian.md/plugins/garmidian">Plugin listing</a>
+          <a href="https://github.com/Dimagious/garmidian/issues">Something wrong on this page?</a>
+          <span class="legal">Garmy is not affiliated with Garmin. Data source: Garmin.</span>
+        </footer>
+      </article>
+    </main>
+<!--shell:bottom-->
+</body>
+</html>

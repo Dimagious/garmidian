@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Garmin sleep and HRV dashboard in Obsidian · Garmy</title>
+<meta name="description" content="Sleep score, sleep duration, HRV, resting heart rate and Body Battery as cards and charts in one note, from your own Garmin data.">
+<link rel="canonical" href="https://dimagious.github.io/garmidian/guides/garmin-sleep-hrv-dashboard/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' rx='7' fill='%232bb5a3'/%3E%3Cpolyline points='5.5,17 10.5,17 13,11 16.5,22.5 19.5,14 21.5,17 26.5,17' fill='none' stroke='%2305211d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='7' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3Crect x='12.5' y='24.5' width='7' height='2' rx='1' fill='%2305211d' fill-opacity='.8'/%3E%3Crect x='21' y='24.5' width='4' height='2' rx='1' fill='%2305211d' fill-opacity='.55'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Garmy">
+<meta property="og:url" content="https://dimagious.github.io/garmidian/guides/garmin-sleep-hrv-dashboard/">
+<meta property="og:title" content="Garmin sleep and HRV dashboard in Obsidian">
+<meta property="og:description" content="Sleep score, sleep duration, HRV, resting heart rate and Body Battery as cards and charts in one note, from your own Garmin data.">
+<meta property="og:image" content="https://dimagious.github.io/garmidian/img/dashboard-2-light.png">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1720">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Garmin sleep and HRV dashboard in Obsidian">
+<meta name="twitter:description" content="Sleep score, sleep duration, HRV, resting heart rate and Body Battery as cards and charts in one note, from your own Garmin data.">
+<meta name="twitter:image" content="https://dimagious.github.io/garmidian/img/dashboard-2-light.png">
+<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/guides.css">
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "HowTo", "name": "Garmin sleep and HRV dashboard in Obsidian", "step": [{"@type": "HowToStep", "name": "Install Garmy and Dashy", "text": "Install both from Community plugins and create a Garmin Personal API key."}, {"@type": "HowToStep", "name": "Load a year of days", "text": "Run the wizard, paste the key and load 30 days, 90 days or one year. Garmy saves one note per day."}, {"@type": "HowToStep", "name": "Choose Recovery", "text": "Keep the Recovery group and untick Movement and Training."}, {"@type": "HowToStep", "name": "Read the cards", "text": "The dashboard starts with six cards: sleep score, sleep duration, HRV, Body Battery, resting heart rate and stress."}, {"@type": "HowToStep", "name": "Compare with your usual", "text": "Seven day averages with compare: usual, from 14 days of history."}, {"@type": "HowToStep", "name": "Chart sleep and HRV", "text": "Two dashy-chart blocks show sleep with Body Battery and HRV with resting heart rate."}]}
+</script>
+</head>
+<body>
+<!--shell:top tab="Garmin sleep and HRV dashboard"-->
+
+    <main class="note guide" id="note">
+      <article class="file" style="padding-top:34px">
+        <div class="crumb">Guides/garmin-sleep-hrv-dashboard.md</div>
+        <h1 class="inline-title">Garmin sleep and HRV dashboard in Obsidian</h1>
+
+        <div class="props" aria-label="Properties">
+          <div class="props-title"><svg><use href="#i-list"/></svg>Properties</div>
+          <div class="prop"><div class="k"><svg><use href="#i-tag"/></svg>blocks</div><div class="v"><span class="pill">stats</span><span class="pill">dashy-chart</span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-text"/></svg>fields</div><div class="v"><code>sleep_score</code> <code>sleep_duration</code> <code>hrv</code> <code>resting_hr</code> <code>body_battery</code> <code>stress</code></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs Dashy</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-box"/></svg>needs a Garmin key</div><div class="v"><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span></div></div>
+          <div class="prop"><div class="k"><svg><use href="#i-hash"/></svg>checked on</div><div class="v">Garmy {{version}}</div></div>
+        </div>
+
+        <p class="lede">Sleep score, sleep duration, HRV, resting heart rate, Body Battery and stress, as cards and charts in one Obsidian note, from your own Garmin data. Garmy writes the blocks. This page shows what they are, so you can read and edit them.</p>
+
+        <figure class="shot">
+          <picture><img src="../../img/dashboard-2-light.png" width="2400" height="1720" alt="Recovery averages against your usual, then a Sleep and Body Battery line chart"></picture>
+          <figcaption>Seven day averages and a chart, on demo data.</figcaption>
+        </figure>
+
+        <nav class="toc" aria-label="On this page">
+          <b>ON THIS PAGE</b>
+          <ol>
+            <li><a href="#install">Install Garmy and Dashy, make a key</a></li>
+            <li><a href="#load">Load a year of days</a></li>
+            <li><a href="#choose">Choose Recovery</a></li>
+            <li><a href="#cards">The cards</a></li>
+            <li><a href="#week">This week against your usual</a></li>
+            <li><a href="#charts">Sleep and HRV over time</a></li>
+            <li><a href="#keep">Keep it current</a></li>
+            <li><a href="#missing">If a card is missing</a></li>
+            <li><a href="#related">Related guides</a></li>
+          </ol>
+        </nav>
+
+        <h2 class="step" id="install" data-short="Install Garmy and Dashy, make a key"><span class="n">1</span>Install Garmy and Dashy, make a key</h2>
+        <p>Install <b>Garmy</b> and <b>Dashy</b> from Community plugins. Garmy needs a Garmin Personal API key, a long password that lets an app read your own Garmin data. <a href="../garmin-personal-api-key/">The key guide</a> shows where to create it.</p>
+
+        <h2 class="step" id="load" data-short="Load a year of days"><span class="n">2</span>Load a year of days</h2>
+        <p>Run <b>Garmy: Build a Garmin dashboard</b>, paste the key and pick a period: 30 days, 90 days or one year. Garmy saves one note per day in <code>Garmy/data</code>. The sleep and recovery numbers land as properties:</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span class="file"><svg><use href="#i-file"/></svg><span>Garmy/data/2026-11-06.md</span></span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">---
+steps: 10866
+resting_hr: 49
+stress: 32
+body_battery: 84
+sleep_score: 79
+sleep_duration: "7h 5min"
+hrv: 61
+---</code></pre>
+        </div>
+        <p class="muted" style="font-size:14.5px">Example values. Garmy writes a property only when Garmin returns the number.</p>
+        <ul class="keynotes">
+          <li><code>sleep_score</code><span>Garmin's overall sleep score for the night.</span></li>
+          <li><code>sleep_duration</code><span>Time asleep as text, hours and minutes: <code>7h 5min</code>.</span></li>
+          <li><code>hrv</code><span>Last night's average HRV, in milliseconds.</span></li>
+          <li><code>resting_hr</code><span>Resting heart rate of the day.</span></li>
+          <li><code>body_battery</code><span>The day's highest Body Battery value.</span></li>
+          <li><code>stress</code><span>The day's average stress level. A day Garmin did not measure has no <code>stress</code> property.</span></li>
+        </ul>
+
+        <h2 class="step" id="choose" data-short="Choose Recovery"><span class="n">3</span>Choose Recovery</h2>
+        <p>On the <b>Choose</b> step the three groups are Recovery, Movement and Training. Keep Recovery and untick the other two if sleep and HRV are all you want. Only metrics that exist in your data are used, so a watch that never recorded HRV gets no HRV card.</p>
+
+        <h2 class="step" id="cards" data-short="The cards: how last night went"><span class="n">4</span>The cards: how last night went</h2>
+        <p>The first block is six cards with the latest value of each metric. Garmy writes this:</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 3
+source: Garmy/data
+items:
+  - { label: Sleep, field: sleep_score, agg: latest, icon: 💤 }
+  - { label: Sleep duration, field: sleep_duration, agg: latest, icon: 🛏 }
+  - { label: HRV, field: hrv, agg: latest, unit: " ms", icon: 💓 }
+  - { label: Body Battery, field: body_battery, agg: latest, icon: ⚡ }
+  - { label: Resting HR, field: resting_hr, agg: latest, unit: " bpm", icon: ❤️ }
+  - { label: Stress, field: stress, agg: latest, icon: 😰 }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>agg: latest</code><span>The newest value in the folder.</span></li>
+          <li><code>source</code><span>The data folder. Change it if you moved the day notes.</span></li>
+          <li><code>unit</code><span>Added to HRV and resting heart rate: <code>ms</code> and <code>bpm</code>.</span></li>
+        </ul>
+        <figure class="shot">
+          <picture><source data-dark srcset="../../img/dashboard-1-dark.png" media="(prefers-color-scheme: dark)"><img src="../../img/dashboard-1-light.png" width="2400" height="1720" loading="lazy" alt="Six recovery cards: sleep score 66, sleep duration 6h 29m, HRV 61 ms, Body Battery 81, resting HR 51 bpm, stress 33"></picture>
+          <figcaption>The block above, drawn by Dashy on demo data.</figcaption>
+        </figure>
+
+        <h2 class="step" id="week" data-short="This week against your usual"><span class="n">5</span>This week against your usual</h2>
+        <p>Under the cards sit the 7 day averages, each against your usual level, with a small trend. Resting heart rate and stress count as better when they go down.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```stats
+columns: 3
+source: Garmy/data
+period: 7d
+items:
+  - { label: Sleep, field: sleep_score, agg: avg, precision: 0, icon: 💤, compare: usual, better: up, trend: 14d }
+  - { label: HRV, field: hrv, agg: avg, precision: 0, unit: " ms", icon: 💓, compare: usual, better: up, trend: 14d }
+  - { label: Body Battery, field: body_battery, agg: avg, precision: 0, icon: ⚡, compare: usual, better: up, trend: 14d }
+  - { label: Resting HR, field: resting_hr, agg: avg, precision: 0, unit: " bpm", icon: ❤️, compare: usual, better: down, trend: 14d }
+  - { label: Stress, field: stress, agg: avg, precision: 0, icon: 😰, compare: usual, better: down, trend: 14d }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>compare: usual</code><span>The change against the average of every day before the 7 day window. Needs 14 days of history; with fewer, Garmy writes plain 7 day averages.</span></li>
+          <li><code>better: down</code><span>Resting heart rate and stress. Sleep, HRV and Body Battery are <code>better: up</code>.</span></li>
+          <li><code>trend: 14d</code><span>A small bar chart of the last 14 days under the number.</span></li>
+        </ul>
+
+        <h2 class="step" id="charts" data-short="Sleep and HRV over time"><span class="n">6</span>Sleep and HRV over time</h2>
+        <p>Two line charts follow: sleep score with Body Battery, and HRV with resting heart rate. They appear once you have 7 days of data.</p>
+        <div class="codeblock" data-code>
+          <div class="bar"><span>Garmin dashboard.md</span><button class="copy" type="button">Copy</button></div>
+<pre><code class="yaml-fenced">```dashy-chart
+source: Garmy/data
+range: 90d
+agg: avg
+title: Sleep / Body Battery
+series:
+  - { field: sleep_score, label: Sleep, color: purple }
+  - { field: body_battery, label: Body Battery, color: cyan }
+```
+
+```dashy-chart
+source: Garmy/data
+range: 90d
+agg: avg
+title: HRV / Resting HR
+series:
+  - { field: hrv, label: HRV, color: green }
+  - { field: resting_hr, label: Resting HR, color: red }
+```</code></pre>
+        </div>
+        <ul class="keynotes">
+          <li><code>range: 90d</code><span>The longest window of 7, 14, 30, 60 or 90 days that fits your history.</span></li>
+          <li><code>dashy-chart</code><span>The block language is <code>dashy-chart</code>, because <code>chart</code> belongs to the Obsidian Charts plugin.</span></li>
+          <li><code>series</code><span>Two lines per chart with colours from Garmy's palette. Edit <code>color</code> or <code>label</code> freely.</span></li>
+        </ul>
+        <p>These blocks work in any note, not only the dashboard. Copy one to your home page and keep <code>source: Garmy/data</code> pointing at the day notes.</p>
+
+        <h2 id="keep" data-short="Keep it current">Keep it current</h2>
+        <p>Garmy syncs shortly after Obsidian starts and then every 6, 12 or 24 hours (your choice, or off). The three latest days are rewritten on each sync, so last night's score is corrected if Garmin revises it. After a month, run <b>Garmy: Rebuild the dashboard in this note</b> to get the charts and comparisons that a week of data could not support.</p>
+
+        <h2 id="missing" data-short="If a card is missing">If a card is missing</h2>
+        <ul>
+          <li><b>No sleep cards.</b> Garmy writes sleep properties for a night only when Garmin returns a score or a duration. No nights in the period, no cards.</li>
+          <li><b>No HRV.</b> Same rule: <code>hrv</code> comes from Garmin's last night average.</li>
+          <li><b>No Training Readiness card.</b> Garmin's Personal API does not provide it.</li>
+        </ul>
+
+
+        <h2 id="related" data-short="Related guides">Related guides</h2>
+        <div class="cards small">
+          <a class="card" href="../garmin-personal-api-key/">
+            <div class="thumb"><picture><img src="../../img/help-key.png" width="1000" height="320" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Garmin Personal API key: where to find it and what it can do</span><p class="card-promise">Where to find the key in Garmin Connect, how long it lasts, which numbers Garmy reads with it and which Garmin does not provide.</p></div>
+          </a>
+          <a class="card" href="../obsidian-triathlon-training-log/">
+            <div class="thumb"><picture><source data-dark srcset="../../img/dashboard-5-dark.png" media="(prefers-color-scheme: dark)"><img src="../../img/dashboard-5-light.png" width="2400" height="1720" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">A triathlon training log in Obsidian from Garmin</span><p class="card-promise">Run, bike, swim and strength per week, a month calendar, a year map by sport and monthly goals, built from your Garmin activities.</p></div>
+          </a>
+          <a class="card" href="../garmin-to-obsidian-without-health-sync/">
+            <div class="thumb"><picture><img src="../../img/wizard-key-light.png" width="1632" height="1686" loading="lazy" alt=""></picture></div>
+            <div class="body"><span class="card-title">Garmin Connect to Obsidian without Health Sync</span><p class="card-promise">Two ways to get Garmin numbers into Obsidian notes. What Garmy does, what it leaves out, and how it works with notes Health Sync already wrote.</p></div>
+          </a>
+        </div>
+
+        <div class="next">
+          <p>Garmy is in Obsidian's community plugins. Install it, then Dashy, and run the wizard.</p>
+          <div class="actions">
+            <a class="btn primary" href="../../#install"><svg><use href="#i-plug"/></svg>Install Garmy</a><a class="btn" href="../../#dashboards">Every dashboard part</a>
+          </div>
+        </div>
+
+        <footer class="note-foot">
+          <span>MIT © Dmitriy Yurkin</span>
+          <a href="../../guides/">All guides</a>
+          <a href="https://github.com/Dimagious/garmidian">GitHub</a>
+          <a href="https://community.obsidian.md/plugins/garmidian">Plugin listing</a>
+          <a href="https://github.com/Dimagious/garmidian/issues">Something wrong on this page?</a>
+          <span class="legal">Garmy is not affiliated with Garmin. Data source: Garmin.</span>
+        </footer>
+      </article>
+    </main>
+<!--shell:bottom-->
+</body>
+</html>
