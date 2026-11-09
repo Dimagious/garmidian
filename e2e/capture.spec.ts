@@ -61,9 +61,9 @@ async function setTheme(win: Page, dark: boolean): Promise<void> {
 }
 
 /** Draws every block of the note in reading view (lazy blocks need a scroll), then returns to the top. */
-async function settleNote(win: Page): Promise<void> {
+async function settleNote(win: Page, min = 20): Promise<void> {
     const sel = ".workspace-leaf.mod-active .markdown-preview-view";
-    await expect.poll(() => win.locator(`${sel} [class*='dashy']`).count(), { timeout: 30_000 }).toBeGreaterThan(20);
+    await expect.poll(() => win.locator(`${sel} [class*='dashy']`).count(), { timeout: 30_000 }).toBeGreaterThan(min);
     await win.evaluate(async (s) => {
         const r = document.querySelector(s);
         if (!r) return;
@@ -234,4 +234,96 @@ test("phone stills: the mobile interface in a phone-sized window", async ({ app,
     await openActiveInReading(win);
     await settleNote(win);
     for (const [i, y] of [0, 560, 1500, 2600].entries()) { await scrollNote(win, y); await win.waitForTimeout(500); await shot(`${4 + i}-dashboard`); }
+});
+
+/** A library card by template id. */
+const card = (win: Page, id: string) => win.locator(`input.garmy-tpl-${id.replace(":", "-")}`);
+
+/** The whole wizard window, as tall as it is (the library is longer than the other steps). */
+async function stillTall(win: Page, name: string): Promise<void> {
+    const box = await win.locator(".garmy-wizard").boundingBox();
+    if (!box) return;
+    const m = 28;
+    await still(win, name, { x: Math.max(0, box.x - m), y: Math.max(0, box.y - m), width: Math.min(1200, box.width + 2 * m), height: Math.min(1460, box.height + 2 * m) });
+}
+
+/** Opens the wizard on the data that is already saved and stops at the choice. */
+async function toChoice(win: Page): Promise<void> {
+    await openWizard(win);
+    await win.locator(".garmy-key-check").click();
+    await win.locator(".garmy-use-saved").waitFor({ timeout: 15_000 });
+    await win.locator(".garmy-use-saved").click();
+    await win.locator(".garmy-preview-btn").waitFor({ timeout: 15_000 });
+}
+
+/** Builds one kind of dashboard through the wizard and takes the stills asked for, in reading view. */
+async function shootTemplate(win: Page, id: string, shots: Array<{ y: number; name: string; dark?: boolean }>, min = 8): Promise<void> {
+    await toChoice(win);
+    await card(win, id).check({ force: true });
+    await win.locator(".garmy-preview-btn").click();
+    await win.locator(".garmy-preview").waitFor({ timeout: 10_000 });
+    await expect.poll(() => win.locator(".garmy-preview [class*='dashy']").count(), { timeout: 30_000 }).toBeGreaterThan(3);
+    await win.waitForTimeout(800);
+    await win.locator(".garmy-create").click();
+    await expect.poll(() => win.evaluate(() => (globalThis as unknown as { app: { workspace: { getActiveFile(): { path: string } | null } } }).app.workspace.getActiveFile()?.path ?? "")).toMatch(/^Garmy\//);
+    await openActiveInReading(win);
+    await settleNote(win, min);
+    for (const sh of shots.filter((x) => !x.dark)) { await scrollNote(win, sh.y); await win.waitForTimeout(500); await still(win, `${sh.name}-light`, WINDOW_CLIP); }
+    const dark = shots.filter((x) => x.dark);
+    if (dark.length) {
+        await setTheme(win, true);
+        await settleNote(win, min);
+        for (const sh of dark) { await scrollNote(win, sh.y); await win.waitForTimeout(500); await still(win, `${sh.name}-dark`, WINDOW_CLIP); }
+        await setTheme(win, false);
+    }
+}
+
+test("library: the choice, a clip through it, and a page of every kind", async ({ win }) => {
+    await setKey(win, "");
+    await hideProperties(win);
+    await installDemoGarmin(win, 365, 0);
+    // one load; every later wizard run builds on the saved days
+    await openWizard(win);
+    await win.locator(".garmy-key").fill("GRM-8f2c-41aa-93d7-5be0c6a19f40");
+    await win.locator(".garmy-key-check").click();
+    await win.locator(".garmy-load").waitFor({ timeout: 15_000 });
+    await win.locator(".garmy-period").selectOption("365");
+    await win.locator(".garmy-load").click();
+    await win.locator(".garmy-preview-btn").waitFor({ timeout: 90_000 });
+
+    // a race six weeks ahead, so the race page has a countdown
+    const race = new Date(Date.now() + 42 * 864e5);
+    const raceDate = `${race.getFullYear()}-${String(race.getMonth() + 1).padStart(2, "0")}-${String(race.getDate()).padStart(2, "0")}`;
+    await win.locator(".garmy-options summary").click();
+    await win.locator(".garmy-options-body input[type=text]").first().fill(raceDate);
+    await win.locator(".garmy-options summary").click();
+    await win.waitForTimeout(500);
+    await stillTall(win, "wizard-library-light");
+
+    for (const [i, id] of ["overview", "sleep", "sport:run", "triathlon", "race", "week"].entries()) {
+        await card(win, id).check({ force: true });
+        await win.waitForTimeout(450);
+        await frame(win, "library", i === 0 ? 1800 : 1400, { x: 110, y: 40, width: 980, height: 1000 });
+    }
+    await win.keyboard.press("Escape");
+
+    const top = [{ y: 0, name: "" }];
+    const two = (n: string): Array<{ y: number; name: string; dark?: boolean }> => [{ y: 0, name: `tpl-${n}-a` }, { y: 760, name: `tpl-${n}-b` }];
+    await shootTemplate(win, "glance", [{ y: 0, name: "tpl-glance-a" }, { y: 0, name: "tpl-glance-a", dark: true }], 4);
+    await shootTemplate(win, "sleep", [...two("sleep"), { y: 0, name: "tpl-sleep-a", dark: true }]);
+    await shootTemplate(win, "recovery", two("recovery"));
+    await shootTemplate(win, "steps", two("steps"));
+    await shootTemplate(win, "sport:run", [...two("run"), { y: 0, name: "tpl-run-a", dark: true }]);
+    await shootTemplate(win, "sport:strength", two("strength"));
+    await shootTemplate(win, "triathlon", two("triathlon"));
+    await shootTemplate(win, "race", two("race"));
+    await shootTemplate(win, "week", two("week"));
+    await shootTemplate(win, "month", two("month"));
+    await shootTemplate(win, "year", two("year"));
+
+    // miles: the same run page in the imperial system
+    await win.evaluate(() => (globalThis as unknown as { app: { plugins: { plugins: Record<string, { setUnits(u: string): Promise<number> }> } } }).app.plugins.plugins.garmidian!.setUnits("imperial"));
+    await shootTemplate(win, "sport:run", [{ y: 0, name: "tpl-run-miles-a" }]);
+    void top;
+    saveManifest();
 });
