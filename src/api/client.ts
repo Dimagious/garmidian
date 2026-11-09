@@ -1,4 +1,5 @@
 // Garmin Personal API client. Transport is injected: Obsidian's requestUrl in the plugin, a fake in tests.
+import type { Units } from "../core/catalog";
 import { mapActivities, mapDailySummaries, mapHrv, mapSleep, toRecords, type DayMap } from "../core/mapping";
 import type { DayRecord } from "../core/types";
 
@@ -107,7 +108,7 @@ export class GarminClient {
    * Everything the dashboards need for [from, to]: one call per year for daily summaries and HRV,
    * one per 31 days for sleep, one per 200 activities. A failed optional part becomes a warning.
    */
-  async backfill(from: string, to: string, onProgress: (p: Progress) => void = () => undefined, cancel?: CancelToken): Promise<BackfillResult> {
+  async backfill(from: string, to: string, onProgress: (p: Progress) => void = () => undefined, cancel?: CancelToken, units: Units = "metric"): Promise<BackfillResult> {
     this.cancel = cancel ?? null;
     const days: DayMap = new Map();
     const warnings: string[] = [];
@@ -149,7 +150,7 @@ export class GarminClient {
     }
     // Nothing came back at all: that is an outage, not an empty account, and the user must hear it as one.
     if (succeeded === 0 && outage.first) throw outage.first;
-    mapActivities(activities, days);
+    mapActivities(activities, days, units);
     return { records: toRecords(days), warnings, requests: this.requests };
   }
 }

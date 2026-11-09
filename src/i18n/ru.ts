@@ -31,6 +31,7 @@ export const ru: Locale = {
   cancel: "Отмена", cancelledTitle: "Загрузка отменена", cancelledBody: "Ничего не сохранено. Можно начать заново в любой момент.", busy: "Синхронизация уже идёт. Повторите через минуту.", walkBusy: "Garmy: синхронизация уже идёт",
   dashyMissingAction: "Открыть страницу Dashy", dashyDisabledTitle: "Dashy выключен", dashyDisabled: "Dashy установлен, но выключен. Включите его, и блоки отрисуются.", dashyEnable: "Включить Dashy",
   setLangName: "Язык", setLangDesc: "Язык мастера, настроек и уведомлений. Подписи в дашборде выбираются отдельно в мастере.", setLangAuto: "Автоматически (как в Obsidian)", setSyncName: "Автосинхронизация", setSyncDesc: "Обновляет последние дни из Garmin при запуске Obsidian и затем раз в несколько часов.", syncOff: "Выключена", sync6: "Каждые 6 часов", sync12: "Каждые 12 часов", sync24: "Раз в сутки",
+  setUnitsName: "Единицы расстояния", setUnitsDesc: "Километры или мили для бега и велосипеда и ярды для плавания. Пересоберите дашборд, чтобы он перерисовался в новых единицах.", unitsMetric: "Километры", unitsImperial: "Мили и ярды", noticeUnitsChanged: "Garmy: единицы изменены. Пересоберите дашборды, чтобы они перерисовались.",
   setSyncNowName: "Обновить сейчас", setSyncNowDesc: "Загружает свежие дни из Garmin.", setSyncNow: "Обновить", setLastSyncAt: "Последнее обновление",
   setKeyRejected: (d) => `Garmin не принял ключ ${d}. Возможно, он истёк. Создайте новый.`, setReplaceKey: "Заменить ключ",
   noticeSynced: (n) => `Garmy: обновлено дней: ${n}`, noticeNoKey: "Garmy: ключа нет. Сначала пройдите мастер.", noticeOffline: "Garmy: нет связи с Garmin. Повторим позже.", noticeRate: "Garmy: Garmin просит подождать. Повторим позже.", noticeFailed: "Garmy: не удалось обновить данные. Подробности в консоли разработчика.",
@@ -54,5 +55,5 @@ export const ru: Locale = {
   title: "Мой дашборд Garmin", month: "Месячный обзор",
   dataSource: "Источник данных: Garmin", madeBy: "Собрано Garmy из твоих данных. Пересобрать можно в любой момент.",
 },
-  units: { ms: " мс", bpm: " уд/мин", km: " км" },
+  units: { ms: " мс", bpm: " уд/мин", km: " км", mi: " mi", yd: " yd" },
 };

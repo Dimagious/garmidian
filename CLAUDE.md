@@ -51,6 +51,7 @@ node tools/tour.mjs --days=30                                     # screenshots 
 - The three latest days are overwritten on sync, older days only filled (`core/merge.ts`, ADR 0005).
 - A day split across two activity pages must be summed after all pages are read, not per page.
 - Do not write `distance_km`: range endpoints give walking distance, not the day's total.
+- Единицы (`Units`): `SPORTS[x].dist` держит поле, единицу и точность для `metric` и `imperial` (`run_mi`, `bike_mi`, `swim_yd`). Пересчёт заметок и записей (`core/units.ts`) только ДОБАВЛЯЕТ недостающие поля и не удаляет старые: переключение обратно ничего не теряет. Пересборка берёт единицы из настроек, не из `garmy` property (формат region не менялся). Новая установка на en-US стартует в милях, обновление остаётся в км; e2e-vault закреплён на km через data.json в фикстуре.
 - Every user-visible string lives in `src/i18n/<lang>.ts`. A new string goes into `types.ts` and all seven files; `locales.test.ts` fails on a missing key, an empty text, a lost product name (Garmin Connect, Dashy...) or an untranslated long text. Default language is Obsidian's, English when unsupported.
 - Never print or store the key. Tests use a fake key; the live spec reads the Keychain.
 - No em dashes anywhere (code, copy, docs).

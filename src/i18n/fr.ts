@@ -31,6 +31,7 @@ export const fr: Locale = {
   cancel: "Annuler", cancelledTitle: "Chargement annulé", cancelledBody: "Rien n'a été enregistré. Vous pouvez recommencer à tout moment.", busy: "Une synchronisation est déjà en cours. Réessayez dans une minute.", walkBusy: "Garmy : une synchronisation est déjà en cours",
   dashyMissingAction: "Ouvrir la page de Dashy", dashyDisabledTitle: "Dashy est désactivé", dashyDisabled: "Dashy est installé mais désactivé. Activez-le et les blocs s'afficheront.", dashyEnable: "Activer Dashy",
   setLangName: "Langue", setLangDesc: "La langue de l'assistant, des paramètres et des notifications. Les libellés du tableau de bord ont leur propre choix dans l'assistant.", setLangAuto: "Automatique (suivre Obsidian)", setSyncName: "Synchronisation automatique", setSyncDesc: "Actualise les derniers jours depuis Garmin au démarrage d'Obsidian, puis toutes les quelques heures.", syncOff: "Désactivée", sync6: "Toutes les 6 heures", sync12: "Toutes les 12 heures", sync24: "Une fois par jour",
+  setUnitsName: "Unités de distance", setUnitsDesc: "Kilomètres, ou miles pour la course et le vélo et yards pour la natation. Reconstruisez un tableau de bord pour le redessiner dans la nouvelle unité.", unitsMetric: "Kilomètres", unitsImperial: "Miles et yards", noticeUnitsChanged: "Garmy : unités modifiées. Reconstruisez vos tableaux de bord pour les mettre à jour.",
   setSyncNowName: "Synchroniser maintenant", setSyncNowDesc: "Charge les derniers jours depuis Garmin.", setSyncNow: "Synchroniser", setLastSyncAt: "Dernière synchronisation",
   setKeyRejected: (d) => `Garmin a refusé la clé le ${d}. Elle a peut-être expiré. Créez-en une nouvelle.`, setReplaceKey: "Remplacer la clé",
   noticeSynced: (n) => `Garmy : ${n} jours synchronisés`, noticeNoKey: "Garmy : aucune clé. Lancez d'abord l'assistant.", noticeOffline: "Garmy : pas de connexion à Garmin. Nouvel essai plus tard.", noticeRate: "Garmy : Garmin demande d'attendre. Nouvel essai plus tard.", noticeFailed: "Garmy : échec de la synchronisation. Les détails sont dans la console du développeur.",
@@ -54,5 +55,5 @@ export const fr: Locale = {
   title: "Mon tableau de bord Garmin", month: "Bilan du mois",
   dataSource: "Source des données : Garmin", madeBy: "Créé par Garmy à partir de vos données. Reconstruisez-le à tout moment.",
 },
-  units: { ms: " ms", bpm: " bpm", km: " km" },
+  units: { ms: " ms", bpm: " bpm", km: " km", mi: " mi", yd: " yd" },
 };

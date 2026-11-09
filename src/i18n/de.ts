@@ -31,6 +31,7 @@ export const de: Locale = {
   cancel: "Abbrechen", cancelledTitle: "Laden abgebrochen", cancelledBody: "Es wurde nichts gespeichert. Du kannst jederzeit neu starten.", busy: "Eine Synchronisierung läuft bereits. Versuche es in einer Minute erneut.", walkBusy: "Garmy: Eine Synchronisierung läuft bereits",
   dashyMissingAction: "Dashy-Seite öffnen", dashyDisabledTitle: "Dashy ist ausgeschaltet", dashyDisabled: "Dashy ist installiert, aber ausgeschaltet. Schalte es ein, dann werden die Blöcke gezeichnet.", dashyEnable: "Dashy einschalten",
   setLangName: "Sprache", setLangDesc: "Die Sprache von Assistent, Einstellungen und Hinweisen. Die Beschriftungen im Dashboard wählst du separat im Assistenten.", setLangAuto: "Automatisch (wie Obsidian)", setSyncName: "Automatische Synchronisierung", setSyncDesc: "Aktualisiert die letzten Tage von Garmin beim Start von Obsidian und danach alle paar Stunden.", syncOff: "Aus", sync6: "Alle 6 Stunden", sync12: "Alle 12 Stunden", sync24: "Einmal täglich",
+  setUnitsName: "Entfernungseinheiten", setUnitsDesc: "Kilometer, oder Meilen für Laufen und Radfahren und Yards fürs Schwimmen. Baue ein Dashboard neu, damit es die neue Einheit zeigt.", unitsMetric: "Kilometer", unitsImperial: "Meilen und Yards", noticeUnitsChanged: "Garmy: Einheiten geändert. Baue deine Dashboards neu, damit sie aktualisiert werden.",
   setSyncNowName: "Jetzt synchronisieren", setSyncNowDesc: "Lädt die neuesten Tage von Garmin.", setSyncNow: "Synchronisieren", setLastSyncAt: "Letzte Synchronisierung",
   setKeyRejected: (d) => `Garmin hat den Schlüssel am ${d} abgelehnt. Er ist vielleicht abgelaufen. Erstelle einen neuen.`, setReplaceKey: "Schlüssel ersetzen",
   noticeSynced: (n) => `Garmy: ${n} Tage synchronisiert`, noticeNoKey: "Garmy: Kein Schlüssel. Starte zuerst den Assistenten.", noticeOffline: "Garmy: Keine Verbindung zu Garmin. Neuer Versuch später.", noticeRate: "Garmy: Garmin bittet um eine Pause. Neuer Versuch später.", noticeFailed: "Garmy: Synchronisierung fehlgeschlagen. Details stehen in der Entwicklerkonsole.",
@@ -54,5 +55,5 @@ export const de: Locale = {
   title: "Mein Garmin-Dashboard", month: "Monatsrückblick",
   dataSource: "Datenquelle: Garmin", madeBy: "Von Garmy aus deinen Daten gebaut. Du kannst es jederzeit neu aufbauen.",
 },
-  units: { ms: " ms", bpm: " bpm", km: " km" },
+  units: { ms: " ms", bpm: " bpm", km: " km", mi: " mi", yd: " yd" },
 };

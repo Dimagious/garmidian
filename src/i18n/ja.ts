@@ -31,6 +31,7 @@ export const ja: Locale = {
   cancel: "キャンセル", cancelledTitle: "読み込みをキャンセルしました", cancelledBody: "何も保存されていません。いつでももう一度開始できます。", busy: "同期はすでに実行中です。1分ほど待ってから、もう一度お試しください。", walkBusy: "Garmy：同期はすでに実行中です",
   dashyMissingAction: "Dashyのページを開く", dashyDisabledTitle: "Dashyがオフです", dashyDisabled: "Dashyはインストールされていますが、オフになっています。オンにするとブロックが描画されます。", dashyEnable: "Dashyをオンにする",
   setLangName: "言語", setLangDesc: "ウィザード、設定、通知の言語です。ダッシュボードのラベルは、ウィザードで別に選べます。", setLangAuto: "自動（Obsidianに合わせる）", setSyncName: "自動同期", setSyncDesc: "Obsidianの起動時と、その後は数時間ごとに、直近の日数をGarminから更新します。", syncOff: "オフ", sync6: "6時間ごと", sync12: "12時間ごと", sync24: "1日1回",
+  setUnitsName: "距離の単位", setUnitsDesc: "キロメートル、またはランとバイクはマイル、スイムはヤード。ダッシュボードを再構築すると新しい単位で描き直されます。", unitsMetric: "キロメートル", unitsImperial: "マイルとヤード", noticeUnitsChanged: "Garmy: 単位を変更しました。ダッシュボードを再構築して反映してください。",
   setSyncNowName: "今すぐ同期", setSyncNowDesc: "直近の日数をGarminから読み込みます。", setSyncNow: "同期", setLastSyncAt: "最終同期",
   setKeyRejected: (d) => `${d}にGarminがキーを拒否しました。期限が切れている可能性があります。新しいキーを作成してください。`, setReplaceKey: "キーを置き換える",
   noticeSynced: (n) => `Garmy：${n}日分を同期しました`, noticeNoKey: "Garmy：キーがありません。先にウィザードを実行してください。", noticeOffline: "Garmy：Garminに接続できません。後でもう一度試します。", noticeRate: "Garmy：Garminから待つよう求められました。後でもう一度試します。", noticeFailed: "Garmy：同期に失敗しました。詳細は開発者コンソールにあります。",
@@ -54,5 +55,5 @@ export const ja: Locale = {
   title: "私のGarminダッシュボード", month: "月間レビュー",
   dataSource: "データの提供元：Garmin", madeBy: "Garmyがあなたのデータから作成しました。いつでも再構築できます。",
 },
-  units: { ms: "ms", bpm: "bpm", km: "km" },
+  units: { ms: "ms", bpm: "bpm", km: "km", mi: "mi", yd: "yd" },
 };

@@ -31,6 +31,7 @@ export const es: Locale = {
   cancel: "Cancelar", cancelledTitle: "Carga cancelada", cancelledBody: "No se guardó nada. Puedes empezar de nuevo cuando quieras.", busy: "Ya hay una sincronización en curso. Inténtalo de nuevo en un minuto.", walkBusy: "Garmy: ya hay una sincronización en curso",
   dashyMissingAction: "Abrir la página de Dashy", dashyDisabledTitle: "Dashy está desactivado", dashyDisabled: "Dashy está instalado pero desactivado. Actívalo y los bloques se dibujarán.", dashyEnable: "Activar Dashy",
   setLangName: "Idioma", setLangDesc: "El idioma del asistente, los ajustes y los avisos. Las etiquetas del panel tienen su propia opción en el asistente.", setLangAuto: "Automático (el de Obsidian)", setSyncName: "Sincronización automática", setSyncDesc: "Actualiza los últimos días desde Garmin al iniciar Obsidian y después cada pocas horas.", syncOff: "Desactivada", sync6: "Cada 6 horas", sync12: "Cada 12 horas", sync24: "Una vez al día",
+  setUnitsName: "Unidades de distancia", setUnitsDesc: "Kilómetros, o millas para correr y pedalear y yardas para nadar. Reconstruye el panel para verlo en la nueva unidad.", unitsMetric: "Kilómetros", unitsImperial: "Millas y yardas", noticeUnitsChanged: "Garmy: unidades cambiadas. Reconstruye tus paneles para actualizarlos.",
   setSyncNowName: "Sincronizar ahora", setSyncNowDesc: "Carga los últimos días desde Garmin.", setSyncNow: "Sincronizar", setLastSyncAt: "Última sincronización",
   setKeyRejected: (d) => `Garmin rechazó la clave el ${d}. Puede que haya caducado. Crea una nueva.`, setReplaceKey: "Reemplazar clave",
   noticeSynced: (n) => `Garmy: ${n} días sincronizados`, noticeNoKey: "Garmy: no hay clave. Ejecuta primero el asistente.", noticeOffline: "Garmy: sin conexión con Garmin. Se reintentará más tarde.", noticeRate: "Garmy: Garmin pide esperar. Se reintentará más tarde.", noticeFailed: "Garmy: la sincronización falló. Los detalles están en la consola de desarrollo.",
@@ -54,5 +55,5 @@ export const es: Locale = {
   title: "Mi panel de Garmin", month: "Resumen mensual",
   dataSource: "Fuente de los datos: Garmin", madeBy: "Creado por Garmy a partir de tus datos. Puedes reconstruirlo cuando quieras.",
 },
-  units: { ms: " ms", bpm: " ppm", km: " km" },
+  units: { ms: " ms", bpm: " ppm", km: " km", mi: " mi", yd: " yd" },
 };

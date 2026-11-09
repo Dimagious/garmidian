@@ -11,7 +11,8 @@ import { dayParser, isoParser, ISO_FORMAT, type DayParser } from "../core/daynam
 import { overwriteFrom } from "../core/merge";
 import { mountMediaSlot } from "./media-slot";
 import keyHelp from "../../media/help-key.png";
-import { readRows, scanNotes, uniquePath, writeDays } from "./storage";
+import { convertDays, readRows, scanNotes, uniquePath, writeDays } from "./storage";
+import { convertRecords } from "../core/units";
 import { detectDataFolders, type FolderCandidate } from "../core/detect";
 import type GarmyPlugin from "../main";
 
@@ -70,7 +71,12 @@ export class WizardModal extends Modal {
   onOpen(): void {
     this.renderer.load();
     const saved = readRows(this.app, this.plugin.settings.dataFolder);
-    if (saved.length) { this.rows = saved; this.profile = buildProfile(saved); }
+    if (saved.length) {
+      // Notes written before the units setting existed hold kilometers only; in miles mode they get miles added.
+      this.rows = convertRecords(saved, this.plugin.settings.units);
+      this.profile = buildProfile(this.rows);
+      void convertDays(this.app, this.plugin.settings.dataFolder, this.plugin.settings.units);
+    }
     this.render();
   }
 
@@ -353,7 +359,7 @@ export class WizardModal extends Modal {
       this.paintParts();
     };
     try {
-      const res = await client.backfill(from, to, onProgress, this.cancelToken);
+      const res = await client.backfill(from, to, onProgress, this.cancelToken, this.plugin.settings.units);
       this.warnings = res.warnings;
       for (const p of PARTS) if (res.warnings.some((w) => w.startsWith(p))) { const v = this.parts.get(p); if (v) this.parts.set(p, { ...v, state: "warn" }); }
       this.paintParts();
@@ -483,6 +489,15 @@ export class WizardModal extends Modal {
     more.createEl("summary", { text: ui.options });
     const inner = more.createDiv({ cls: "garmy-options-body" });
     new Setting(inner).setName(ui.races).setDesc(ui.racesHint).addText((t) => t.setValue(this.choices.races).onChange((v) => { this.choices.races = v.trim(); }));
+    new Setting(inner).setName(this.sync.setUnitsName).addDropdown((d) => {
+      d.addOption("metric", this.sync.unitsMetric).addOption("imperial", this.sync.unitsImperial);
+      d.setValue(this.plugin.settings.units).onChange((v) => {
+        const units = v === "imperial" ? "imperial" : "metric";
+        this.rows = convertRecords(this.rows, units); // the data in memory follows, so the preview needs no new request
+        this.profile = buildProfile(this.rows);
+        void this.plugin.setUnits(units);
+      });
+    });
     new Setting(inner).setName(ui.language).addDropdown((d) => {
       for (const l of LANGS) d.addOption(l.code, l.native);
       d.setValue(this.choices.lang).onChange((v) => { this.choices.lang = pickLang(v); });
@@ -500,7 +515,7 @@ export class WizardModal extends Modal {
   private build(): string {
     const races = this.choices.races && this.app.vault.getAbstractFileByPath(this.choices.races) ? this.choices.races : null;
     this.meta = { v: 1, source: this.sourceFolder ?? this.plugin.settings.dataFolder, groups: [...this.choices.groups], noSports: activeSports(this.profile).filter((x) => !this.choices.sports.has(x)), lang: this.choices.lang, races, ...(this.sourceFolder !== null && this.plugin.dailyFormat() !== ISO_FORMAT ? { dayFormat: this.plugin.dailyFormat() } : {}) };
-    return compose(this.profile, { source: this.meta.source, lang: this.meta.lang, groups: this.meta.groups, sports: [...this.choices.sports], races }).markdown;
+    return compose(this.profile, { source: this.meta.source, lang: this.meta.lang, groups: this.meta.groups, sports: [...this.choices.sports], races, units: this.plugin.settings.units }).markdown;
   }
 
   private renderPreview(body: HTMLElement, foot: HTMLElement): HTMLElement {

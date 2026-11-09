@@ -1,4 +1,4 @@
-import { PluginSettingTab, setIcon, type App, type SettingDefinitionItem } from "obsidian";
+import { Notice, PluginSettingTab, setIcon, type App, type SettingDefinitionItem } from "obsidian";
 import { LANGS, SYNC_UI, UI } from "../i18n";
 import type GarmyPlugin from "../main";
 
@@ -49,6 +49,14 @@ export class GarmySettingTab extends PluginSettingTab {
       },
       {
         type: "group",
+        heading: sync.setUnitsName,
+        items: [{
+          name: sync.setUnitsName, desc: sync.setUnitsDesc,
+          control: { type: "dropdown", key: "units", options: { metric: sync.unitsMetric, imperial: sync.unitsImperial } },
+        }],
+      },
+      {
+        type: "group",
         heading: sync.setSyncName,
         items: [
           {
@@ -86,6 +94,7 @@ export class GarmySettingTab extends PluginSettingTab {
   override getControlValue(key: string): unknown {
     if (key === "syncHours") return String(this.plugin.settings.syncHours);
     if (key === "language") return this.plugin.settings.language;
+    if (key === "units") return this.plugin.settings.units;
     return key === "dataFolder" || key === "notesFolder" ? this.plugin.settings[key] : undefined;
   }
 
@@ -94,6 +103,12 @@ export class GarmySettingTab extends PluginSettingTab {
       this.plugin.settings.language = LANGS.find((l) => l.code === value)?.code ?? "auto";
       await this.plugin.saveSettings();
       this.update(); // redraw the tab in the new language
+      return;
+    }
+    if (key === "units" && (value === "metric" || value === "imperial")) {
+      if (value === this.plugin.settings.units) return;
+      await this.plugin.setUnits(value);
+      new Notice(SYNC_UI[this.plugin.lang()].noticeUnitsChanged);
       return;
     }
     if (key === "syncHours" && typeof value === "string") {

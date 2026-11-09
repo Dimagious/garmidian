@@ -1,12 +1,13 @@
 // Personal API responses -> frontmatter fields. Pure functions, no network.
+import { SPORTS, type Units } from "./catalog";
 import type { DayRecord } from "./types";
+import { fromMeters } from "./units";
 
 type Json = unknown;
 const rec = (v: Json): Record<string, Json> | null => (v !== null && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, Json>) : null);
 const arr = (v: Json): Json[] => (Array.isArray(v) ? v : []);
 const num = (v: Json): number | null => (typeof v === "number" && Number.isFinite(v) ? v : null);
 const str = (v: Json): string | null => (typeof v === "string" ? v : null);
-const round = (v: number, d: number): number => Number(v.toFixed(d));
 
 export type DayMap = Map<string, Record<string, number | string>>;
 
@@ -77,8 +78,11 @@ const SPORT_OF: Record<string, string> = {
   strength_training: "strength",
 };
 
-/** activities/search -> run_km, run_min, bike_km, ... summed per local day. Multi-sport is not split. */
-export function mapActivities(json: Json, days: DayMap): void {
+/**
+ * activities/search -> run_km, run_min, bike_km, ... summed per local day. Multi-sport is not split.
+ * With `units` imperial the distances are run_mi, bike_mi and swim_yd instead.
+ */
+export function mapActivities(json: Json, days: DayMap, units: Units = "metric"): void {
   const totals = new Map<string, Record<string, number>>();
   for (const item of arr(json)) {
     const r = rec(item);
@@ -90,13 +94,18 @@ export function mapActivities(json: Json, days: DayMap): void {
     const t = totals.get(date) ?? {};
     const meters = num(r.distance) ?? 0;
     const secs = num(r.duration) ?? 0;
-    if (sport !== "strength") t[`${sport}_km`] = (t[`${sport}_km`] ?? 0) + meters / 1000;
+    t[`${sport}_m`] = (t[`${sport}_m`] ?? 0) + meters;
     t[`${sport}_min`] = (t[`${sport}_min`] ?? 0) + secs / 60;
     totals.set(date, t);
   }
   for (const [date, t] of totals) {
     const out = slot(days, date);
-    for (const [k, v] of Object.entries(t)) out[k] = k.endsWith("_km") ? round(v, 2) : Math.round(v);
+    for (const [sport, def] of Object.entries(SPORTS)) {
+      const meters = t[`${sport}_m`];
+      if (def.dist && meters !== undefined) out[def.dist[units].field] = fromMeters(meters, def.dist[units].unit);
+      const minutes = t[`${sport}_min`];
+      if (minutes !== undefined) out[def.min] = Math.round(minutes);
+    }
   }
 }
 

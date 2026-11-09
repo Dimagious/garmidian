@@ -4,10 +4,10 @@ import { rebuildNote } from "../core/rebuild";
 import { readRegionMeta } from "../core/region";
 import { SYNC_UI } from "../i18n";
 import { readRows } from "./storage";
-import type { Lang } from "../core/catalog";
+import type { Lang, Units } from "../core/catalog";
 
 /** Rebuilds the Garmy dashboard region of the open note from the data on disk, with the choices it was built with. */
-export async function rebuildActiveDashboard(app: App, lang: Lang): Promise<void> {
+export async function rebuildActiveDashboard(app: App, lang: Lang, units: Units = "metric"): Promise<void> {
   const text = SYNC_UI[lang];
   const file = app.workspace.getActiveViewOfType(MarkdownView)?.file;
   if (!file) { new Notice(text.rebuildNoNote); return; }
@@ -18,7 +18,7 @@ export async function rebuildActiveDashboard(app: App, lang: Lang): Promise<void
   const exists = (path: string): boolean => app.vault.getAbstractFileByPath(path) !== null;
   let outcome = "";
   await app.vault.process(file, (data) => {
-    const r = rebuildNote(data, rows, exists);
+    const r = rebuildNote(data, rows, exists, units);
     outcome = r.kind;
     return r.kind === "ok" ? r.text : data;
   });

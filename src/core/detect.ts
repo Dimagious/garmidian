@@ -5,7 +5,7 @@ import { isoParser, type DayParser } from "./dayname";
 
 const KNOWN = new Set<string>([
   ...Object.keys(METRICS),
-  ...Object.values(SPORTS).flatMap((s) => [s.min, ...(s.km ? [s.km] : [])]),
+  ...Object.values(SPORTS).flatMap((s) => [s.min, ...(s.dist ? [s.dist.metric.field, s.dist.imperial.field] : [])]),
 ]);
 
 export interface NoteProps { path: string; props: Record<string, unknown> }

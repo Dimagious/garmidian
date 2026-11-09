@@ -2,6 +2,8 @@ import { TFile, normalizePath, type App } from "obsidian";
 import { isoParser, type DayParser } from "../core/dayname";
 import { changesFor } from "../core/merge";
 import type { NoteProps } from "../core/detect";
+import type { Units } from "../core/catalog";
+import { convertFields } from "../core/units";
 import type { DayRecord } from "../core/types";
 
 const yamlValue = (v: number | string): string => (typeof v === "string" ? JSON.stringify(v) : String(v));
@@ -47,6 +49,26 @@ export async function writeDays(app: App, folder: string, records: DayRecord[], 
     }
   }
   return res;
+}
+
+/**
+ * Adds the distance fields a unit system needs to every day note of a folder, from the other unit system.
+ * Notes that need nothing are not touched. Returns how many notes changed.
+ */
+export async function convertDays(app: App, folder: string, units: Units): Promise<number> {
+  const dir = app.vault.getFolderByPath(normalizePath(folder));
+  if (!dir) return 0;
+  let changed = 0;
+  for (const f of dir.children) {
+    if (!(f instanceof TFile) || !f.name.endsWith(".md")) continue;
+    const cached = app.metadataCache.getFileCache(f)?.frontmatter;
+    if (!cached || Object.keys(convertFields(cached, units)).length === 0) continue;
+    await app.fileManager.processFrontMatter(f, (fm: Record<string, unknown>) => {
+      for (const [k, v] of Object.entries(convertFields(fm, units))) fm[k] = v;
+    });
+    changed++;
+  }
+  return changed;
 }
 
 /**

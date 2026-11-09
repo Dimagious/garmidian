@@ -31,6 +31,7 @@ export const pt: Locale = {
   cancel: "Cancelar", cancelledTitle: "Carregamento cancelado", cancelledBody: "Nada foi salvo. Você pode começar de novo quando quiser.", busy: "Já há uma sincronização em andamento. Tente de novo em um minuto.", walkBusy: "Garmy: já há uma sincronização em andamento",
   dashyMissingAction: "Abrir a página do Dashy", dashyDisabledTitle: "O Dashy está desativado", dashyDisabled: "O Dashy está instalado, mas desativado. Ative-o e os blocos serão desenhados.", dashyEnable: "Ativar o Dashy",
   setLangName: "Idioma", setLangDesc: "O idioma do assistente, das configurações e dos avisos. Os rótulos do painel têm uma escolha própria no assistente.", setLangAuto: "Automático (seguir o Obsidian)", setSyncName: "Sincronização automática", setSyncDesc: "Atualiza os últimos dias a partir do Garmin quando o Obsidian inicia e depois a cada poucas horas.", syncOff: "Desativada", sync6: "A cada 6 horas", sync12: "A cada 12 horas", sync24: "Uma vez por dia",
+  setUnitsName: "Unidades de distância", setUnitsDesc: "Quilômetros, ou milhas para corrida e ciclismo e jardas para natação. Reconstrua um painel para redesenhá-lo na nova unidade.", unitsMetric: "Quilômetros", unitsImperial: "Milhas e jardas", noticeUnitsChanged: "Garmy: unidades alteradas. Reconstrua seus painéis para atualizá-los.",
   setSyncNowName: "Sincronizar agora", setSyncNowDesc: "Carrega os dias mais recentes do Garmin.", setSyncNow: "Sincronizar", setLastSyncAt: "Última sincronização",
   setKeyRejected: (d) => `O Garmin recusou a chave em ${d}. Ela pode ter expirado. Crie uma nova.`, setReplaceKey: "Substituir chave",
   noticeSynced: (n) => `Garmy: ${n} dias sincronizados`, noticeNoKey: "Garmy: sem chave. Execute o assistente primeiro.", noticeOffline: "Garmy: sem conexão com o Garmin. Tentaremos de novo mais tarde.", noticeRate: "Garmy: o Garmin pede para aguardar. Tentaremos de novo mais tarde.", noticeFailed: "Garmy: a sincronização falhou. Os detalhes estão no console do desenvolvedor.",
@@ -54,5 +55,5 @@ export const pt: Locale = {
   title: "Meu painel Garmin", month: "Resumo mensal",
   dataSource: "Fonte dos dados: Garmin", madeBy: "Montado pelo Garmy a partir dos seus dados. Reconstrua quando quiser.",
 },
-  units: { ms: " ms", bpm: " bpm", km: " km" },
+  units: { ms: " ms", bpm: " bpm", km: " km", mi: " mi", yd: " yd" },
 };

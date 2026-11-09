@@ -2,7 +2,11 @@
 // Fields are the names written to the note frontmatter (same as Garmin Health Sync / garmin-repair).
 
 export interface MetricDef { icon: string; color: string; better: "up" | "down"; group: "recovery" | "activity"; unit: "" | "ms" | "bpm" | "km" }
-export interface SportDef { icon: string; color: string; km: string | null; min: string; precision: number }
+export type Units = "metric" | "imperial";
+export type DistanceUnit = "km" | "mi" | "yd";
+/** The note property a sport's distance is written to in one unit system, how it is labelled and how many decimals a card shows. */
+export interface DistanceDef { field: string; unit: DistanceUnit; precision: number }
+export interface SportDef { icon: string; color: string; dist: Record<Units, DistanceDef> | null; min: string }
 export type { Lang } from "../i18n/types";
 
 export const METRICS: Record<string, MetricDef> = {
@@ -18,8 +22,9 @@ export const METRICS: Record<string, MetricDef> = {
 };
 
 export const SPORTS: Record<string, SportDef> = {
-  run:      { icon: "🏃", color: "green",  km: "run_km",  min: "run_min",  precision: 1 },
-  bike:     { icon: "🚴", color: "blue",   km: "bike_km", min: "bike_min", precision: 0 },
-  swim:     { icon: "🏊", color: "cyan",   km: "swim_km", min: "swim_min", precision: 1 },
-  strength: { icon: "🏋️", color: "orange", km: null,      min: "strength_min", precision: 0 },
+  run:      { icon: "🏃", color: "green",  dist: { metric: { field: "run_km", unit: "km", precision: 1 },  imperial: { field: "run_mi", unit: "mi", precision: 1 } },  min: "run_min" },
+  bike:     { icon: "🚴", color: "blue",   dist: { metric: { field: "bike_km", unit: "km", precision: 0 }, imperial: { field: "bike_mi", unit: "mi", precision: 0 } }, min: "bike_min" },
+  // A pool is measured in yards where miles are the road unit, and a mile of swimming is not a number anyone uses.
+  swim:     { icon: "🏊", color: "cyan",   dist: { metric: { field: "swim_km", unit: "km", precision: 1 }, imperial: { field: "swim_yd", unit: "yd", precision: 0 } }, min: "swim_min" },
+  strength: { icon: "🏋️", color: "orange", dist: null, min: "strength_min" },
 };

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { App } from "obsidian";
 import { TFile } from "obsidian";
 import { dayParser } from "../core/dayname";
-import { readRows, scanNotes, uniquePath, writeDays } from "./storage";
+import { convertDays, readRows, scanNotes, uniquePath, writeDays } from "./storage";
 
 type Fm = Record<string, unknown>;
 
@@ -145,5 +145,37 @@ describe("scanNotes", () => {
   });
   it("skips notes the cache has not read yet", () => {
     expect(scanNotes(fakeApp({ "x.md": { a: 2 } }, true).app)).toEqual([]);
+  });
+});
+
+describe("convertDays", () => {
+  it("adds miles and yards to notes that hold kilometers, and touches no other note", async () => {
+    const { app, files, rewrites } = fakeApp({
+      "D/2026-11-01.md": { run_km: 10, swim_km: 1.5, steps: 100 },
+      "D/2026-11-02.md": { steps: 200 },
+      "D/2026-11-03.md": { run_km: 5, run_mi: 3.11 },
+    });
+    expect(await convertDays(app, "D", "imperial")).toBe(1);
+    expect(files.get("D/2026-11-01.md")).toEqual({ run_km: 10, swim_km: 1.5, steps: 100, run_mi: 6.21, swim_yd: 1640 });
+    expect(files.get("D/2026-11-02.md")).toEqual({ steps: 200 });
+    expect(files.get("D/2026-11-03.md")).toEqual({ run_km: 5, run_mi: 3.11 });
+    expect(rewrites).toEqual(["D/2026-11-01.md"]);
+  });
+  it("does nothing the second time, so nothing churns the sync", async () => {
+    const { app, rewrites } = fakeApp({ "D/2026-11-01.md": { run_km: 10 } });
+    await convertDays(app, "D", "imperial");
+    rewrites.length = 0;
+    expect(await convertDays(app, "D", "imperial")).toBe(0);
+    expect(rewrites).toEqual([]);
+  });
+  it("goes back to kilometers from miles", async () => {
+    const { app, files } = fakeApp({ "D/2026-11-01.md": { bike_mi: 24.85 } });
+    expect(await convertDays(app, "D", "metric")).toBe(1);
+    expect(files.get("D/2026-11-01.md")?.bike_km).toBeCloseTo(40, 1);
+  });
+  it("returns 0 for a folder that does not exist, and for notes the cache has not read yet", async () => {
+    expect(await convertDays(fakeApp().app, "Nope", "imperial")).toBe(0);
+    const lag = fakeApp({ "D/2026-11-01.md": { run_km: 10 } }, true);
+    expect(await convertDays(lag.app, "D", "imperial")).toBe(0);
   });
 });

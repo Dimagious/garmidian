@@ -65,7 +65,11 @@ If Garmin Health Sync or your own script writes metrics such as `steps` or `slee
 
 ## What it writes
 
-One note per day in `Garmy/data`, with these properties when Garmin has them: `steps`, `resting_hr`, `stress`, `sleep_score`, `sleep_duration`, `hrv`, `body_battery` (the day's highest value), and per sport `run_km`, `run_min`, `bike_km`, `bike_min`, `swim_km`, `swim_min`, `strength_min`. Folders are configurable. A dashboard note sits between two comment markers (`%% garmy:start %%` and `%% garmy:end %%`) with its choices in one `garmy` property, which is how the rebuild knows what to do.
+One note per day in `Garmy/data`, with these properties when Garmin has them: `steps`, `resting_hr`, `stress`, `sleep_score`, `sleep_duration`, `hrv`, `body_battery` (the day's highest value), and per sport `run_km`, `run_min`, `bike_km`, `bike_min`, `swim_km`, `swim_min`, `strength_min`. Folders are configurable.
+
+**Kilometers or miles.** Choose in the wizard (More options) or in settings. In miles mode the distances are `run_mi`, `bike_mi` and `swim_yd`, because a pool is measured in yards. A fresh install on an en-US machine starts in miles, everything else in kilometers. Switching converts the notes already on disk, asks Garmin for nothing, and keeps both sets of properties, so you can switch back. Run **Rebuild the dashboard in this note** to redraw a dashboard in the new unit.
+
+A dashboard note sits between two comment markers (`%% garmy:start %%` and `%% garmy:end %%`) with its choices in one `garmy` property, which is how the rebuild knows what to do.
 
 ## What it does not do
 

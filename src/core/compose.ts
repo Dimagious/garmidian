@@ -1,9 +1,10 @@
 // Composer: data profile + user choices -> one markdown note with Dashy blocks.
 // Every block declares what it needs; a block whose data is missing is not written.
-import { METRICS, SPORTS, type Lang } from "./catalog";
+import { METRICS, SPORTS, type Lang, type Units } from "./catalog";
 import { T, UNITS } from "../i18n";
 import { did, has } from "./profile";
 import type { DataProfile } from "./types";
+import { distanceFor } from "./units";
 
 export type Mode = "dashboard" | "month";
 export interface ComposeOptions {
@@ -14,6 +15,8 @@ export interface ComposeOptions {
   sports?: string[];
   races?: string | null;
   mode?: Mode;
+  /** Kilometers or miles for sport distances. Default metric. */
+  units?: Units;
 }
 export interface ComposeResult {
   markdown: string;
@@ -48,12 +51,13 @@ export function niceUp(x: number): number {
 export function activeSports(p: DataProfile, chosen?: string[]): string[] {
   return (chosen ?? Object.keys(SPORTS)).filter((s) => {
     const sp = SPORTS[s];
-    return sp !== undefined && (did(p, sp.min) || (sp.km !== null && did(p, sp.km)));
+    return sp !== undefined && (did(p, sp.min) || distanceFor(p, s, "metric") !== null || distanceFor(p, s, "imperial") !== null);
   });
 }
 
 export function compose(p: DataProfile, o: ComposeOptions): ComposeResult {
   const lang: Lang = o.lang ?? "en";
+  const units: Units = o.units ?? "metric";
   const t = T[lang];
   const u = UNITS[lang];
   const src = o.source;
@@ -83,8 +87,8 @@ export function compose(p: DataProfile, o: ComposeOptions): ComposeResult {
 
   const sportCard = (s: string): Row => {
     const sp = SPORTS[s]!;
-    const f = sp.km ?? sp.min;
-    return { label: lbl(s), field: f, agg: "sum", precision: sp.km ? sp.precision : 0, unit: sp.km ? u.km : "", icon: sp.icon, ...(usual ? { compare: true, better: "up" } : {}) };
+    const d = distanceFor(p, s, units);
+    return { label: lbl(s), field: d?.field ?? sp.min, agg: "sum", precision: d?.precision ?? 0, unit: d ? u[d.unit] : "", icon: sp.icon, ...(usual ? { compare: true, better: "up" } : {}) };
   };
   const layers = (): string => series(sports.map((s) => ({ field: SPORTS[s]!.min, color: SPORTS[s]!.color, label: lbl(s) })), "layers");
 
@@ -156,9 +160,10 @@ export function compose(p: DataProfile, o: ComposeOptions): ComposeResult {
       const goals: Row[] = [];
       for (const s of sports) {
         const sp = SPORTS[s]!;
-        const f = sp.km ?? sp.min;
+        const d = distanceFor(p, s, units);
+        const f = d?.field ?? sp.min;
         const base = p.sumLast(f, 28);
-        if (base > 0) goals.push({ label: lbl(s), field: f, agg: "sum", goal: niceUp(base * 1.1), unit: sp.km ? u.km : "", icon: sp.icon });
+        if (base > 0) goals.push({ label: lbl(s), field: f, agg: "sum", goal: niceUp(base * 1.1), unit: d ? u[d.unit] : "", icon: sp.icon });
       }
       if (goals.length) { head(t.goals, 3); add("training.goals", fence("progress", ["source: " + src, "period: month", "columns: 2"], goals)); }
     } else skip("training.goals", `span ${p.span} < 28`);

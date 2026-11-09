@@ -95,6 +95,16 @@ describe("GarminClient", () => {
       expect(f.calls.filter((r) => r.url.includes("activities/search")).length).toBe(2);
       expect(res.records[0]?.fields.run_km).toBe(200);
     });
+    it("writes miles and yards when asked, from the same activities", async () => {
+      const acts = [
+        { activityType: { typeKey: "running" }, startTimeLocal: "2026-11-01 07:00:00", distance: 16093.44, duration: 3000 },
+        { activityType: { typeKey: "lap_swimming" }, startTimeLocal: "2026-11-01 18:00:00", distance: 914.4, duration: 1500 },
+      ];
+      const f = fake((r) => base(r) ?? (r.url.includes("activities/search") ? ok(acts) : route(r)));
+      const res = await new GarminClient(f.http, "k", Date.now, noSleep).backfill("2026-10-20", "2026-11-05", undefined, undefined, "imperial");
+      expect(res.records[0]?.fields).toMatchObject({ run_mi: 10, run_min: 50, swim_yd: 1000, swim_min: 25 });
+      expect(res.records[0]?.fields).not.toHaveProperty("run_km");
+    });
     it("a day split across two activity pages is summed, not overwritten", async () => {
       const run = (min: number): unknown => ({ activityType: { typeKey: "running" }, startTimeLocal: "2026-11-01 07:00:00", distance: 1000, duration: min * 60 });
       const page = [...Array.from({ length: 199 }, () => ({ activityType: { typeKey: "yoga" }, startTimeLocal: "2026-10-30 07:00:00", distance: 0, duration: 60 })), run(30)];

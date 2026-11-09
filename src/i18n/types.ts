@@ -39,6 +39,7 @@ export interface SyncUi {
   dashyMissingAction: string; dashyDisabledTitle: string; dashyDisabled: string; dashyEnable: string;
   setLangName: string; setLangDesc: string; setLangAuto: string;
   setSyncName: string; setSyncDesc: string; syncOff: string; sync6: string; sync12: string; sync24: string;
+  setUnitsName: string; setUnitsDesc: string; unitsMetric: string; unitsImperial: string; noticeUnitsChanged: string;
   setSyncNowName: string; setSyncNowDesc: string; setSyncNow: string; setLastSyncAt: string;
   setKeyRejected: (date: string) => string; setReplaceKey: string;
   noticeSynced: (days: number) => string; noticeNoKey: string; noticeOffline: string; noticeRate: string; noticeFailed: string;
@@ -56,6 +57,6 @@ export interface Locale {
   sync: SyncUi;
   /** Dashboard labels, keyed by LabelKey and by metric and sport ids. */
   labels: Record<LabelKey, string>;
-  /** Unit suffixes with their leading space: ms, bpm, km. */
-  units: { ms: string; bpm: string; km: string };
+  /** Unit suffixes with their leading space: ms, bpm, km, mi, yd. */
+  units: { ms: string; bpm: string; km: string; mi: string; yd: string };
 }

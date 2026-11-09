@@ -1,13 +1,14 @@
 import { Notice, Plugin, getLanguage, requestUrl } from "obsidian";
 import { GarminClient, GarminError, type Http, type Scheduler } from "./api/client";
-import type { Lang } from "./core/catalog";
+import type { Lang, Units } from "./core/catalog";
 import { addDays, localDate } from "./core/dates";
 import { ISO_FORMAT } from "./core/dayname";
 import { overwriteFrom } from "./core/merge";
+import { defaultUnits } from "./core/units";
 import { shouldAutoSync, syncWindowDays } from "./core/schedule";
 import { WizardModal } from "./app/wizard";
 import { LANGS, SYNC_UI, UI, pickLang } from "./i18n";
-import { writeDays } from "./app/storage";
+import { convertDays, writeDays } from "./app/storage";
 import { GarmySettingTab } from "./app/settings";
 import { rebuildActiveDashboard } from "./app/rebuild";
 
@@ -21,8 +22,10 @@ export interface GarmySettings {
   syncHours: number;
   /** Local date on which Garmin rejected the key, or "" while the key works. */
   keyProblem: string;
+  /** Kilometers or miles (yards for swimming) in the notes and on the dashboards. */
+  units: Units;
 }
-const DEFAULTS: GarmySettings = { dataFolder: "Garmy/data", notesFolder: "Garmy", racesFolder: "", lastSync: "", lastSyncAt: 0, language: "auto", syncHours: 6, keyProblem: "" };
+const DEFAULTS: GarmySettings = { dataFolder: "Garmy/data", notesFolder: "Garmy", racesFolder: "", lastSync: "", lastSyncAt: 0, language: "auto", syncHours: 6, keyProblem: "", units: "metric" };
 const SECRET_ID = "garmy-garmin-api-key";
 const DASHY_ID = "dashsidian";
 const AUTO_CHECK_MS = 30 * 60 * 1000;
@@ -52,11 +55,14 @@ export default class GarmyPlugin extends Plugin {
   };
 
   async onload(): Promise<void> {
-    this.settings = { ...DEFAULTS, ...(await this.loadData() as Partial<GarmySettings> | null) };
+    const saved = await this.loadData() as Partial<GarmySettings> | null;
+    // Someone who updates keeps kilometers, which is what Garmy wrote before the setting existed. A fresh install
+    // starts in miles only where miles are the everyday unit.
+    this.settings = { ...DEFAULTS, units: saved ? "metric" : defaultUnits(navigator.language), ...saved };
     this.addRibbonIcon("layout-dashboard", UI[this.lang()].ribbon, () => this.openWizard());
     this.addCommand({ id: "open-wizard", name: "Build a Garmin dashboard", callback: () => this.openWizard() });
     this.addCommand({ id: "sync-recent", name: "Sync the latest days from Garmin", callback: () => void this.syncNow(true) });
-    this.addCommand({ id: "rebuild-dashboard", name: "Rebuild the dashboard in this note", callback: () => void rebuildActiveDashboard(this.app, this.lang()) });
+    this.addCommand({ id: "rebuild-dashboard", name: "Rebuild the dashboard in this note", callback: () => void rebuildActiveDashboard(this.app, this.lang(), this.settings.units) });
     this.addSettingTab(new GarmySettingTab(this.app, this));
     this.app.workspace.onLayoutReady(() => this.startAutoSync());
   }
@@ -91,6 +97,13 @@ export default class GarmyPlugin extends Plugin {
   getKey(): string { return this.app.secretStorage.getSecret(SECRET_ID) ?? ""; }
   setKey(key: string): void { this.app.secretStorage.setSecret(SECRET_ID, key); }
   async saveSettings(): Promise<void> { await this.saveData(this.settings); }
+
+  /** Switches the unit system and fills the notes already on disk, so no request to Garmin is needed. Returns the notes changed. */
+  async setUnits(units: Units): Promise<number> {
+    this.settings.units = units;
+    await this.saveSettings();
+    return convertDays(this.app, this.settings.dataFolder, units);
+  }
   newClient(key: string = this.getKey()): GarminClient { return new GarminClient(this.http, key, Date.now, undefined, this.schedule); }
   openWizard(): void { new WizardModal(this.app, this, this.lang()).open(); }
 
@@ -125,7 +138,7 @@ export default class GarmyPlugin extends Plugin {
     try {
       const today = localDate(Date.now());
       const back = syncWindowDays(this.settings.lastSync, today);
-      const res = await this.newClient().backfill(addDays(today, -back), today);
+      const res = await this.newClient().backfill(addDays(today, -back), today, undefined, undefined, this.settings.units);
       await writeDays(this.app, this.settings.dataFolder, res.records, { overwriteFrom: overwriteFrom(today) });
       await this.recordSync(today);
       if (manual) new Notice(text.noticeSynced(res.records.length));

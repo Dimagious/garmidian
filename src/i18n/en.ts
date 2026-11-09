@@ -31,6 +31,7 @@ export const en: Locale = {
   cancel: "Cancel", cancelledTitle: "Loading cancelled", cancelledBody: "Nothing was saved. You can start again any time.", busy: "A sync is already running. Try again in a minute.", walkBusy: "Garmy: a sync is already running",
   dashyMissingAction: "Open the Dashy page", dashyDisabledTitle: "Dashy is turned off", dashyDisabled: "Dashy is installed but turned off. Turn it on and the blocks will draw.", dashyEnable: "Turn on Dashy",
   setLangName: "Language", setLangDesc: "The language of the wizard, settings and notices. Dashboard labels have their own choice in the wizard.", setLangAuto: "Automatic (follow Obsidian)", setSyncName: "Automatic sync", setSyncDesc: "Refreshes the last days from Garmin when Obsidian starts and then every few hours.", syncOff: "Off", sync6: "Every 6 hours", sync12: "Every 12 hours", sync24: "Once a day",
+  setUnitsName: "Distance units", setUnitsDesc: "Kilometers, or miles for runs and rides and yards for swimming. Rebuild a dashboard to redraw it in the new unit.", unitsMetric: "Kilometers", unitsImperial: "Miles and yards", noticeUnitsChanged: "Garmy: units changed. Rebuild your dashboards to redraw them.",
   setSyncNowName: "Sync now", setSyncNowDesc: "Loads the latest days from Garmin.", setSyncNow: "Sync", setLastSyncAt: "Last sync",
   setKeyRejected: (d) => `Garmin rejected the key on ${d}. It may have expired. Create a new one.`, setReplaceKey: "Replace key",
   noticeSynced: (n) => `Garmy: ${n} days synced`, noticeNoKey: "Garmy: no key. Run the wizard first.", noticeOffline: "Garmy: no connection to Garmin. Will try again later.", noticeRate: "Garmy: Garmin asks to wait. Will try again later.", noticeFailed: "Garmy: sync failed. Details are in the developer console.",
@@ -54,5 +55,5 @@ export const en: Locale = {
   title: "My Garmin dashboard", month: "Monthly review",
   dataSource: "Data source: Garmin", madeBy: "Built by Garmy from your data. Rebuild it any time.",
 },
-  units: { ms: " ms", bpm: " bpm", km: " km" },
+  units: { ms: " ms", bpm: " bpm", km: " km", mi: " mi", yd: " yd" },
 };

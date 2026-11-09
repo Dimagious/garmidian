@@ -4,6 +4,12 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ## [Unreleased]
 
+### Added
+
+- Distance units: kilometers or miles. Miles mode writes `run_mi`, `bike_mi` and `swim_yd` (a pool is measured in yards) and draws the cards and monthly goals with those. Choose in the wizard under More options or in settings. A fresh install on an en-US machine starts in miles, an update keeps kilometers.
+- Switching units fills the notes already on disk from the other unit system, with no request to Garmin, and keeps both sets of properties, so switching back needs no conversion. Rebuilding a dashboard follows the current setting.
+- A dashboard built from notes you already had keeps working in miles mode: when the notes hold only kilometers, the cards use them and say kilometers.
+
 ## [1.0.1] - 2026-11-06
 
 ### Fixed
