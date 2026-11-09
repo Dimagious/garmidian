@@ -156,6 +156,13 @@
 .garmy-chip-emoji { font-size: var(--font-ui-medium); line-height: 1; }
 .garmy-chip .garmy-mark { width: 16px; height: 16px; margin-left: var(--size-2-1); }
 .garmy-chip .garmy-mark .svg-icon { width: 10px; height: 10px; }
+/* The dashboard library: radio cards, a greyed one waits for data the user does not have yet */
+.garmy-tpls { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); margin-bottom: var(--size-4-4); }
+.garmy-tpl.is-disabled { cursor: not-allowed; opacity: 0.6; }
+.garmy-tpl.is-disabled:hover { border-color: var(--background-modifier-border); background: var(--background-primary); }
+.garmy-tpl.is-disabled input.garmy-check { cursor: not-allowed; }
+.garmy-tpl .garmy-card-text { padding-right: var(--size-4-5); }
+.garmy-overview-box[hidden], .garmy-sports-box[hidden] { display: none; }
 .garmy-empty-hint { display: none; color: var(--text-warning); }
 .garmy-empty-hint.is-visible { display: block; }
 .garmy-options { margin-top: var(--size-4-5); border-top: 1px solid var(--background-modifier-border); padding-top: var(--size-4-2); }

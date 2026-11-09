@@ -129,6 +129,6 @@ describe("compose", () => {
   });
   it("uses no em dash", () => { expect(compose(buildProfile(rows(40, full)), { source: SRC }).markdown).not.toContain("—"); });
   it("niceUp rounds goals to friendly numbers", () => {
-    expect([niceUp(0), niceUp(110), niceUp(231), niceUp(2.2), niceUp(0.9)]).toEqual([0, 200, 250, 2.5, 1]);
+    expect([niceUp(0), niceUp(110), niceUp(231), niceUp(2.2), niceUp(0.9), niceUp(308000), niceUp(1000)]).toEqual([0, 120, 250, 2.5, 1, 350000, 1000]);
   });
 });

@@ -51,6 +51,26 @@ Sleep, HRV, resting heart rate, Body Battery, steps, runs, rides, swims and stre
 
 <img alt="A dashboard built from six days of data shows a few cards and a note that charts come after a week; after the rebuild command it shows recovery cards, week-over-week comparisons, charts, a year map and monthly goals, and the text around it is unchanged" src="https://raw.githubusercontent.com/Dimagious/garmidian/HEAD/docs/screens/film-rebuild.gif" width="100%">
 
+## Eleven dashboards
+
+The third step of the wizard is a library. Cards the data cannot fill yet are greyed out and say what they wait for, so the list is yours: lifting has no distance, a swim page counts in yards in miles mode, and a sport you never do is not offered.
+
+| Dashboard | What it shows | Needs |
+|---|---|---|
+| Everything | Recovery, movement and training in one dashboard | any data |
+| Morning glance | Four numbers from last night with two weeks behind each, small enough for a home page | any data |
+| Sleep | Score and duration, nights above 80, a streak of 7 hour nights, a year map | sleep score or duration |
+| HRV and recovery | HRV, resting heart rate, Body Battery and stress against your usual | one of those |
+| Steps | Daily average, 10,000 step streaks, the month and a goal for it, weekly averages, a year map | steps |
+| Run, Bike, Swim, Strength | One sport: this week, this month, the longest, sessions, weekly volume, a goal, and the recovery signals that fit it | that sport |
+| Triathlon | Swim, bike and run side by side, bike-then-run days, a year map by sport | two of the three |
+| Race build | Days to the start, four weeks against the four before, how your body takes it | a race date or a folder |
+| Weekly review | For a weekly note: that week against your usual | any data |
+| Monthly review | For a monthly note: that month day by day | any data |
+| Year so far | Totals, the longest effort per sport, months side by side, a year map | 60 days |
+
+The kind is stored in the note, so **Rebuild the dashboard in this note** builds the same kind again. A weekly or monthly review is named for its period (`2026-W45`, `2026-11`) because that name is how Dashy knows which days it counts; if you already keep weekly notes, use **Insert into the current note** inside one.
+
 ## Seven languages
 
 The wizard, settings and notices follow Obsidian's language and fall back to English: English, Russian, Spanish, German, French, Portuguese (Brazil) and Japanese. The words inside the dashboard are chosen separately, so you can keep an English interface and a dashboard in your own language.
@@ -69,7 +89,7 @@ One note per day in `Garmy/data`, with these properties when Garmin has them: `s
 
 **Kilometers or miles.** Choose in the wizard (More options) or in settings. In miles mode the distances are `run_mi`, `bike_mi` and `swim_yd`, because a pool is measured in yards. A fresh install on an en-US machine starts in miles, everything else in kilometers. Switching converts the notes already on disk, asks Garmin for nothing, and keeps both sets of properties, so you can switch back. Run **Rebuild the dashboard in this note** to redraw a dashboard in the new unit.
 
-A dashboard note sits between two comment markers (`%% garmy:start %%` and `%% garmy:end %%`) with its choices in one `garmy` property, which is how the rebuild knows what to do.
+A dashboard note sits between two comment markers (`%% garmy:start %%` and `%% garmy:end %%`) with its choices, including which dashboard it is, in one `garmy` property, which is how the rebuild knows what to do.
 
 ## What it does not do
 

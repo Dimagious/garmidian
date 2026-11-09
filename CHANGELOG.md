@@ -6,9 +6,17 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ### Added
 
+- A library of eleven dashboards. The third step of the wizard now starts with a choice: Everything (the dashboard Garmy always built), Morning glance, Sleep, HRV and recovery, Steps, one page per sport in your data (Run, Bike, Swim, Strength), Triathlon, Race build, Weekly review, Monthly review and Year so far. A card whose data is missing is greyed out and says what it waits for, so the list follows your data: lifting has no distance, a swim page measures in yards in miles mode, and the triathlon card unlocks when a second of swim, bike and run appears.
+- A rebuild keeps the kind of dashboard. The `garmy` property gets an eighth field with the template (the overview keeps the seven it had), so older notes rebuild as before and a triathlon dashboard picks up a sport you start later.
+- Weekly and monthly reviews are named for their period (`2026-W45`, `2026-11`), which is how Dashy knows the days they count; the preview is drawn under that name too. If a note with that name exists, Garmy says so and points to Insert into the current note.
+- A race can be one date (`2026-06-14`) as well as a folder of race notes, in the wizard options and in every dashboard that has a countdown.
 - Distance units: kilometers or miles. Miles mode writes `run_mi`, `bike_mi` and `swim_yd` (a pool is measured in yards) and draws the cards and monthly goals with those. Choose in the wizard under More options or in settings. A fresh install on an en-US machine starts in miles, an update keeps kilometers.
 - Switching units fills the notes already on disk from the other unit system, with no request to Garmin, and keeps both sets of properties, so switching back needs no conversion. Rebuilding a dashboard follows the current setting.
 - A dashboard built from notes you already had keeps working in miles mode: when the notes hold only kilometers, the cards use them and say kilometers.
+
+### Changed
+
+- Monthly goals round up to a number a person would pick without doubling it: 110 km becomes 120, not 200 (the old ladder jumped from 1 to 2 to 2.5 to 5).
 
 ## [1.0.1] - 2026-11-06
 

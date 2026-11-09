@@ -1,11 +1,13 @@
-import { Component, MarkdownRenderer, Modal, Notice, Setting, MarkdownView, setIcon, type App } from "obsidian";
+import { Component, MarkdownRenderer, Modal, Notice, Setting, MarkdownView, normalizePath, setIcon, type App } from "obsidian";
 import { GarminError, type CancelToken, type Progress } from "../api/client";
 import { SPORTS } from "../core/catalog";
 import { activeSports, compose } from "../core/compose";
+import { isRaceDate } from "../core/blocks";
+import { listTemplates, type TemplateOption } from "../core/templates";
 import { buildProfile } from "../core/profile";
 import type { DataProfile, DayRecord } from "../core/types";
 import { LANGS, SYNC_UI, T, UI, pickLang, type Lang, type SyncUi, type Ui } from "../i18n";
-import { addDays, localDate } from "../core/dates";
+import { addDays, isoWeek, localDate } from "../core/dates";
 import { encodeMeta, splitComposed, withMeta, wrapRegion, type RegionMeta } from "../core/region";
 import { dayParser, isoParser, ISO_FORMAT, type DayParser } from "../core/dayname";
 import { overwriteFrom } from "../core/merge";
@@ -21,7 +23,9 @@ const ORDER: Step[] = ["key", "load", "choose", "preview"];
 const PARTS: Progress["step"][] = ["daily", "sleep", "hrv", "activities"];
 const GROUP_ICONS: Record<string, string> = { recovery: "heart-pulse", activity: "footprints", training: "dumbbell" };
 
-interface Choices { groups: Set<string>; sports: Set<string>; races: string; lang: Lang }
+interface Choices { groups: Set<string>; sports: Set<string>; races: string; lang: Lang; template: string }
+/** Dashboards that read the sports the user ticks. The others are about one thing and choose their own. */
+const USES_SPORTS = new Set(["overview", "week", "month", "year", "race"]);
 type PartState = "waiting" | "loading" | "done" | "warn" | "stopped";
 interface PartView { state: PartState; done: number; total: number }
 interface NoticeAction { label: string; run: () => void }
@@ -56,7 +60,7 @@ export class WizardModal extends Modal {
 
   constructor(app: App, private readonly plugin: GarmyPlugin, private readonly lang: Lang) {
     super(app);
-    this.choices = { groups: new Set(), sports: new Set(), races: plugin.settings.racesFolder, lang };
+    this.choices = { groups: new Set(), sports: new Set(), races: plugin.settings.racesFolder, lang, template: "overview" };
     this.modalEl.addClass("garmy-wizard");
     this.resetParts();
   }
@@ -67,6 +71,8 @@ export class WizardModal extends Modal {
   /** Set when the user builds from notes they already have: the folder those notes live in. */
   private sourceFolder: string | null = null;
   private candidates: FolderCandidate[] | null = null;
+  private tplGrid: HTMLElement | null = null;
+  private tplChanged: (() => void) | null = null;
 
   onOpen(): void {
     this.renderer.load();
@@ -414,6 +420,7 @@ export class WizardModal extends Modal {
     }
     const sports = activeSports(this.profile);
     this.choices.sports = new Set(sports);
+    this.choices.template = "overview";
     this.choices.groups = new Set(["recovery", "activity", "training"].filter((g) => this.groupAvailable(g)));
     this.go("choose");
   }
@@ -441,17 +448,24 @@ export class WizardModal extends Modal {
   private renderChoose(body: HTMLElement, foot: HTMLElement): HTMLElement {
     const ui = this.ui;
     const heading = this.stepHead(body, ui.chooseTitle, ui.chooseIntro);
-    const empty = body.createDiv({ cls: "garmy-hint garmy-empty-hint", text: ui.nothingChosen, attr: { role: "status" } });
     let previewBtn: HTMLButtonElement | null = null;
-    // Training cards need at least one sport; the other groups stand on their own.
-    const nothingToShow = (): boolean => !(this.choices.groups.has("recovery") || this.choices.groups.has("activity") || (this.choices.groups.has("training") && this.choices.sports.size > 0));
+    let overviewBox: HTMLElement | null = null;
+    let sportsBox: HTMLElement | null = null;
+    let empty: HTMLElement | null = null;
+    // Training cards need at least one sport; the other groups stand on their own. Only the overview has groups.
+    const nothingToShow = (): boolean => this.choices.template === "overview" && !(this.choices.groups.has("recovery") || this.choices.groups.has("activity") || (this.choices.groups.has("training") && this.choices.sports.size > 0));
     const refresh = (): void => {
       const none = nothingToShow();
-      empty.toggleClass("is-visible", none);
+      empty?.toggleClass("is-visible", none);
       if (previewBtn) previewBtn.disabled = none;
+      if (overviewBox) overviewBox.hidden = this.choices.template !== "overview";
+      if (sportsBox) sportsBox.hidden = !USES_SPORTS.has(this.choices.template);
     };
 
-    const cards = body.createDiv({ cls: "garmy-cards", attr: { role: "group" } });
+    this.renderTemplates(body, refresh);
+    overviewBox = body.createDiv({ cls: "garmy-overview-box" });
+    empty = overviewBox.createDiv({ cls: "garmy-hint garmy-empty-hint", text: ui.nothingChosen, attr: { role: "status" } });
+    const cards = overviewBox.createDiv({ cls: "garmy-cards", attr: { role: "group" } });
     this.labelBy(cards, heading);
     for (const g of ["recovery", "activity", "training"]) {
       if (!this.groupAvailable(g)) continue;
@@ -468,9 +482,10 @@ export class WizardModal extends Modal {
     }
 
     const sports = activeSports(this.profile);
-    const sportsHead = body.createEl("h4", { cls: "garmy-subhead", text: ui.sports });
-    body.createEl("p", { cls: "garmy-hint", text: sports.length ? ui.sportsHint : ui.noSports });
-    const chips = body.createDiv({ cls: "garmy-chips", attr: { role: "group" } });
+    sportsBox = body.createDiv({ cls: "garmy-sports-box" });
+    const sportsHead = sportsBox.createEl("h4", { cls: "garmy-subhead", text: ui.sports });
+    sportsBox.createEl("p", { cls: "garmy-hint", text: sports.length ? ui.sportsHint : ui.noSports });
+    const chips = sportsBox.createDiv({ cls: "garmy-chips", attr: { role: "group" } });
     this.labelBy(chips, sportsHead);
     for (const s of sports) {
       const sp = SPORTS[s];
@@ -488,7 +503,7 @@ export class WizardModal extends Modal {
     const more = body.createEl("details", { cls: "garmy-options" });
     more.createEl("summary", { text: ui.options });
     const inner = more.createDiv({ cls: "garmy-options-body" });
-    new Setting(inner).setName(ui.races).setDesc(ui.racesHint).addText((t) => t.setValue(this.choices.races).onChange((v) => { this.choices.races = v.trim(); }));
+    new Setting(inner).setName(ui.races).setDesc(ui.racesHint).addText((t) => t.setValue(this.choices.races).onChange((v) => { this.choices.races = v.trim(); this.paintTemplates(); refresh(); }));
     new Setting(inner).setName(this.sync.setUnitsName).addDropdown((d) => {
       d.addOption("metric", this.sync.unitsMetric).addOption("imperial", this.sync.unitsImperial);
       d.setValue(this.plugin.settings.units).onChange((v) => {
@@ -509,13 +524,67 @@ export class WizardModal extends Modal {
     return heading;
   }
 
+  /** The library: one card per dashboard the data can fill; the others stay greyed with what they are waiting for. */
+  private renderTemplates(body: HTMLElement, changed: () => void): void {
+    const head = body.createEl("h4", { cls: "garmy-subhead", text: this.ui.tplTitle });
+    body.createEl("p", { cls: "garmy-hint", text: this.ui.tplHint });
+    this.tplGrid = body.createDiv({ cls: "garmy-cards garmy-tpls", attr: { role: "radiogroup" } });
+    this.labelBy(this.tplGrid, head);
+    this.tplChanged = changed;
+    this.paintTemplates();
+  }
+
+  private templateOptions(): TemplateOption[] {
+    return listTemplates(this.profile, { source: this.sourceFolder ?? this.plugin.settings.dataFolder, races: this.choices.races || null, units: this.plugin.settings.units });
+  }
+
+  /** Draws the cards again. Needed when the data or the race changes what is available, not when the choice moves. */
+  private paintTemplates(): void {
+    const grid = this.tplGrid;
+    if (!grid) return;
+    const ui = this.ui;
+    const list = this.templateOptions();
+    if (list.find((t) => t.id === this.choices.template)?.need) this.choices.template = "overview"; // the race was cleared, say
+    grid.empty();
+    const cards: Array<{ id: string; label: HTMLElement }> = [];
+    for (const tpl of list) {
+      const off = tpl.need !== null;
+      const label = grid.createEl("label", { cls: "garmy-card garmy-tpl" });
+      label.toggleClass("is-disabled", off);
+      const input = label.createEl("input", { cls: `garmy-check garmy-tpl-${tpl.id.replace(":", "-")}`, attr: { type: "radio", name: "garmy-template", value: tpl.id } });
+      input.checked = this.choices.template === tpl.id;
+      input.disabled = off;
+      this.trackChecked(label, input);
+      input.addEventListener("change", () => {
+        if (!input.checked) return;
+        this.choices.template = tpl.id;
+        for (const c of cards) c.label.toggleClass("is-checked", c.id === tpl.id);
+        this.tplChanged?.();
+      });
+      setIcon(label.createDiv({ cls: "garmy-card-icon", attr: { "aria-hidden": "true" } }), tpl.icon);
+      const txt = label.createDiv({ cls: "garmy-card-text" });
+      txt.createDiv({ cls: "garmy-card-title", text: T[this.lang][tpl.name] ?? tpl.name });
+      txt.createDiv({ cls: "garmy-card-desc", text: (tpl.need ? ui.tplNeed[tpl.need] : ui.tplDesc[tpl.desc]) ?? "" });
+      setIcon(label.createDiv({ cls: "garmy-mark", attr: { "aria-hidden": "true" } }), "check");
+      cards.push({ id: tpl.id, label });
+    }
+  }
+
   // ---- 4. preview + insert
   private meta: RegionMeta = { v: 1, source: "", groups: [], noSports: [], lang: "en", races: null };
 
   private build(): string {
-    const races = this.choices.races && this.app.vault.getAbstractFileByPath(this.choices.races) ? this.choices.races : null;
-    this.meta = { v: 1, source: this.sourceFolder ?? this.plugin.settings.dataFolder, groups: [...this.choices.groups], noSports: activeSports(this.profile).filter((x) => !this.choices.sports.has(x)), lang: this.choices.lang, races, ...(this.sourceFolder !== null && this.plugin.dailyFormat() !== ISO_FORMAT ? { dayFormat: this.plugin.dailyFormat() } : {}) };
-    return compose(this.profile, { source: this.meta.source, lang: this.meta.lang, groups: this.meta.groups, sports: [...this.choices.sports], races, units: this.plugin.settings.units }).markdown;
+    const tpl = this.choices.template;
+    const r = this.choices.races;
+    const races = r && (isRaceDate(r) || this.app.vault.getAbstractFileByPath(r)) ? r : null;
+    const overview = tpl === "overview";
+    this.meta = {
+      v: 1, source: this.sourceFolder ?? this.plugin.settings.dataFolder, groups: overview ? [...this.choices.groups] : [],
+      noSports: USES_SPORTS.has(tpl) ? activeSports(this.profile).filter((x) => !this.choices.sports.has(x)) : [],
+      lang: this.choices.lang, races, ...(this.sourceFolder !== null && this.plugin.dailyFormat() !== ISO_FORMAT ? { dayFormat: this.plugin.dailyFormat() } : {}),
+      ...(overview ? {} : { template: tpl }),
+    };
+    return compose(this.profile, { source: this.meta.source, lang: this.meta.lang, groups: this.meta.groups, sports: [...this.choices.sports], races, units: this.plugin.settings.units, template: tpl }).markdown;
   }
 
   private renderPreview(body: HTMLElement, foot: HTMLElement): HTMLElement {
@@ -549,7 +618,7 @@ export class WizardModal extends Modal {
     const box = frame.createDiv({ cls: "garmy-preview markdown-rendered is-rendering", attr: { role: "region", tabindex: "0", "aria-busy": "true" } });
     this.labelBy(box, frameTitle);
     const wait = box.createDiv({ cls: "garmy-preview-wait", text: ui.previewRendering });
-    MarkdownRenderer.render(this.app, this.stripFrontmatter(this.markdown), box, this.plugin.settings.dataFolder + "/preview.md", this.renderer).then(() => {
+    MarkdownRenderer.render(this.app, this.stripFrontmatter(this.markdown), box, `${this.plugin.settings.dataFolder}/${this.previewName()}.md`, this.renderer).then(() => {
       wait.remove(); box.removeClass("is-rendering"); box.setAttr("aria-busy", "false");
     }).catch((e: unknown) => {
       console.error("Garmy: preview render failed", e);
@@ -565,10 +634,35 @@ export class WizardModal extends Modal {
 
   private stripFrontmatter(md: string): string { return md.replace(/^---\n[\s\S]*?\n---\n/, ""); }
 
+  /** A weekly or monthly review is named for its period, because that name is how Dashy knows which days it counts. */
+  private periodName(): string | null {
+    const today = localDate(Date.now());
+    if (this.choices.template === "week") return isoWeek(today);
+    if (this.choices.template === "month") return today.slice(0, 7);
+    return null;
+  }
+
+  /** The preview is drawn as if it sat in a note of its own, which for a review is the note named for the period. */
+  private previewName(): string { return this.periodName() ?? "preview"; }
+
+  private noteName(title: string): string {
+    const base = this.choices.lang === "ru" ? "Дашборд Garmin" : "Garmin dashboard";
+    const period = this.periodName();
+    if (period) return period;
+    if (this.choices.template === "overview") return base;
+    return `${base} - ${title.replace(/^#\s*/, "").replace(/^[^\p{L}\p{N}]+/u, "")}`;
+  }
+
   private async createNote(): Promise<void> {
-    const name = this.choices.lang === "ru" ? "Дашборд Garmin" : "Garmin dashboard";
-    const path = await uniquePath(this.app, this.plugin.settings.notesFolder, name);
     const parts = splitComposed(this.markdown);
+    const name = this.noteName(parts.title);
+    const period = this.periodName() !== null;
+    if (period && this.app.vault.getAbstractFileByPath(normalizePath(`${this.plugin.settings.notesFolder}/${name}.md`))) {
+      this.notice = { kind: "warn", title: this.ui.tplExistsTitle, body: this.ui.tplExists };
+      this.render();
+      return;
+    }
+    const path = await uniquePath(this.app, this.plugin.settings.notesFolder, name);
     const file = await this.app.vault.create(path, withMeta(`${parts.frontmatter}\n\n${parts.title}\n\n${wrapRegion(parts.body)}\n`, this.meta));
     await this.app.workspace.getLeaf(false).openFile(file);
     new Notice(this.ui.created + path);

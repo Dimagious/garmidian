@@ -1,5 +1,6 @@
 // Rebuilding a dashboard in an existing note: the note's own region markers say how it was built.
 import { SPORTS, type Units } from "./catalog";
+import { isRaceDate } from "./blocks";
 import { compose } from "./compose";
 import { buildProfile } from "./profile";
 import { readRegionMeta, replaceRegion, splitComposed } from "./region";
@@ -21,8 +22,9 @@ export function rebuildNote(note: string, rows: DayRecord[], folderExists: (path
   if (!meta) return { kind: "no-region" };
   const profile = buildProfile(rows);
   if (profile.days === 0) return { kind: "no-data" };
-  const races = meta.races && folderExists(meta.races) ? meta.races : null;
-  const composed = compose(profile, { source: meta.source, lang: meta.lang, groups: meta.groups, sports: Object.keys(SPORTS).filter((k) => !meta.noSports.includes(k)), races, units });
+  // a race can be one date, which needs no folder; a folder that has since been renamed is dropped
+  const races = meta.races && (isRaceDate(meta.races) || folderExists(meta.races)) ? meta.races : null;
+  const composed = compose(profile, { source: meta.source, lang: meta.lang, groups: meta.groups, sports: Object.keys(SPORTS).filter((k) => !meta.noSports.includes(k)), races, units, template: meta.template });
   const text = replaceRegion(note, splitComposed(composed.markdown).body, { ...meta, races });
   return text === null ? { kind: "no-region" } : { kind: "ok", text, blocks: composed.log.blocks };
 }

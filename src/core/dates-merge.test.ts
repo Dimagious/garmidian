@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addDays, daysBetween, localDate } from "./dates";
+import { addDays, daysBetween, isoWeek, localDate } from "./dates";
 import { changesFor, overwriteFrom } from "./merge";
 
 describe("dates", () => {
@@ -15,6 +15,14 @@ describe("dates", () => {
     expect(addDays("2026-01-01", -1)).toBe("2025-12-31");
     expect(addDays("2028-02-28", 1)).toBe("2028-02-29");
     expect(addDays("2026-03-28", 2)).toBe("2026-03-30"); // across a daylight saving change in Europe
+  });
+  it("isoWeek names the week the way Dashy reads a weekly note", () => {
+    expect(isoWeek("2026-11-09")).toBe("2026-W46"); // a Monday
+    expect(isoWeek("2026-11-15")).toBe("2026-W46"); // the Sunday of that week
+    expect(isoWeek("2026-01-01")).toBe("2026-W01");
+    expect(isoWeek("2027-01-01")).toBe("2026-W53"); // belongs to the old year
+    expect(isoWeek("2024-12-30")).toBe("2025-W01"); // belongs to the new one
+    expect(isoWeek("2026-03-02")).toBe("2026-W10");
   });
   it("daysBetween counts calendar days", () => {
     expect(daysBetween("2026-10-31", "2026-11-06")).toBe(6);

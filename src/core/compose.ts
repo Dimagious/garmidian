@@ -1,116 +1,33 @@
 // Composer: data profile + user choices -> one markdown note with Dashy blocks.
 // Every block declares what it needs; a block whose data is missing is not written.
-import { METRICS, SPORTS, type Lang, type Units } from "./catalog";
-import { T, UNITS } from "../i18n";
-import { did, has } from "./profile";
-import type { DataProfile } from "./types";
+// The overview lives here; the other dashboards are in templates.ts and are chosen with `template`.
+import { METRICS, SPORTS } from "./catalog";
+import { fence, niceUp, q, series, type Row } from "./blocks";
+import { makeCtx, type ComposeOptions, type ComposeResult } from "./ctx";
+import { buildTemplate, resolveTemplate } from "./templates";
 import { distanceFor } from "./units";
+import { has } from "./profile";
+import type { DataProfile } from "./types";
 
-export type Mode = "dashboard" | "month";
-export interface ComposeOptions {
-  source: string;
-  lang?: Lang;
-  groups?: string[];
-  /** sport ids chosen by the user; only those with real data are used */
-  sports?: string[];
-  races?: string | null;
-  mode?: Mode;
-  /** Kilometers or miles for sport distances. Default metric. */
-  units?: Units;
-}
-export interface ComposeResult {
-  markdown: string;
-  log: { blocks: string[]; skipped: string[] };
-}
+export { niceUp };
+export { activeSports } from "./ctx";
+export type { ComposeOptions, ComposeResult, Mode } from "./ctx";
 
-type Scalar = string | number | boolean | undefined | null;
-type Row = Record<string, Scalar>;
-
-const needsQuote = (v: string): boolean => /[,:{}[\]#"'&*!|>%@`]/.test(v) || v !== v.trim() || v === "";
-const q = (v: Scalar): string => (typeof v === "string" && needsQuote(v) ? JSON.stringify(v) : String(v));
-const map = (o: Row): string =>
-  "{ " + Object.entries(o).filter(([, v]) => v !== undefined && v !== null && v !== "").map(([k, v]) => `${k}: ${q(v)}`).join(", ") + " }";
-const list = (rows: Row[]): string => rows.map((o) => "  - " + map(o)).join("\n");
-const fence = (lang: string, head: string[], rows?: Row[]): string =>
-  "```" + lang + "\n" + head.join("\n") + (rows ? "\nitems:\n" + list(rows) : "") + "\n```";
-const series = (rows: Row[], key = "series"): string => `${key}:\n` + list(rows);
-
-const RANGES = [7, 14, 30, 60, 90];
-const rangeFor = (span: number): number | null => {
-  const fit = RANGES.filter((r) => r <= span);
-  return fit[fit.length - 1] ?? null; // not Array.at: the target is ES2020
-};
-export function niceUp(x: number): number {
-  if (x <= 0) return 0;
-  const mag = 10 ** Math.floor(Math.log10(x));
-  const m = x / mag;
-  const step = m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10;
-  return Number((step * mag).toPrecision(12));
-}
-
-export function activeSports(p: DataProfile, chosen?: string[]): string[] {
-  return (chosen ?? Object.keys(SPORTS)).filter((s) => {
-    const sp = SPORTS[s];
-    return sp !== undefined && (did(p, sp.min) || distanceFor(p, s, "metric") !== null || distanceFor(p, s, "imperial") !== null);
-  });
-}
-
+/** The dashboard the options ask for. The default is the overview of recovery, movement and training. */
 export function compose(p: DataProfile, o: ComposeOptions): ComposeResult {
-  const lang: Lang = o.lang ?? "en";
-  const units: Units = o.units ?? "metric";
-  const t = T[lang];
-  const u = UNITS[lang];
-  const src = o.source;
+  const id = resolveTemplate(o);
+  if (id !== "overview") return buildTemplate(id, p, o);
+  return overview(p, o);
+}
+
+function overview(p: DataProfile, o: ComposeOptions): ComposeResult {
+  const c = makeCtx(p, o);
+  const { t, u, src, sports, R, usual, lbl, unit, avail, add, skip, head, colorOf, sportCard, layers } = c;
+  const units = c.units;
   const groups = o.groups ?? ["recovery", "activity", "training"];
-  const sports = activeSports(p, o.sports);
-  const R = rangeFor(p.span);
-  const usual = p.span >= 14; // "compare: usual" needs history to mean anything
-  const blocks: string[] = [];
-  const skipped: string[] = [];
-  const out: string[] = [];
+  c.open(t.title ?? "");
 
-  const lbl = (f: string): string => t[f] ?? f;
-  const unit = (f: string): string => {
-    const k = METRICS[f]?.unit;
-    return k ? u[k] ?? "" : "";
-  };
-  const avail = (fields: string[]): string[] => fields.filter((f) => has(p, f));
-  const add = (name: string, md: string): void => { out.push(md); blocks.push(name); };
-  const skip = (name: string, why: string): void => { skipped.push(`${name}: ${why}`); };
-  const head = (title: string | undefined, level = 2): void => { out.push("#".repeat(level) + " " + (title ?? "")); };
-  const colorOf = (f: string): string => METRICS[f]?.color ?? "blue";
-
-  out.push(["---", "created: " + (p.last ?? ""), "updated: " + (p.last ?? ""), "tags:", '  - "#dashboard"', '  - "#garmy"', "---"].join("\n"));
-  out.push("# " + (o.mode === "month" ? t.month : t.title));
-  // Garmin's API brand guidelines ask for the source to be named next to the title of any view of its data
-  out.push(t.dataSource ?? "Garmin");
-
-  const sportCard = (s: string): Row => {
-    const sp = SPORTS[s]!;
-    const d = distanceFor(p, s, units);
-    return { label: lbl(s), field: d?.field ?? sp.min, agg: "sum", precision: d?.precision ?? 0, unit: d ? u[d.unit] : "", icon: sp.icon, ...(usual ? { compare: true, better: "up" } : {}) };
-  };
-  const layers = (): string => series(sports.map((s) => ({ field: SPORTS[s]!.min, color: SPORTS[s]!.color, label: lbl(s) })), "layers");
-
-  if (o.mode === "month") {
-    const rec = avail(["sleep_score", "hrv", "resting_hr", "stress", "training_readiness"]);
-    const cards: Row[] = [
-      ...rec.map((f): Row => ({ label: lbl(f), field: f, agg: "avg", precision: 0, unit: unit(f), icon: METRICS[f]!.icon, ...(usual ? { compare: "usual", better: METRICS[f]!.better } : {}) })),
-      ...(has(p, "steps") ? [{ label: t.stepsPerDay, field: "steps", agg: "avg", precision: 0, icon: "🚶" } as Row] : []),
-    ].slice(0, 4);
-    if (cards.length) add("month.recovery", fence("stats", ["columns: " + cards.length, "source: " + src, "period: note"], cards));
-    if (sports.length) {
-      head(t.training);
-      add("month.training", fence("stats", ["columns: " + Math.min(4, sports.length), "source: " + src, "period: note"], sports.map(sportCard)));
-      add("month.heatmap", fence("heatmap", ["source: " + src, "range: note", "layout: calendar", "pick: max", "title: " + q(t.monthByDay), layers()]));
-    }
-    if (has(p, "steps")) add("month.steps", fence("dashy-chart", ["source: " + src, "field: steps", "type: bar", "range: note", "goal: 10000", "label: " + q(t.steps), "title: " + q(t.chartSteps)]));
-    const hr = avail(["sleep_score", "hrv", "resting_hr"]);
-    if (hr.length) add("month.sleepHrv", fence("dashy-chart", ["source: " + src, "range: note", "agg: avg", "title: " + q(hr.map(lbl).join(" / ")), series(hr.map((f) => ({ field: f, label: lbl(f), color: colorOf(f) })))]));
-    return { markdown: out.join("\n\n") + "\n", log: { blocks, skipped } };
-  }
-
-  if (p.span < 7) out.push(`> ${t.waitWeek} ${p.days}.`);
+  if (p.span < 7) c.out.push(`> ${t.waitWeek} ${p.days}.`);
 
   const rec = groups.includes("recovery") ? avail(["sleep_score", "sleep_duration", "hrv", "body_battery", "resting_hr", "training_readiness", "stress"]) : [];
   if (rec.length) {
@@ -169,9 +86,9 @@ export function compose(p: DataProfile, o: ComposeOptions): ComposeResult {
     } else skip("training.goals", `span ${p.span} < 28`);
   }
 
-  if (o.races) { head(t.races); add("races.countdown", fence("countdown", ["columns: 2"], [{ label: t.nextRace, field: "date", source: o.races, pick: "next", icon: "🏁" }])); }
+  const race = c.raceCard();
+  if (race) { head(t.races); add("races.countdown", fence("countdown", ["columns: 2"], [race])); }
   else skip("races", "no races folder");
 
-  out.push("> " + t.madeBy);
-  return { markdown: out.join("\n\n") + "\n", log: { blocks, skipped } };
+  return c.finish();
 }

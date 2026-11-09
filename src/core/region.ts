@@ -20,6 +20,8 @@ export interface RegionMeta {
   races: string | null;
   /** How the source notes are named, when they are not ISO dates (notes the user already had). */
   dayFormat?: string;
+  /** Which dashboard this is ("sleep", "sport:run"...). Absent in notes made before templates: the overview. */
+  template?: string;
 }
 
 export const START = "%% garmy:start %%";
@@ -32,19 +34,25 @@ const esc = (s: string): string => s.replace(/%/g, "%25").replace(/\|/g, "%7C").
 const unesc = (s: string): string => s.replace(/%2C/g, ",").replace(/%7C/g, "|").replace(/%25/g, "%");
 const list = (s: string): string[] => (s === "" ? [] : s.split(",").map(unesc));
 
-/** The value of the `garmy` property: version | source | groups | sports switched off | language | races | day format. */
+/**
+ * The value of the `garmy` property: version | source | groups | sports switched off | language | races | day format | template.
+ * The template is written only when it is not the overview, so older notes and the overview keep the seven fields they had.
+ */
 export function encodeMeta(m: RegionMeta): string {
-  return ["1", esc(m.source), m.groups.map(esc).join(","), m.noSports.map(esc).join(","), m.lang, esc(m.races ?? ""), esc(m.dayFormat ?? "")].join("|");
+  const parts = ["1", esc(m.source), m.groups.map(esc).join(","), m.noSports.map(esc).join(","), m.lang, esc(m.races ?? ""), esc(m.dayFormat ?? "")];
+  if (m.template && m.template !== "overview") parts.push(esc(m.template));
+  return parts.join("|");
 }
 
 export function decodeMeta(value: string): RegionMeta | null {
   const p = value.split("|");
   if (p.length < 7 || p[0] !== "1") return null;
-  const [, source, groups, noSports, lang, races, dayFormat] = p as [string, string, string, string, string, string, string];
+  const [, source, groups, noSports, lang, races, dayFormat, template] = p as [string, string, string, string, string, string, string, string | undefined];
   if (source === "") return null;
   return {
     v: 1, source: unesc(source), groups: list(groups), noSports: list(noSports), lang: (lang as Lang),
     races: races === "" ? null : unesc(races), ...(dayFormat === "" ? {} : { dayFormat: unesc(dayFormat) }),
+    ...(template === undefined || template === "" ? {} : { template: unesc(template) }),
   };
 }
 

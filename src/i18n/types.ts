@@ -28,6 +28,7 @@ export interface Ui {
   chooseTitle: string; chooseIntro: string; groups: Record<string, string>; groupHints: Record<string, string>;
   sports: string; sportsHint: string; noSports: string; options: string; races: string; racesHint: string; language: string; preview: string; nothingChosen: string;
   previewTitle: string; previewIntro: string; previewFrame: string; previewRendering: string; previewFail: string;
+  tplTitle: string; tplHint: string; tplExistsTitle: string; tplExists: string; tplDesc: Record<string, string>; tplNeed: Record<string, string>;
   noDashyTitle: string; noDashy: string; createNote: string; insertNote: string; back: string; next: string; close: string;
   created: string; inserted: string; noActive: string; note: string; noData: string;
   ribbon: string; setAccount: string; setKeyName: string; setKeySaved: string; setKeyNone: string; setForget: string; setLastSync: string; setNever: string;
@@ -49,7 +50,7 @@ export interface SyncUi {
 }
 
 /** Words used inside the generated dashboard notes. */
-export const LABEL_KEYS = ["sleep_score", "sleep_duration", "hrv", "resting_hr", "training_readiness", "body_battery", "stress", "steps", "distance_km", "run", "bike", "swim", "strength", "latestNight", "latest", "days", "now", "weekVsUsual", "week", "trends", "activity", "training", "races", "recovery", "stepsPerDay", "stepsStreak", "km7", "chartSteps", "chartMinutes", "yearBySport", "monthByDay", "goals", "nextRace", "waitWeek", "waitMonth", "sum7", "monthCard", "title", "month", "madeBy", "dataSource"] as const;
+export const LABEL_KEYS = ["sleep_score", "sleep_duration", "hrv", "resting_hr", "training_readiness", "body_battery", "stress", "steps", "distance_km", "run", "bike", "swim", "strength", "latestNight", "latest", "days", "now", "weekVsUsual", "week", "trends", "activity", "training", "races", "recovery", "stepsPerDay", "stepsStreak", "km7", "chartSteps", "chartMinutes", "yearBySport", "monthByDay", "goals", "nextRace", "waitWeek", "waitMonth", "sum7", "monthCard", "title", "month", "madeBy", "dataSource", "tplOverview", "tplGlance", "tplSleep", "tplRecovery", "tplSteps", "tplTriathlon", "tplRace", "tplWeek", "tplYear", "tplEmpty", "avg7", "best30", "bestDay", "bestStreak", "brick", "buildUp", "byMonth", "calmDays", "chargedDays", "chartSessions", "chartVolume", "days10k", "last4", "longest", "nights7h", "nights80", "sessions", "stepsMonth", "streakNow", "thisMonth", "thisYear", "time", "weeklyAvgSteps", "yearAverages", "yearTotals"] as const;
 export type LabelKey = (typeof LABEL_KEYS)[number];
 
 export interface Locale {
@@ -57,6 +58,6 @@ export interface Locale {
   sync: SyncUi;
   /** Dashboard labels, keyed by LabelKey and by metric and sport ids. */
   labels: Record<LabelKey, string>;
-  /** Unit suffixes with their leading space: ms, bpm, km, mi, yd. */
-  units: { ms: string; bpm: string; km: string; mi: string; yd: string };
+  /** Unit suffixes with their leading space: ms, bpm, km, mi, yd, min. */
+  units: { ms: string; bpm: string; km: string; mi: string; yd: string; min: string };
 }
