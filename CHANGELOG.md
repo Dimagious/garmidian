@@ -4,6 +4,8 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-09
+
 ### Added
 
 - A library of eleven dashboards. The third step of the wizard now starts with a choice: Everything (the dashboard Garmy always built), Morning glance, Sleep, HRV and recovery, Steps, one page per sport in your data (Run, Bike, Swim, Strength), Triathlon, Race build, Weekly review, Monthly review and Year so far. A card whose data is missing is greyed out and says what it waits for, so the list follows your data: lifting has no distance, a swim page measures in yards in miles mode, and the triathlon card unlocks when a second of swim, bike and run appears.
