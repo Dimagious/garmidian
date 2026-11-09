@@ -257,8 +257,13 @@ async function toChoice(win: Page): Promise<void> {
 }
 
 /** Builds one kind of dashboard through the wizard and takes the stills asked for, in reading view. */
-async function shootTemplate(win: Page, id: string, shots: Array<{ y: number; name: string; dark?: boolean }>, min = 8): Promise<void> {
+async function shootTemplate(win: Page, id: string, shots: Array<{ y: number; name: string; dark?: boolean }>, min = 8, race?: string): Promise<void> {
     await toChoice(win);
+    if (race) {
+        // a race card waits for a date, and a new wizard window starts without the one typed before
+        await win.locator(".garmy-options summary").click();
+        await win.locator(".garmy-options-body input[type=text]").first().fill(race);
+    }
     await card(win, id).check({ force: true });
     await win.locator(".garmy-preview-btn").click();
     await win.locator(".garmy-preview").waitFor({ timeout: 10_000 });
@@ -268,6 +273,7 @@ async function shootTemplate(win: Page, id: string, shots: Array<{ y: number; na
     await expect.poll(() => win.evaluate(() => (globalThis as unknown as { app: { workspace: { getActiveFile(): { path: string } | null } } }).app.workspace.getActiveFile()?.path ?? "")).toMatch(/^Garmy\//);
     await openActiveInReading(win);
     await settleNote(win, min);
+    await win.evaluate(() => document.querySelectorAll(".notice").forEach((n) => n.remove()));
     for (const sh of shots.filter((x) => !x.dark)) { await scrollNote(win, sh.y); await win.waitForTimeout(500); await still(win, `${sh.name}-light`, WINDOW_CLIP); }
     const dark = shots.filter((x) => x.dark);
     if (dark.length) {
@@ -297,6 +303,7 @@ test("library: the choice, a clip through it, and a page of every kind", async (
     await win.locator(".garmy-options summary").click();
     await win.locator(".garmy-options-body input[type=text]").first().fill(raceDate);
     await win.locator(".garmy-options summary").click();
+    await win.evaluate(() => { const b = document.querySelector(".garmy-wizard .garmy-body"); if (b) b.scrollTop = 0; });
     await win.waitForTimeout(500);
     await stillTall(win, "wizard-library-light");
 
@@ -316,7 +323,7 @@ test("library: the choice, a clip through it, and a page of every kind", async (
     await shootTemplate(win, "sport:run", [...two("run"), { y: 0, name: "tpl-run-a", dark: true }]);
     await shootTemplate(win, "sport:strength", two("strength"));
     await shootTemplate(win, "triathlon", two("triathlon"));
-    await shootTemplate(win, "race", two("race"));
+    await shootTemplate(win, "race", two("race"), 8, raceDate);
     await shootTemplate(win, "week", two("week"));
     await shootTemplate(win, "month", two("month"));
     await shootTemplate(win, "year", two("year"));

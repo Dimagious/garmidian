@@ -27,14 +27,16 @@ export async function installDemoGarmin(win: Page, days: number, delayMs = 0, op
             const dow = d.getDay(); // 0 Sunday
             const progress = i / Math.max(1, total - 1);
             let hard = 0;
+            // the last days are always a full training week, so a picture taken on any weekday has numbers in every card
+            const recent = i >= total - 8;
             const add = (typeKey: string, hour: number, meters: number, secs: number): void => { acts.push({ activityType: { typeKey }, startTimeLocal: `${date} ${pad(hour)}:10:00`, distance: Math.round(meters), duration: Math.round(secs) }); };
             let runBoost = 0;
-            if (swim !== false && dow === 1 && rnd() < 0.75) { const km = 1.5 + rnd() * 1.2; add("lap_swimming", 7, km * 1000, km * 10 * 120 + noise(120)); hard += 0.5; }
-            if (dow === 2 && rnd() < 0.88) { const km = 6 + rnd() * 3 + progress * 1.5; add("running", 6, km * 1000, km * (350 - progress * 14 + noise(12))); hard += 1; runBoost = 3500; }
-            if (dow === 3 && rnd() < 0.65) { add("strength_training", 18, 0, 2700 + rnd() * 1200); hard += 0.6; }
-            if (dow === 4 && rnd() < 0.85) { const km = 8 + rnd() * 4 + progress * 2; add("running", 6, km * 1000, km * (345 - progress * 14 + noise(12))); hard += 1.2; runBoost = 5000; }
-            if (dow === 6 && rnd() < 0.6) { const km = 40 + rnd() * 35; add("cycling", 8, km * 1000, (km / (25 + rnd() * 5)) * 3600); hard += 1.4; }
-            if (dow === 0 && rnd() < 0.8) { const km = 14 + rnd() * 7 + progress * 3; add("running", 8, km * 1000, km * (355 - progress * 15 + noise(12))); hard += 2; runBoost = 9000; }
+            if (swim !== false && dow === 1 && (rnd() < 0.75 || recent)) { const km = 1.5 + rnd() * 1.2; add("lap_swimming", 7, km * 1000, km * 10 * 120 + noise(120)); hard += 0.5; }
+            if (dow === 2 && (rnd() < 0.88 || recent)) { const km = 6 + rnd() * 3 + progress * 1.5; add("running", 6, km * 1000, km * (350 - progress * 14 + noise(12))); hard += 1; runBoost = 3500; }
+            if (dow === 3 && (rnd() < 0.65 || recent)) { add("strength_training", 18, 0, 2700 + rnd() * 1200); hard += 0.6; }
+            if (dow === 4 && (rnd() < 0.85 || recent)) { const km = 8 + rnd() * 4 + progress * 2; add("running", 6, km * 1000, km * (345 - progress * 14 + noise(12))); hard += 1.2; runBoost = 5000; }
+            if (dow === 6 && (rnd() < 0.6 || recent)) { const km = 40 + rnd() * 35; add("cycling", 8, km * 1000, (km / (25 + rnd() * 5)) * 3600); hard += 1.4; if (i % 3 === 0 || recent) add("running", 12, 5000, 1650); }
+            if (dow === 0 && (rnd() < 0.8 || recent)) { const km = 14 + rnd() * 7 + progress * 3; add("running", 8, km * 1000, km * (355 - progress * 15 + noise(12))); hard += 2; runBoost = 9000; }
             const weekend = dow === 0 || dow === 6;
             const sleepH = clamp(6.7 + (weekend ? 0.6 : 0) + noise(0.55) - prevHard * 0.08, 5.4, 9);
             const sleepScore = Math.round(clamp(66 + (sleepH - 6.5) * 9 + noise(5) + progress * 4, 52, 97));
