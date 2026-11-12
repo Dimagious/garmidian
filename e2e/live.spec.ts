@@ -1,5 +1,7 @@
 import { execFileSync } from "node:child_process";
-import { test, expect, openWizard, setKey, dashyReport } from "./fixtures";
+import { test, expect, onlyWhen, openWizard, setKey, dashyReport } from "./fixtures";
+
+onlyWhen("GARMIN_LIVE");
 
 /**
  * Against the real Garmin Personal API. Off by default: set GARMIN_LIVE=1. The key comes from
@@ -12,7 +14,6 @@ function liveKey(): string {
 }
 
 test.describe("wizard, live Garmin", () => {
-    test.skip(!process.env.GARMIN_LIVE, "set GARMIN_LIVE=1 to run against the real API");
     test.setTimeout(240_000);
 
     test("a real key loads 30 days and draws a clean dashboard", async ({ win }) => {

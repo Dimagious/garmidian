@@ -1,21 +1,20 @@
-import type { Page } from "@playwright/test";
+import type { FakeHandle, ObsidianHelpers } from "obsidian-plugin-dev-kit/e2e";
 
 /**
  * A believable year of Garmin data for pictures and clips. Nobody's real numbers: a seeded generator
  * with weekly rhythm, a slow fitness trend and a training week (swim Monday, run Tuesday and Thursday,
  * strength Wednesday, bike Saturday, long run Sunday). Same seed, same year, every time.
  */
-export async function installDemoGarmin(win: Page, days: number, delayMs = 0, opts: { swim?: boolean } = {}): Promise<void> {
-    await win.evaluate(([n, delay, swim]) => {
-        const g = globalThis as unknown as { app: { plugins: { plugins: Record<string, { http: unknown }> } } };
-        const plugin = g.app.plugins.plugins.garmidian;
-        if (!plugin) throw new Error("garmidian is not loaded");
+export function installDemoGarmin(obsidian: ObsidianHelpers, days: number, delayMs = 0, opts: { swim?: boolean } = {}): Promise<FakeHandle> {
+    // The factory runs in the page: it cannot see anything of this file, so everything comes through `arg`.
+    return obsidian.replace("garmidian", "http", (arg: { days: number; delay: number; swim: boolean }) => {
+        const { days: n, delay, swim } = arg;
         let seed = 20261106;
         const rnd = (): number => { seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
         const noise = (amp: number): number => (rnd() - 0.5) * 2 * amp;
         const clamp = (v: number, lo: number, hi: number): number => Math.max(lo, Math.min(hi, v));
         const pad = (x: number): string => String(x).padStart(2, "0");
-        const total = n as number;
+        const total = n;
 
         interface Day { date: string; steps: number; rhr: number; stress: number; sleepSecs: number; sleepScore: number; hrv: number; battery: number }
         const dayRows: Day[] = [];
@@ -74,6 +73,6 @@ export async function installDemoGarmin(win: Page, days: number, delayMs = 0, op
             }
             return Promise.resolve({ status: 404, text: "" });
         };
-        plugin.http = (req: { url: string; method: string }) => (delay ? new Promise((r) => setTimeout(r, delay as number)).then(() => respond(req)) : respond(req));
-    }, [days, delayMs, opts.swim ?? true] as const);
+        return (req: { url: string; method: string }) => (delay ? new Promise((r) => setTimeout(r, delay)).then(() => respond(req)) : respond(req));
+    }, { days, delay: delayMs, swim: opts.swim ?? true });
 }

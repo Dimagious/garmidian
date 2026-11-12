@@ -10,7 +10,7 @@ const ROOT = path.resolve(import.meta.dirname, "..");
 const require = createRequire(path.join(ROOT, "package.json"));
 const { _electron } = require("@playwright/test");
 
-const ELECTRON = require("electron"); // the project-local Electron, see scripts/e2e-setup.sh for why
+const ELECTRON = require("electron"); // the project-local Electron: the bundled Obsidian binary rejects the debugging port (see the kit docs/e2e.md)
 const ASAR = "/Applications/Obsidian.app/Contents/Resources/app.asar";
 // A built Dashy (main.js, manifest.json, styles.css): DASHY_DIST, default a sibling checkout
 const DASHY_DIST = process.env.DASHY_DIST ?? path.join(ROOT, "..", "dashsidian");
