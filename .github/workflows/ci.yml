@@ -29,3 +29,5 @@ jobs:
           node-version: 22
       - name: README (broken images, dead anchors, dashes)
         run: npm run readme:check
+      - name: Site (broken images, dead anchors, dashes, required files; pages.yml runs it again on a tag)
+        run: npm run site:check
