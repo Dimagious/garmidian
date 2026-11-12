@@ -134,13 +134,17 @@ describe("step 1, the key", () => {
 
   it("disables the button and says so while Garmin is being asked", async () => {
     let answer = (): void => undefined;
-    vi.spyOn(h.plugin, "newClient").mockReturnValue(fakeClient({ verify: () => new Promise<void>((r) => { answer = r; }) }));
+    const verify = vi.fn(() => new Promise<void>((r) => { answer = r; }));
+    vi.spyOn(h.plugin, "newClient").mockReturnValue(fakeClient({ verify }));
     type(q<HTMLInputElement>("#garmy-key-input"), "k");
     q(".garmy-key-check").click();
     expect(q<HTMLButtonElement>(".garmy-key-check").disabled).toBe(true);
     expect(q(".garmy-key-check").textContent).toBe(ui.keyChecking);
+    // Enter during the check must not start a second check.
+    q("#garmy-key-input").dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", cancelable: true }));
     answer();
     await settle();
+    expect(verify).toHaveBeenCalledOnce();
     expect(stepTitle()).toBe(ui.loadTitle);
   });
 
@@ -208,6 +212,13 @@ describe("step 1, notes the user already has", () => {
     folder.click();
     expect(stepTitle()).toBe(ui.chooseTitle);
     expect(h.plugin.getKey()).toBe("");
+    q(".garmy-preview-btn").click();
+    q(".garmy-create").click();
+    await settle();
+    const file = h.app.vault.getAbstractFileByPath("Garmy/Garmin dashboard.md");
+    expect(file).not.toBeNull();
+    // The dashboard reads the folder the user picked, not the default data folder (which is empty here).
+    expect(await h.app.vault.cachedRead(file as never)).toContain("|Health|");
   });
 
   it("ignores a folder with fewer notes than it takes to be a data folder", async () => {
@@ -293,6 +304,7 @@ describe("step 2, loading", () => {
     vi.spyOn(h.plugin, "newClient").mockReturnValue(fakeClient({ backfill }));
     q(".garmy-load").click();
     expect(q<HTMLButtonElement>(".garmy-cancel").hidden).toBe(false);
+    expect(h.plugin.syncing).toBe(true); // the sync lock is held while the load is pending
     q(".garmy-cancel").click();
     await vi.advanceTimersByTimeAsync(20);
     expect(callout().textContent).toContain(sync.cancelledTitle);
@@ -551,6 +563,19 @@ describe("step 4, Dashy checks the blocks before the note is written", () => {
     q(".garmy-create").click();
     await settle();
     expect(check).toHaveBeenCalledTimes(2);
+    expect(notices).toHaveBeenCalledWith(`${ui.blocksProblem} field sleep is missing`, 12000);
+  });
+
+  it("shows the Dashy problem as a second notice when inserting into the open note too", async () => {
+    const notices = await withDashy(vi.fn().mockResolvedValue(broken));
+    const file = h.app.vault.getFileByPath("Notes/Today.md");
+    if (!file) throw new Error("fixture note missing");
+    const leaf = h.app.workspace.getLeaf(false);
+    await leaf.openFile(file);
+    h.app.workspace.setActiveLeaf(leaf, { focus: true });
+    q(".garmy-insert").click();
+    await settle();
+    expect(notices).toHaveBeenCalledWith(ui.inserted, undefined);
     expect(notices).toHaveBeenCalledWith(`${ui.blocksProblem} field sleep is missing`, 12000);
   });
 

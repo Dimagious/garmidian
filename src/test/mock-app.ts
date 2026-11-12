@@ -23,6 +23,11 @@ export async function makeHarness(files: Record<string, string> = {}, settings: 
   Object.assign(mock, { internalPlugins: undefined });
   const app = mock.asOriginalType__();
   const plugin = new GarmyPlugin(app, MANIFEST);
+  // The mock keeps the very object it is given, so `loadData()` would show later changes to the live settings and
+  // "it was persisted" checks could never fail. Store a copy at save time, like data.json on disk.
+  let stored: unknown = {};
+  vi.spyOn(plugin, "saveData").mockImplementation((data: unknown) => { stored = structuredClone(data); return Promise.resolve(); });
+  vi.spyOn(plugin, "loadData").mockImplementation(() => Promise.resolve(structuredClone(stored)));
   await plugin.onload();
   Object.assign(plugin.settings, settings);
   return { mock, app, plugin };
