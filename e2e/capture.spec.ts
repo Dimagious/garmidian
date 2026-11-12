@@ -52,7 +52,7 @@ const finger = (demo: DemoHelpers): Pointer => ({
  * app.json again a moment later (after the settings `cleanUi` saves) and the block comes back. Written into app.json,
  * the setting stays.
  */
-async function hideProperties(obsidian: ObsidianHelpers, vault: VaultHandle): Promise<void> {
+function hideProperties(vault: VaultHandle): void {
     const appJson = JSON.parse(vault.read(".obsidian/app.json")) as Record<string, unknown>;
     vault.write(".obsidian/app.json", JSON.stringify({ ...appJson, propertiesInDocument: "hidden" }, null, 2));
 }
@@ -61,7 +61,7 @@ async function hideProperties(obsidian: ObsidianHelpers, vault: VaultHandle): Pr
 async function stage(demo: DemoHelpers, obsidian: ObsidianHelpers, vault: VaultHandle): Promise<void> {
     await demo.freezeTime(TODAY);
     await demo.cleanUi();
-    await hideProperties(obsidian, vault);
+    hideProperties(vault);
 }
 
 /**
@@ -238,7 +238,7 @@ test("phone stills: the mobile interface in a phone-sized window", async ({ win,
     await demo.cleanUi({ sidebars: false });
     // Obsidian's bottom toolbar floats over the cards at the foot of the page, and the pictures are of the plugin.
     await win.addStyleTag({ content: ".mobile-navbar { display: none !important; }" });
-    await hideProperties(obsidian, vault);
+    hideProperties(vault);
     await setKey(win, "");
     await installDemoGarmin(obsidian, 365, 0);
     await runWizardToNote(win, obsidian, {
