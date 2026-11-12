@@ -28,25 +28,28 @@ const runSync = (obsidian: ObsidianHelpers): Promise<void> => obsidian.evaluate(
 
 test.describe("sync", () => {
     test("the latest days are refreshed, older days only get gaps filled", async ({ win, obsidian }) => {
-        await setKey(win, "k");
         await fakeGarmin(obsidian, 40);
+        await setKey(win, "k");
         const today = localDay(0), old = localDay(-10);
         await makeNote(obsidian, `Garmy/data/${today}.md`, "---\nsteps: 100\nhrv: 30\n---\n");
         await makeNote(obsidian, `Garmy/data/${old}.md`, "---\nsteps: 100\n---\n");
         await obsidian.waitForMetadataCache();
         await runSync(obsidian);
-        await obsidian.waitForMetadataCache();
-        const fresh = await frontmatter(obsidian, `Garmy/data/${today}.md`);
+        // The metadata cache catches up after the files are written: poll for the changed values instead of trusting one wait.
+        const todayPath = `Garmy/data/${today}.md`, oldPath = `Garmy/data/${old}.md`;
+        await expect.poll(async () => (await frontmatter(obsidian, todayPath)).hrv).not.toBe(30);
+        await expect.poll(async () => (await frontmatter(obsidian, oldPath)).hrv).toBeTruthy();
+        const fresh = await frontmatter(obsidian, todayPath);
         expect(fresh.steps).not.toBe(100); // partial numbers from an earlier sync are replaced
         expect(fresh.hrv).not.toBe(30);
-        const older = await frontmatter(obsidian, `Garmy/data/${old}.md`);
+        const older = await frontmatter(obsidian, oldPath);
         expect(older.steps).toBe(100); // an old value is left alone
         expect(older.hrv).toBeTruthy(); // but a gap is filled
     });
 
     test("a rejected key during sync is remembered and offered for replacement", async ({ win, obsidian }) => {
-        await setKey(win, "k");
         await fakeGarmin(obsidian, 40, "401");
+        await setKey(win, "k");
         await runSync(obsidian);
         await expect(win.locator(".notice")).toContainText("rejected the key");
         const problem = await obsidian.evaluate((app: GarmyApp) => app.plugins.plugins.garmidian?.settings.keyProblem);
@@ -56,8 +59,8 @@ test.describe("sync", () => {
     });
 
     test("a sync that fails offline stays quiet in the background", async ({ win, obsidian }) => {
-        await setKey(win, "k");
         await fakeGarmin(obsidian, 40, "offline");
+        await setKey(win, "k");
         await obsidian.evaluate(async (app: GarmyApp) => {
             await app.plugins.plugins.garmidian?.syncNow(false);
         });
@@ -65,8 +68,8 @@ test.describe("sync", () => {
     });
 
     test("a sync does not start while another one runs", async ({ win, obsidian }) => {
-        await setKey(win, "k");
         await fakeGarmin(obsidian, 40, "ok", 300);
+        await setKey(win, "k");
         const both = await obsidian.evaluate(async (app: GarmyApp) => {
             const p = app.plugins.plugins.garmidian;
             if (!p) throw new Error("not loaded");
@@ -88,31 +91,31 @@ const plugin = (obsidian: ObsidianHelpers, body: string): Promise<void> => obsid
 
 test.describe("auto sync wiring", () => {
     test("a due sync starts by itself from the timer", async ({ win, obsidian }) => {
-        await setKey(win, "k");
         await fakeGarmin(obsidian, 40);
+        await setKey(win, "k");
         await plugin(obsidian, "p.settings.syncHours = 6; p.settings.lastSyncAt = 0; p.startAutoSync(100);");
         await expect.poll(() => notesIn(obsidian), { timeout: 20_000 }).toBeGreaterThan(10);
     });
 
     test("turned off, it does nothing", async ({ win, obsidian }) => {
-        await setKey(win, "k");
         await fakeGarmin(obsidian, 40);
+        await setKey(win, "k");
         await plugin(obsidian, "p.settings.syncHours = 0; p.settings.lastSyncAt = 0; p.startAutoSync(100);");
         await win.waitForTimeout(3_000);
         expect(await notesIn(obsidian)).toBe(0);
     });
 
     test("it waits until the interval has passed", async ({ win, obsidian }) => {
-        await setKey(win, "k");
         await fakeGarmin(obsidian, 40);
+        await setKey(win, "k");
         await plugin(obsidian, "p.settings.syncHours = 6; p.settings.lastSyncAt = Date.now() - 3600e3; p.startAutoSync(100);");
         await win.waitForTimeout(3_000);
         expect(await notesIn(obsidian)).toBe(0);
     });
 
     test("it stays quiet when Garmin rejected the key earlier", async ({ win, obsidian }) => {
-        await setKey(win, "k");
         await fakeGarmin(obsidian, 40);
+        await setKey(win, "k");
         await plugin(obsidian, "p.settings.syncHours = 6; p.settings.lastSyncAt = 0; p.settings.keyProblem = '2026-11-01'; p.startAutoSync(100);");
         await win.waitForTimeout(3_000);
         expect(await notesIn(obsidian)).toBe(0);

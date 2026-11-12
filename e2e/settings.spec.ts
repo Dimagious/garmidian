@@ -1,8 +1,9 @@
 import type { App } from "obsidian";
-import { test, expect, setKey } from "./fixtures";
+import { test, expect, fakeGarmin, setKey } from "./fixtures";
 
 test.describe("settings tab", () => {
     test("shows the key status and forgets the key", async ({ win, obsidian }) => {
+        await fakeGarmin(obsidian, 0);
         await setKey(win, "some-key");
         const tab = await obsidian.openSettings("garmidian");
         await expect(tab.getByText("Personal API key").first()).toBeVisible();

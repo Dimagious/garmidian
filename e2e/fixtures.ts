@@ -6,13 +6,14 @@ export const SECRET_ID = "garmy-garmin-api-key";
 
 /**
  * Pinned in data.json: a fresh install picks miles for an en-US machine and follows the machine language, and the
- * pictures and specs must not depend on the machine. Dashy is installed next to Garmy because the wizard previews
+ * pictures and specs must not depend on the machine. Auto-sync is off (`syncHours: 0`) so that a key stored by a spec can never
+ * make the startup timer call the real Garmin API; the specs that test auto-sync switch it on themselves. Dashy is installed next to Garmy because the wizard previews
  * its dashboards with it; DASHY_DIST points at a Dashy checkout with a built main.js.
  */
 export const { test, expect, onlyWhen } = createObsidianTest({
     seedVault: "e2e-vault.pristine",
     plugins: [{ dir: "." }, { dir: process.env.DASHY_DIST ?? "../dashsidian" }],
-    data: { garmidian: { units: "metric", language: "en" } },
+    data: { garmidian: { units: "metric", language: "en", syncHours: 0 } },
     window: { width: 1200, height: 1500 },
     // Stopping the trace of a long capture test (dozens of snapshots of Dashy's charts) is bounded by this and took
     // more than the default 5 s in the library test; a hung Obsidian is still killed after this long.
