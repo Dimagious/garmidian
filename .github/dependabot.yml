@@ -36,7 +36,8 @@ updates:
         dependency-type: "development"
         patterns: ["*"]
 
-  # pages.yml pins actions by major, and the runner already warns that the Node 20 ones are deprecated.
+  # ci.yml, release.yml and pages.yml pin every action to a full commit SHA with the version in a comment;
+  # Dependabot moves both together.
   # The three kit pins (the tag in package.json, the SHA in ci.yml, the SHA in release.yml) move together by
   # hand with a kit release, so Dependabot leaves the kit's reusable workflows alone.
   - package-ecosystem: "github-actions"
