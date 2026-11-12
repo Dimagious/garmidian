@@ -12,7 +12,7 @@ export default [
       // one of them is a symlink to main.js inside a generated vault.
       '.preview/**',
       '.capture/**',
-      // Developer tooling that runs under Node, never shipped: probes, the screenshot tour, the Health Sync comparison.
+      // Developer tooling that runs under Node, never shipped: probes, the Health Sync comparison.
       'tools/**',
       // The GitHub Pages site and its assembled copy: a static web page, not
       // plugin code. The plugin preset's rules (App#saveLocalStorage, popout

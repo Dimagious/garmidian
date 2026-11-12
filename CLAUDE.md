@@ -23,7 +23,7 @@ src/i18n   one file per language (en, ru, es, de, fr, pt, ja) typed as `Locale`;
 src/app    wizard modal, media slots, vault storage, settings tab, i18n strings
 src/main.ts  plugin entry
 e2e/       Playwright specs against real Obsidian (fake Garmin by default, live with GARMIN_LIVE=1)
-tools/     developer scripts, not shipped: screenshot tour, comparison with Health Sync, API probes
+tools/     developer scripts, not shipped: comparison with Health Sync, API probes
 ```
 
 `core` and `api` import nothing from Obsidian. Keep it that way: they carry the unit-test coverage gate (90 percent). The wizard and the settings tab are unit-tested too, in jsdom on `obsidian-test-mocks` (pinned exactly, majors ignored by Dependabot; the harness is `src/test/mock-app.ts`), and `vitest.config.ts` (`defineUnitConfig` from the kit) counts both in the gate; the node tests keep `src/test/obsidian-stub.ts`.
@@ -35,10 +35,10 @@ npm run lint && npm run typecheck && npm test && npm run build   # the gates
 npm run release:check                                             # everything incl. versions and scorecard
 npx opdk release patch --dry-run                                 # cut a release (patch|minor|major|X.Y.Z): bump, check, tag, kit workflow, publish; drop --dry-run to do it. Runs no tests itself: run `npm run release:check` first and push all commits (never release unpushed ones). Clean default branch, gh signed in
 npm run e2e                                                       # needs macOS Obsidian and a Dashy build (DASHY_DIST, default ../dashsidian)
-GARMIN_LIVE=1 npm run e2e -- e2e/live.spec.ts                     # real API, key from Keychain service garmin-personal-api
+GARMIN_LIVE=1 npm run e2e -- e2e/live.spec.ts                     # real API, key from GARMIN_PERSONAL_API_KEY or Keychain service garmin-personal-api (read only in live mode, e2e/live-key.ts)
 npm run capture                                                   # retake README pictures and clips (real Obsidian, demo data, needs ffmpeg); output docs/screens
 npm run listing                                                   # headline-and-frame pictures for the community directory, docs/listing (desktop 1200x800, phone 900x1600)
-node tools/tour.mjs --days=30                                     # screenshots of every wizard state, output in .e2e/
+TOUR=1 npx playwright test e2e/tour.spec.ts                      # screenshots of every wizard state and the layout checks, fake Garmin, output in .e2e/tour (GARMIN_LIVE=1 on top loads the real key once)
 ```
 
 ## Rules that cost us something

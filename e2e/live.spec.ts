@@ -1,18 +1,9 @@
-import { execFileSync } from "node:child_process";
 import { test, expect, onlyWhen, openWizard, setKey, dashyReport } from "./fixtures";
+import { liveKey } from "./live-key";
 
 onlyWhen("GARMIN_LIVE");
 
-/**
- * Against the real Garmin Personal API. Off by default: set GARMIN_LIVE=1. The key comes from
- * GARMIN_PERSONAL_API_KEY or the macOS Keychain (service garmin-personal-api) and is never printed.
- */
-function liveKey(): string {
-    const fromEnv = process.env.GARMIN_PERSONAL_API_KEY?.trim();
-    if (fromEnv) return fromEnv;
-    return execFileSync("/usr/bin/security", ["find-generic-password", "-s", "garmin-personal-api", "-w"]).toString().trim();
-}
-
+// Against the real Garmin Personal API. Off by default: set GARMIN_LIVE=1. The key comes from liveKey().
 test.describe("wizard, live Garmin", () => {
     test.setTimeout(240_000);
 
