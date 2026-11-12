@@ -58,6 +58,14 @@ describe("locales", () => {
     expect(sync.setKeyRejected("2026-11-06")).toContain("2026-11-06");
   });
 
+  it.each(LANGS.map((l) => l.code))("%s names the vault root when a folder-less match is listed", (code) => {
+    const text = LOCALES[code].sync.notesFolder("", 4);
+    expect(text).toContain("4");
+    expect(text.trim()).not.toBe("");
+    expect(text).not.toBe(LOCALES[code].sync.notesFolder("Diary", 4));
+    expect(text).not.toContain("undefined");
+  });
+
   it("units keep ms, bpm and km", () => {
     for (const l of LANGS) for (const u of ["ms", "bpm", "km"] as const) expect(LOCALES[l.code].units[u].length).toBeGreaterThan(0);
   });
