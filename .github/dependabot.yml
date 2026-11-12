@@ -16,12 +16,18 @@ updates:
       prefix: "chore(deps)"
       prefix-development: "chore(deps-dev)"
     ignore:
-      # typescript-eslint and eslint-plugin-obsidianmd do not support TypeScript 7 yet: the whole group
-      # failed `npm ci` on it. Revisit when their peer ranges allow it.
+      # The kit pin moves by hand, together with the two workflow SHAs (see the github-actions block).
+      - dependency-name: "obsidian-plugin-dev-kit"
+      # typescript-eslint and eslint-plugin-obsidianmd now come through the kit; its peer ranges do not allow
+      # TypeScript 7 yet and the whole group failed `npm ci` on it. Revisit when a kit release allows it.
       - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
       # Obsidian runs on its own Electron; ours only drives it for the e2e suite and moves with Dashy's.
       - dependency-name: "electron"
+        update-types: ["version-update:semver-major"]
+      # Pinned to an exact version: the package ships a new major every few weeks and a major can change
+      # what a UI test sees. Bump it by hand, together with a test run.
+      - dependency-name: "obsidian-test-mocks"
         update-types: ["version-update:semver-major"]
     groups:
       # One pull request, one lockfile. Separate ones conflict with each other
@@ -30,14 +36,17 @@ updates:
         dependency-type: "development"
         patterns: ["*"]
 
-  # The workflows pin actions by major, and the runner already warns that the
-  # Node 20 ones are deprecated.
+  # pages.yml pins actions by major, and the runner already warns that the Node 20 ones are deprecated.
+  # The three kit pins (the tag in package.json, the SHA in ci.yml, the SHA in release.yml) move together by
+  # hand with a kit release, so Dependabot leaves the kit's reusable workflows alone.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
     commit-message:
       prefix: "chore(ci)"
+    ignore:
+      - dependency-name: "Dimagious/obsidian-plugin-dev-kit*"
     groups:
       actions:
         patterns: ["*"]
