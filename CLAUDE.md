@@ -26,7 +26,7 @@ e2e/       Playwright specs against real Obsidian (fake Garmin by default, live 
 tools/     developer scripts, not shipped: screenshot tour, comparison with Health Sync, API probes
 ```
 
-`core` and `api` import nothing from Obsidian. Keep it that way: they carry the unit-test coverage gate (90 percent).
+`core` and `api` import nothing from Obsidian. Keep it that way: they carry the unit-test coverage gate (90 percent). The wizard and the settings tab are unit-tested too, in jsdom on `obsidian-test-mocks` (pinned exactly, majors ignored by Dependabot; the harness is `src/test/mock-app.ts`), and `vitest.config.ts` (`defineUnitConfig` from the kit) counts both in the gate; the node tests keep `src/test/obsidian-stub.ts`.
 
 ## Commands
 
