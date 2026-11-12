@@ -1,6 +1,6 @@
 // Builds the community directory pictures: a headline, a line of text and a real screenshot in a frame.
-// Desktop 1200x800 (3:2) and phone 900x1600 (9:16). Sources come from `npm run capture` (docs/screens and
-// .capture/phone). Output: docs/listing/. usage: node tools/listing.mjs
+// Desktop 1200x800 (3:2) and phone 900x1600 (9:16). Sources come from `npm run capture` (docs/screens).
+// Output: docs/listing/. usage: node tools/listing.mjs
 import fs from "node:fs";
 import path from "node:path";
 import { chromium } from "@playwright/test";
@@ -26,11 +26,11 @@ const DESKTOP = [
     head: "Every sport in one place", sub: "Weekly minutes, a month calendar and goals taken from your own numbers." },
 ];
 const PHONE = [
-  { out: "m1-key", src: ".capture/phone/1-key.png", head: "Set up in a minute", sub: "Paste a Garmin key, pick what to show." },
-  { out: "m2-choose", src: ".capture/phone/2-choose.png", head: "Choose what to track", sub: "Only what exists in your data is offered." },
-  { out: "m3-recovery", src: ".capture/phone/4-dashboard.png", head: "Recovery at a glance", sub: "Cards that fit a small screen." },
-  { out: "m4-week", src: ".capture/phone/5-dashboard.png", head: "This week against your usual", sub: "A small trend under every number." },
-  { out: "m5-charts", src: ".capture/phone/6-dashboard.png", head: "Charts that stay readable", sub: "A year of sleep, HRV and steps." },
+  { out: "m1-key", src: "docs/screens/phone-key.png", head: "Set up in a minute", sub: "Paste a Garmin key, pick what to show." },
+  { out: "m2-choose", src: "docs/screens/phone-choose.png", head: "Choose what to track", sub: "Only what exists in your data is offered." },
+  { out: "m3-recovery", src: "docs/screens/phone-recovery.png", head: "Recovery at a glance", sub: "Cards that fit a small screen." },
+  { out: "m4-week", src: "docs/screens/phone-week.png", head: "This week against your usual", sub: "A small trend under every number." },
+  { out: "m5-charts", src: "docs/screens/phone-charts.png", head: "Charts that stay readable", sub: "A year of sleep, HRV and steps." },
 ];
 
 const PALETTE = {
