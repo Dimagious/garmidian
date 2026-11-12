@@ -1,6 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { mountMediaSlot, type MediaSlotOptions } from "./media-slot";
 
+// The test mocks draw no icon. This one leaves a marker child, so a button that fails to clear its old icon shows two.
+vi.mock("obsidian", async (importOriginal) => {
+  const original = await importOriginal<typeof import("obsidian")>();
+  return { ...original, setIcon: (el: HTMLElement, id: string): void => { el.createSpan({ cls: "icon-marker", attr: { "data-icon": id } }); } };
+});
+
 const SRC = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
 const base: MediaSlotOptions = { src: SRC, animated: true, caption: "How to find the key", alt: "The settings page", playLabel: "Play clip", stopLabel: "Stop clip", illustration: "key" };
 
@@ -99,7 +105,8 @@ describe("mountMediaSlot", () => {
     it("keeps exactly one icon in the button however often it is toggled", () => {
       const fig = mount();
       for (let i = 0; i < 3; i++) toggle(fig).click();
-      expect(toggle(fig).children.length).toBeLessThanOrEqual(1);
+      expect(toggle(fig).children).toHaveLength(1);
+      expect(toggle(fig).children[0]?.getAttribute("data-icon")).toBe(toggle(fig).getAttribute("aria-pressed") === "true" ? "pause" : "play");
     });
 
     it("waits for a click under prefers-reduced-motion", () => {

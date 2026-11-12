@@ -4,6 +4,7 @@ import { requestUrl } from "obsidian";
 import { GarminError, type BackfillResult } from "./api/client";
 import { USUAL_GOAL_SCHEMA } from "./core/dashy";
 import { localDate } from "./core/dates";
+import { withMeta, wrapRegion } from "./core/region";
 import { SYNC_UI, UI } from "./i18n";
 import { fakeClient, makeHarness, type Harness } from "./test/mock-app";
 import { WizardModal } from "./app/wizard";
@@ -111,6 +112,23 @@ describe("onload", () => {
     await vi.advanceTimersByTimeAsync(0);
     expect(noticeTexts()).toEqual([sync.rebuildNoNote]);
   });
+
+  it("rebuilds the open dashboard in the units from the settings", async () => {
+    const dashboard = withMeta(`# Mine\n\n${wrapRegion("OLD BODY")}\n`, { v: 1, source: "Garmy/data", groups: ["recovery", "activity", "training"], noSports: [], lang: "en", races: null });
+    const day = "---\nsleep_score: 70\nsteps: 8000\nrun_min: 30\nrun_km: 5\nrun_mi: 3.1\n---\n";
+    h = await makeHarness({ "Notes/Dash.md": dashboard, "Garmy/data/2026-11-01.md": day }, { units: "imperial" });
+    const file = h.app.vault.getFileByPath("Notes/Dash.md");
+    if (!file) throw new Error("fixture note missing");
+    const leaf = h.app.workspace.getLeaf(false);
+    await leaf.openFile(file);
+    h.app.workspace.setActiveLeaf(leaf, { focus: true });
+    Plugin.fromOriginalType2__(h.plugin).commands__.get("rebuild-dashboard")?.callback?.();
+    await vi.advanceTimersByTimeAsync(0);
+    const text = await h.app.vault.read(file);
+    expect(text).not.toContain("OLD BODY");
+    expect(text).toMatch(/field: run_mi\b/);
+    expect(text).not.toMatch(/field: run_km\b/);
+  });
 });
 
 describe("automatic sync", () => {
@@ -168,10 +186,10 @@ describe("automatic sync", () => {
     // Startup check at 100 ms: only 1 h has passed.
     await vi.advanceTimersByTimeAsync(100);
     expect(backfill).not.toHaveBeenCalled();
-    // 4.5 h from now is 5.5 h after the last sync: still too early. The check at 5 h from now is the 6 h mark.
-    await vi.advanceTimersByTimeAsync(4 * HOUR + 29 * 60 * 1000);
+    // The check at 4.5 h from now is 5.5 h after the last sync: still too early. The next one, 30 min later, is the 6 h mark.
+    await vi.advanceTimersByTimeAsync(4.5 * HOUR);
     expect(backfill).not.toHaveBeenCalled();
-    await vi.advanceTimersByTimeAsync(HOUR);
+    await vi.advanceTimersByTimeAsync(AUTO_CHECK_MS);
     expect(backfill).toHaveBeenCalledOnce();
   });
 
@@ -384,10 +402,14 @@ describe("settings, key and language", () => {
     expect(text).toContain("run_km: 10");
   });
 
-  it("builds a Garmin client for the stored key unless given another", () => {
+  it("builds a Garmin client for the stored key unless given another", async () => {
+    const request = vi.mocked(requestUrl);
+    request.mockResolvedValue({ status: 401, text: "" } as never);
     h.plugin.setKey("stored");
-    expect(h.plugin.newClient()).toBeInstanceOf(Object);
-    expect(h.plugin.newClient("other")).toBeInstanceOf(Object);
+    await expect(h.plugin.newClient("other").verify()).rejects.toMatchObject({ kind: "auth" });
+    expect(request).toHaveBeenLastCalledWith(expect.objectContaining({ headers: { Authorization: "ApiKey other" } }));
+    await expect(h.plugin.newClient().verify()).rejects.toMatchObject({ kind: "auth" });
+    expect(request).toHaveBeenLastCalledWith(expect.objectContaining({ headers: { Authorization: "ApiKey stored" } }));
   });
 });
 

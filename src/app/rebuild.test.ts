@@ -66,6 +66,18 @@ describe("rebuildActiveDashboard", () => {
     expect(readRegionMeta(text)).toMatchObject({ source: SRC, lang: "en" });
   });
 
+  it("writes a month goal of `usual` only when asked to", async () => {
+    // 130 days of history, more than the 120 that `goal: usual` needs.
+    const history = Object.fromEntries(Array.from({ length: 130 }, (_, i) => [`${SRC}/${new Date(Date.UTC(2026, 5, 1 + i)).toISOString().slice(0, 10)}.md`, day(i)]));
+    await setup({ ...history, "Notes/Dash.md": dashboard() });
+    const file = await open("Notes/Dash.md");
+    await rebuildActiveDashboard(h.app, "en");
+    expect(await h.app.vault.read(file)).not.toContain("goal: usual");
+    await h.app.vault.modify(file, dashboard());
+    await rebuildActiveDashboard(h.app, "en", "metric", true);
+    expect(await h.app.vault.read(file)).toContain("goal: usual");
+  });
+
   it("follows the units it is given", async () => {
     await setup({ ...DATA, "Notes/Dash.md": dashboard() });
     const file = await open("Notes/Dash.md");
