@@ -10,7 +10,7 @@
 
 ## What this is
 
-**Garmidian** (plugin name **Garmy**, id `garmidian`) builds a Garmin dashboard inside Obsidian: the user pastes a Garmin Personal API key, the plugin loads history into one note per day, the user picks sports and metrics, and gets a ready [Dashy](https://github.com/Dimagious/dashsidian) dashboard. Third plugin of the author after Snipsy and Dashy; the harness (lint, release gates, e2e) is copied from Dashy.
+**Garmidian** (plugin name **Garmy**, id `garmidian`) builds a Garmin dashboard inside Obsidian: the user pastes a Garmin Personal API key, the plugin loads history into one note per day, the user picks sports and metrics, and gets a ready [Dashy](https://github.com/Dimagious/dashsidian) dashboard. Third plugin of the author after Snipsy and Dashy; the harness (build, lint, scanner, release, e2e, README films) comes from `obsidian-plugin-dev-kit` (`opdk`).
 
 Name vs id: `name` must not resemble "Obsidian" (the catalog review rejects that, which is why `Snipsidian` became `Snipsy`). So `id` and repo are `garmidian`, `name` is `Garmy`. Do not rename `name` to `Garmidian`.
 
@@ -33,7 +33,7 @@ tools/     developer scripts, not shipped: screenshot tour, comparison with Heal
 ```bash
 npm run lint && npm run typecheck && npm test && npm run build   # the gates
 npm run release:check                                             # everything incl. versions and scorecard
-npx opdk release patch --dry-run                                 # cut a release (patch|minor|major|X.Y.Z): bump, check, tag, kit workflow, publish; drop --dry-run to do it. Clean default branch, gh signed in
+npx opdk release patch --dry-run                                 # cut a release (patch|minor|major|X.Y.Z): bump, check, tag, kit workflow, publish; drop --dry-run to do it. Runs no tests itself: run `npm run release:check` first and push all commits (never release unpushed ones). Clean default branch, gh signed in
 npm run e2e                                                       # needs macOS Obsidian and a Dashy build (DASHY_DIST, default ../dashsidian)
 GARMIN_LIVE=1 npm run e2e -- e2e/live.spec.ts                     # real API, key from Keychain service garmin-personal-api
 npm run capture                                                   # retake README pictures and clips (real Obsidian, demo data, needs ffmpeg); output docs/screens

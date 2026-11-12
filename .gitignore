@@ -4,7 +4,6 @@ main.js
 coverage/
 playwright-report/
 test-results/
-garmidian-*.zip
 .capture/
 _site/
 .opdk/

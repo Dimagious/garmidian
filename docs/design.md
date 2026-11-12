@@ -27,7 +27,7 @@ The step indicator is an `ol` in a `nav`. Finished steps are buttons and go back
 4px grid through `--size-4-N`. Title `--font-ui-large` semibold; body `--font-ui-medium` for lead text and `--font-ui-small` for secondary; hints `--font-ui-smaller`. Lead text is capped at 62ch. Radii: `--radius-m` for controls and callouts, `--radius-l` for cards and the preview frame. Selected cards and chips use accent border plus a check badge, not just a tint.
 
 ## Media slots (two, no more)
-`mountMediaSlot` in `src/app/media-slot.ts`. It renders a theme-aware sketch with a caption, or the media when there is some. Media is bundled into `main.js` as a data URL (`--loader:.png=dataurl`, `src/types/assets.d.ts`): a catalog release ships only `main.js`, `manifest.json` and `styles.css`, so a file next to the plugin would never reach the user.
+`mountMediaSlot` in `src/app/media-slot.ts`. It renders a theme-aware sketch with a caption, or the media when there is some. Media is bundled into `main.js` as a data URL (the `.png` loader in `opdk.config.mjs`, `src/types/assets.d.ts`): a catalog release ships only `main.js`, `manifest.json` and `styles.css`, so a file next to the plugin would never reach the user.
 - Step 1, "where to create the key": the real Garmin Connect page (`media/help-key.png`, Settings, Personal API Key), a still picture without a play button.
 - Inside the "Dashy is not installed" warning: no media yet, so the whole slot is hidden. A clip (GIF) would get a play/stop button and, under `prefers-reduced-motion`, would wait for a click instead of autoplaying.
 Do not use a picture with anyone's personal data in it. Keep files small (the key picture is 36 KB).
