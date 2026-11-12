@@ -59,6 +59,9 @@ const SITE_URL = "https://dimagious.github.io/garmidian/";
 // the community directory pictures.
 const IMAGE_DIRS = ["docs/screens", "docs/listing"];
 
+// Stills that only feed the listing composer (tools/listing.mjs): kept out of the site.
+const IMAGE_EXCLUDE = /^phone-.*\.png$/;
+
 // Names that come from somewhere else: `img/<name>` -> path relative to the
 // repo root. Kept in one place so this check and `assemble-site.cjs` agree.
 const IMAGE_RENAME_MAP = {
@@ -197,7 +200,7 @@ function listImageSources(root) {
         const abs = path.join(root, dir);
         if (!fs.existsSync(abs)) continue;
         for (const entry of fs.readdirSync(abs, { withFileTypes: true })) {
-            if (entry.isFile()) add(entry.name, path.join(abs, entry.name), `${dir}/${entry.name}`);
+            if (entry.isFile() && !IMAGE_EXCLUDE.test(entry.name)) add(entry.name, path.join(abs, entry.name), `${dir}/${entry.name}`);
         }
     }
     for (const [name, rel] of Object.entries(IMAGE_RENAME_MAP)) {
