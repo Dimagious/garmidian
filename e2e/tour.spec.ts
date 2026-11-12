@@ -13,12 +13,15 @@ onlyWhen("TOUR");
  * cannot give. Off unless TOUR=1 (`TOUR=1 npx playwright test e2e/tour.spec.ts`). Pictures go to .e2e/tour (not committed).
  *
  * The network is the fake Garmin. The real one is used only with GARMIN_LIVE=1 as well, for the one test that loads
- * history and builds a dashboard; the key then comes from liveKey() (the same gate as live.spec.ts), and nothing reads
- * the Keychain otherwise.
+ * history and builds a dashboard; the key then comes from liveKey() (the same gate as live.spec.ts), read once per run.
+ * The layout walks always use the fake, and nothing reads the Keychain without GARMIN_LIVE=1.
  */
 const OUT = path.resolve(import.meta.dirname, "..", ".e2e", "tour");
 const LIVE = process.env.GARMIN_LIVE === "1";
 const FAKE_KEY = "test-key-not-a-secret";
+let cachedKey: string | undefined;
+/** The real key, read from the Keychain once per run and only in live mode. */
+const realKey = (): string => (cachedKey ??= liveKey());
 
 type Reply = { status: number; text: string };
 
@@ -37,9 +40,9 @@ async function closeWizard(win: Page): Promise<void> {
     await expect(win.locator(".garmy-wizard")).toHaveCount(0);
 }
 
-/** Key step to the summary of a loaded history: the real Garmin in live mode, the fake one otherwise. */
-async function loadHistory(win: Page, obsidian: ObsidianHelpers, days: number): Promise<void> {
-    if (LIVE) await setKey(win, liveKey());
+/** Key step to the summary of a loaded history: the real Garmin when `live`, the fake one otherwise. */
+async function loadHistory(win: Page, obsidian: ObsidianHelpers, days: number, live: boolean = LIVE): Promise<void> {
+    if (live) await setKey(win, realKey());
     else {
         await fakeGarmin(obsidian, days);
         await setKey(win, FAKE_KEY);
@@ -49,7 +52,7 @@ async function loadHistory(win: Page, obsidian: ObsidianHelpers, days: number): 
     await win.locator(".garmy-load").waitFor({ timeout: 30_000 });
     await win.locator(".garmy-period").selectOption(String(days));
     await win.locator(".garmy-load").click();
-    await expect(win.locator(".garmy-loaded")).toContainText("Days loaded:", { timeout: LIVE ? 180_000 : 60_000 });
+    await expect(win.locator(".garmy-loaded")).toContainText("Days loaded:", { timeout: live ? 180_000 : 60_000 });
 }
 
 test("the settings tab with and without a key", async ({ win, obsidian }) => {
@@ -184,7 +187,7 @@ test("key to a finished dashboard, step by step", async ({ win, obsidian }) => {
     }
 
     // the key is in secure storage only
-    const key = LIVE ? liveKey() : FAKE_KEY;
+    const key = LIVE ? realKey() : FAKE_KEY;
     const leaks = await obsidian.evaluate(async (app: App, k: string) => {
         const out: string[] = [];
         for (const f of app.vault.getMarkdownFiles()) if ((await app.vault.read(f)).includes(k)) out.push(f.path);
@@ -216,7 +219,7 @@ const smallTargets = (win: Page): Promise<string[]> => win.evaluate(() => {
 });
 
 test("layout: no sideways scroll, touch targets and a focus ring, in every theme and width", async ({ win, obsidian, app: electron }) => {
-    await loadHistory(win, obsidian, 30);
+    await loadHistory(win, obsidian, 30, false);
     await closeWizard(win);
 
     // After a load and after mobile() the page is new, so the fake goes in again: these walks never touch the network.
@@ -249,18 +252,18 @@ test("layout: no sideways scroll, touch targets and a focus ring, in every theme
     await fakeGarmin(obsidian, 30);
     await openWizard(win);
     await win.locator(".garmy-key").focus();
-    const stops: Array<{ cls: string; outlineStyle: string; outlineWidth: string }> = [];
+    const stops: Array<{ cls: string; inWizard: boolean; outlineStyle: string; outlineWidth: string }> = [];
     for (let i = 0; i < 8 && !stops.some((s) => s.cls.includes("garmy-key-check")); i++) {
         await win.keyboard.press("Tab");
         stops.push(await win.evaluate(() => {
             const el = document.activeElement;
             if (!el) throw new Error("Nothing has focus after Tab.");
             const style = getComputedStyle(el);
-            return { cls: String(el.className), outlineStyle: style.outlineStyle, outlineWidth: style.outlineWidth };
+            return { cls: String(el.className), inWizard: el.closest(".garmy-wizard") !== null, outlineStyle: style.outlineStyle, outlineWidth: style.outlineWidth };
         }));
     }
     expect(stops.some((s) => s.cls.includes("garmy-key-check")), `Tab never reached the primary button: ${JSON.stringify(stops)}`).toBe(true);
-    for (const stop of stops) expect(stop, `no focus ring on ${stop.cls}`).toMatchObject({ outlineStyle: "solid", outlineWidth: "2px" });
+    for (const stop of stops) expect(stop, `no focus ring on ${stop.cls}`).toMatchObject({ inWizard: true, outlineStyle: "solid", outlineWidth: "2px" });
     await shot(win, "v-focus-ring.png");
     await closeWizard(win);
 

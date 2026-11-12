@@ -38,7 +38,7 @@ npm run e2e                                                       # needs macOS 
 GARMIN_LIVE=1 npm run e2e -- e2e/live.spec.ts                     # real API, key from GARMIN_PERSONAL_API_KEY or Keychain service garmin-personal-api (read only in live mode, e2e/live-key.ts)
 npm run capture                                                   # retake README pictures and clips (real Obsidian, demo data, needs ffmpeg); output docs/screens
 npm run listing                                                   # headline-and-frame pictures for the community directory, docs/listing (desktop 1200x800, phone 900x1600)
-TOUR=1 npx playwright test e2e/tour.spec.ts                      # screenshots of every wizard state and the layout checks, fake Garmin, output in .e2e/tour (GARMIN_LIVE=1 on top loads the real key once)
+TOUR=1 npx playwright test e2e/tour.spec.ts                      # screenshots of every wizard state and the layout checks, fake Garmin, output in .e2e/tour (GARMIN_LIVE=1 on top uses the real key for the one test that builds a dashboard)
 ```
 
 ## Rules that cost us something
