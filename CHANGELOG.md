@@ -22,10 +22,12 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ### Added
 
+- Unit tests of `src/main.ts`, `src/app/rebuild.ts` and `src/app/media-slot.ts` (`src/main.test.ts`, `src/app/rebuild.test.ts`, `src/app/media-slot.test.ts`, in jsdom on the mock harness) and a check of the empty-folder text in every language (`src/i18n/locales.test.ts`). They cover `syncNow` and its failures (a rejected key is remembered and offered once to the background, offline and rate limits only speak to a click), `startAutoSync` with fake timers and a fake client (the startup delay, the half-hour checks, "turned off", "no key", "key rejected earlier", "synced recently", one timer however often it starts, no overlapping sync), the commands and `onload` defaults, the Dashy helpers, the transport timeout, the play/stop toggle of the help clips and the rebuild of a dashboard in the open note. `src/main.ts`, `src/app/media-slot.ts`, `src/app/rebuild.ts` and `src/i18n/**` are now inside the coverage gate; before it left out `main.ts` (48.7 % of lines), `media-slot.ts` (71.7 %) and `rebuild.ts` (0 %). 420 tests became 497.
 - Unit tests of the wizard and the settings tab (`src/app/wizard.test.ts`, `src/app/settings.test.ts`, with `src/test/mock-app.ts`), run in jsdom on `obsidian-test-mocks`. They drive the steps of the wizard, the sync with a fake client and its failures, and the rows of the settings tab, which only the e2e run covered before. 349 tests became 420.
 
 ### Fixed
 
+- The three e2e specs that proved "auto sync does nothing" (turned off, interval not passed, key rejected earlier) with a fixed 3 s wait each (9 s of the run) are gone: the same rules are now unit tests of `startAutoSync` with fake timers. The positive wiring spec stays. The cancel spec waits for the first progress tick instead of sleeping 900 ms.
 - `e2e/language.spec.ts` "follows Obsidian when the setting is automatic" pinned `language: "en"` through the fixture, so it did not test the automatic setting; it now sets `auto` first.
 - The e2e fixture pins `syncHours: 0` and the settings spec installs the fake Garmin before it stores a key; in the sync specs the fake goes in before the key. A spec could otherwise store a key with auto-sync on and let the startup timer call the real Garmin API.
 - `e2e/sync.spec.ts` "the latest days are refreshed" polls for the changed values instead of relying on one metadata-cache wait, which could read the old frontmatter.

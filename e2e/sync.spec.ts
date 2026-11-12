@@ -96,30 +96,6 @@ test.describe("auto sync wiring", () => {
         await plugin(obsidian, "p.settings.syncHours = 6; p.settings.lastSyncAt = 0; p.startAutoSync(100);");
         await expect.poll(() => notesIn(obsidian), { timeout: 20_000 }).toBeGreaterThan(10);
     });
-
-    test("turned off, it does nothing", async ({ win, obsidian }) => {
-        await fakeGarmin(obsidian, 40);
-        await setKey(win, "k");
-        await plugin(obsidian, "p.settings.syncHours = 0; p.settings.lastSyncAt = 0; p.startAutoSync(100);");
-        await win.waitForTimeout(3_000);
-        expect(await notesIn(obsidian)).toBe(0);
-    });
-
-    test("it waits until the interval has passed", async ({ win, obsidian }) => {
-        await fakeGarmin(obsidian, 40);
-        await setKey(win, "k");
-        await plugin(obsidian, "p.settings.syncHours = 6; p.settings.lastSyncAt = Date.now() - 3600e3; p.startAutoSync(100);");
-        await win.waitForTimeout(3_000);
-        expect(await notesIn(obsidian)).toBe(0);
-    });
-
-    test("it stays quiet when Garmin rejected the key earlier", async ({ win, obsidian }) => {
-        await fakeGarmin(obsidian, 40);
-        await setKey(win, "k");
-        await plugin(obsidian, "p.settings.syncHours = 6; p.settings.lastSyncAt = 0; p.settings.keyProblem = '2026-11-01'; p.startAutoSync(100);");
-        await win.waitForTimeout(3_000);
-        expect(await notesIn(obsidian)).toBe(0);
-    });
 });
 
 test.describe("wizard: cancel and Dashy", () => {
@@ -131,7 +107,10 @@ test.describe("wizard: cancel and Dashy", () => {
         await win.locator(".garmy-load").waitFor({ timeout: 10_000 });
         await win.locator(".garmy-load").click();
         await win.locator(".garmy-cancel").waitFor({ state: "visible", timeout: 5_000 });
-        await win.waitForTimeout(900);
+        // The load is running once the first request has reported progress.
+        await expect.poll(() => win.locator(".garmy-progress [role=progressbar]").evaluateAll(
+            (bars) => Math.max(0, ...bars.map((bar) => Number(bar.getAttribute("aria-valuenow")))),
+        ), { timeout: 10_000 }).toBeGreaterThan(0);
         await win.locator(".garmy-cancel").click();
         await expect(win.locator(".garmy-message")).toContainText("Loading cancelled", { timeout: 10_000 });
         const notes = await notesIn(obsidian);
