@@ -23,6 +23,10 @@ updates:
       # Obsidian runs on its own Electron; ours only drives it for the e2e suite and moves with Dashy's.
       - dependency-name: "electron"
         update-types: ["version-update:semver-major"]
+      # Pinned to an exact version: the package ships a new major every few weeks and a major can change
+      # what a UI test sees. Bump it by hand, together with a test run.
+      - dependency-name: "obsidian-test-mocks"
+        update-types: ["version-update:semver-major"]
     groups:
       # One pull request, one lockfile. Separate ones conflict with each other
       # the moment the first is merged.
