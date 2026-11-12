@@ -8,8 +8,13 @@ export default defineConfig({
         css: false,
     },
     demo: {
-        // Garmy's films have always been a GIF and a poster, named film-<name>.gif and film-<name>-poster.png.
+        // Garmy's films are GIFs, named film-<name>.gif. The README and the site embed the GIFs, nothing uses a poster
+        // or a video, so neither is made.
         mp4: false,
+        poster: false,
+        // Every film is a tour (a wizard that ends on a dashboard, a library scrolled card by card, seven languages,
+        // a dashboard that grows), so it does not end on the frame it starts with and the loop check has nothing to say.
+        loop: "off",
         // 160 colours at 8 fps: the default quantiser bands the gradients on the cards. The width is per film.
         gif: { colors: 160, fps: 8, width: 900 },
         films: {

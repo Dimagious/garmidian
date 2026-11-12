@@ -20,6 +20,9 @@ export const { test, expect, onlyWhen } = createObsidianTest({
     timeouts: { close: 30_000 },
     // Obsidian's secure storage otherwise asks the macOS Keychain for access.
     electronArgs: ["--use-mock-keychain"],
+    // The key field is a password input with a Show button: once it is shown, the key is text on the page. No picture or
+    // film may be taken then. The keys the films type are made up, so this is a guard for the day one is not.
+    demo: { forbiddenSelectors: ["#garmy-key-input[type=text]"] },
 });
 
 /** Stores a key the way the wizard does (Obsidian's secure storage). */
