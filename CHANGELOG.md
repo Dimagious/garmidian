@@ -6,6 +6,7 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- The sleep and HRV guide says the Choose step groups appear under the Everything kind, and names the Sleep and HRV and recovery kinds.
 - The site no longer copies the `phone-*` stills, which only feed the directory pictures (`tools/listing.mjs`).
 - Build, lint, scanner, end-to-end harness, README films and release are done by [obsidian-plugin-dev-kit](https://github.com/Dimagious/obsidian-plugin-dev-kit) 0.1.0 (the `opdk` command, installed from its `v0.1.0` tag). Garmy's own settings are in `opdk.config.mjs`. The scripts it replaces are deleted: `assert-bundle.cjs`, `scorecard-check.cjs`, `e2e-setup.sh`, `capture.mjs`, `version-sync.cjs`, `make-zip.cjs` and `assert-versions.cjs`.
 - The release bundle is built by `opdk build` and is now minified: `main.js` goes from 336087 to 285177 bytes (114154 bytes gzipped, was 121404; both measured as `gzip -c main.js | wc -c` on the build of `origin/main` and of this branch). The platform stays `browser`, and the kit also marks `@codemirror/state` and `@codemirror/view` as external, which Garmy does not import. The kit's bundle check (no `process`, `node:` imports, `__dirname`) replaces `scripts/assert-bundle.cjs`. The `esbuild` devDependency is gone, the kit brings its own.
