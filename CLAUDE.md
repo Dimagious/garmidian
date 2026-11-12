@@ -33,6 +33,7 @@ tools/     developer scripts, not shipped: screenshot tour, comparison with Heal
 ```bash
 npm run lint && npm run typecheck && npm test && npm run build   # the gates
 npm run release:check                                             # everything incl. versions and scorecard
+npx opdk release patch --dry-run                                 # cut a release (patch|minor|major|X.Y.Z): bump, check, tag, kit workflow, publish; drop --dry-run to do it. Clean default branch, gh signed in
 npm run e2e                                                       # needs macOS Obsidian and a Dashy build (DASHY_DIST, default ../dashsidian)
 GARMIN_LIVE=1 npm run e2e -- e2e/live.spec.ts                     # real API, key from Keychain service garmin-personal-api
 npm run capture                                                   # retake README pictures and clips (real Obsidian, demo data, needs ffmpeg); output docs/screens
