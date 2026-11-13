@@ -6,6 +6,7 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- The dev kit is [obsidian-plugin-dev-kit](https://github.com/Dimagious/obsidian-plugin-dev-kit) 0.2.0 (was 0.1.0), moved with its new `opdk kit upgrade` command: the tag in `package.json`, the lockfile and the two kit workflow lines (`ci.yml`, `release.yml`) name commit `32a1860`. Its lint preset reports a bare `window.<member>` again, the check the old `scorecard-check.cjs` had; Garmy has none. `opdk release check` now also fails when those three places disagree. Typecheck, lint, 499 unit tests, build, `opdk scan`, `opdk release check`, `readme:check`, `site:check` and the e2e pass on it.
 - The sleep and HRV guide says the Choose step groups appear under the Everything kind, and names the Sleep and HRV and recovery kinds.
 - The site no longer copies the `phone-*` stills, which only feed the directory pictures (`tools/listing.mjs`).
 - Build, lint, scanner, end-to-end harness, README films and release are done by [obsidian-plugin-dev-kit](https://github.com/Dimagious/obsidian-plugin-dev-kit) 0.1.0 (the `opdk` command, installed from its `v0.1.0` tag). Garmy's own settings are in `opdk.config.mjs`. The scripts it replaces are deleted: `assert-bundle.cjs`, `scorecard-check.cjs`, `e2e-setup.sh`, `capture.mjs`, `version-sync.cjs`, `make-zip.cjs` and `assert-versions.cjs`.
