@@ -17,8 +17,12 @@ h2.step .n {
 /* "On this page": a quiet list right under the lede */
 .toc { margin: 22px 0 26px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-2); font-size: 14px; }
 .toc b { display: block; font-size: 12px; font-weight: 600; color: var(--faint); letter-spacing: .02em; margin-bottom: 4px; }
-.toc ol { margin: 0; padding-left: 20px; columns: 2; column-gap: 28px; }
-.toc li { break-inside: avoid; padding: 1px 0; }
+.toc ol {
+  margin: 0; padding-left: 20px; display: grid; gap: 0 28px;
+  /* two columns filled top to bottom, like the multi-column layout it replaces: --rows is set on the list (half the items, rounded up) */
+  grid-auto-flow: column; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(var(--rows, 1), auto);
+}
+.toc li { padding: 1px 0; }
 .toc a { color: var(--muted); text-decoration: none; }
 .toc a:hover { color: var(--accent-text); text-decoration: underline; }
 
@@ -30,7 +34,6 @@ h2.step .n {
 .codeblock.other .bar { color: var(--muted); }
 /* a prompt is prose a reader has to read in full, so it wraps instead of scrolling */
 pre code.plain { color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; }
-.codeblock:has(code.plain) + p { margin-top: 14px; }
 
 /* key notes under a block: key on the left, plain words on the right */
 .keynotes { list-style: none; padding: 0; margin: 14px 0 0; border-top: 1px solid var(--border); }
@@ -106,7 +109,7 @@ a.card:hover .card-title { color: var(--accent-text); }
   .keynotes li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
 }
 @media (max-width: 560px) {
-  .toc ol { columns: 1; }
+  .toc ol { grid-auto-flow: row; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
   .cards.small .thumb { display: none; }
   /* the comparison table becomes one card per row: no sideways scroll on a phone */
   .table-wrap { overflow: visible; border: 0; }
@@ -118,4 +121,8 @@ a.card:hover .card-title { color: var(--accent-text); }
   table.cmp td:first-child { display: block; width: auto; background: var(--bg-2); color: var(--text); font-weight: 600; }
   table.cmp td[data-h]::before { content: attr(data-h); font: 500 12px "JetBrains Mono", monospace; color: var(--faint); padding-top: 2px; }
   table.cmp td.us[data-h]::before { color: var(--accent-text); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card { transition: none; }
 }
