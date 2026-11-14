@@ -24,10 +24,4 @@ export default defineConfig({
             "film-library": { gif: { colors: 160, fps: 8, width: 820 } },
         },
     },
-    scan: {
-        // The GitHub Pages site is a static web page, not plugin code, and none of it ships in main.js. The old
-        // scorecard script and the lint config never read it; the plugin rules (popout windows, innerHTML) have no
-        // meaning there.
-        ignore: ["site/**"],
-    },
 });
