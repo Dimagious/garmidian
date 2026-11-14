@@ -1,7 +1,7 @@
 {
   "id": "garmidian",
   "name": "Garmy",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "minAppVersion": "1.13.0",
   "description": "Build a Garmin dashboard in a few clicks: paste a Personal API key, pick sports and metrics, insert a ready Dashy dashboard.",
   "author": "Dimagious",

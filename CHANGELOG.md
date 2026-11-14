@@ -4,6 +4,8 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-11-14
+
 ### Changed
 
 - The dev kit is [obsidian-plugin-dev-kit](https://github.com/Dimagious/obsidian-plugin-dev-kit) 0.3.0 (moved with `opdk kit upgrade v0.3.0`), so that `opdk scan` reports what the community scorecard reports. Four things follow. TypeScript is 6 (`typescript` `^6.0.3`, was `^5.6.0`); the code needed no changes to compile. The ESLint config is renamed from `eslint.config.js` to `eslint.config.mjs`, because the scanner does not read `.mjs` files and a `.js` config that imports the kit gets two warnings there; `npm run lint` lints the same files as before. The `scan.ignore` key is gone from `opdk.config.mjs` (the kit removed it: a skipped file was still on the public scorecard), so `opdk scan` now reads `site/` too and found 20 CSS warnings in the GitHub Pages stylesheets, which are fixed: the `!important` rules on code in the explorer, the block index and the key list now win by specificity, and the reduced-motion rule names the animated elements instead of using `*`; the "On this page" list is a two-column grid filled top to bottom (each list sets its row count) instead of CSS columns; the unused `:has()` rule is removed; `ui-monospace` is dropped from the code font stack (the next font in it, SF Mono, is the same face) and links lose the 1px underline thickness (the browser default is used, offset unchanged). Screenshots of the home page and all guides before and after, at 1280 and 390 pixels wide, differ by a few single pixels at the ends of link underlines and nowhere else. `opdk scan` now prints 0 findings and one advisory line for `site/assets/site.js`, which no tsconfig covers.
