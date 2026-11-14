@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": { "lib": ["ES2020", "DOM", "DOM.Iterable"], "types": ["node"] },
-  "include": ["./**/*.ts", "../playwright.config.ts"]
+  "include": ["e2e/**/*.ts", "playwright.config.ts"]
 }
