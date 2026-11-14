@@ -4,6 +4,8 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ## [Unreleased]
 
+## [1.1.2] - 2026-11-14
+
 ### Fixed
 
 - The community scorecard of 1.1.1 lists 22 warnings in the e2e helpers (`e2e/fixtures.ts`, `e2e/demo-garmin.ts`, `e2e/live-key.ts`): the scanner lints every file a `tsconfig.json` covers, and `e2e/tsconfig.json` (added in 1.1.1 for `npm run typecheck`) made it cover them. That config is now `tsconfig.e2e.json` in the root, with the same options, and `npm run typecheck` checks `e2e/` through it. The scanner finds only files named `tsconfig.json`, so it skips `e2e/` again, as it did up to 1.1.0. The warnings were Obsidian runtime rules (`window.setTimeout`, no `globalThis`, no `node:child_process`) that do not apply to Playwright code, which runs in Node, and `no-unsafe-*` on values read from Obsidian through `evaluate`. Nothing in `main.js` changes.
