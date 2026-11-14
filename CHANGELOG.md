@@ -4,6 +4,10 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ## [Unreleased]
 
+### Changed
+
+- The dev kit is [obsidian-plugin-dev-kit](https://github.com/Dimagious/obsidian-plugin-dev-kit) 0.3.1 (moved with `opdk kit upgrade v0.3.1`). Its `opdk scan` now also lints `e2e/` files that a `tsconfig.json` covers. Garmy keeps its e2e type-checking in the root `tsconfig.e2e.json` (there is no `e2e/tsconfig.json`), so the scan reports nothing new here.
+
 ## [1.1.2] - 2026-11-14
 
 ### Fixed

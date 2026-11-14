@@ -15,7 +15,7 @@ jobs:
   # Lint, typecheck, unit tests with the coverage gate, the scanner, the release check, the build with its
   # Node-only check, and the bundle artifact (garmidian-bundle).
   kit:
-    uses: Dimagious/obsidian-plugin-dev-kit/.github/workflows/plugin-ci.yml@c39084b24154360fe9879fe480d7a8edfbc37d5d # v0.3.0
+    uses: Dimagious/obsidian-plugin-dev-kit/.github/workflows/plugin-ci.yml@9de7d2f0bd83d4aeb0b6f7f3566915eb3823cfdf # v0.3.1
 
   # Only Garmy checks this.
   plugin:
