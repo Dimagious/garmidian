@@ -35,5 +35,10 @@
     "vite": "^8.3.8",
     "vitest": "^5.1.0",
     "yaml": "^2.9.1"
+  },
+  "overrides": {
+    "obsidian-test-mocks": {
+      "moment": "2.31.0"
+    }
   }
 }

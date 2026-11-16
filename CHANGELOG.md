@@ -4,6 +4,10 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ## [Unreleased]
 
+### Security
+
+- The test mocks (`obsidian-test-mocks` 8.0.0) pulled `moment` 2.29.4, which has a path traversal advisory (GHSA-4p3w-j4w9-5jqw). An npm override pins it to 2.31.0, the version Obsidian itself ships. Tests only; nothing in `main.js` changes.
+
 ### Fixed
 
 - In Japanese the name of the current step in the wizard's step row broke between its letters on a phone-width screen. Step names now stay on one line.
