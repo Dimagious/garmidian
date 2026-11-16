@@ -6,7 +6,29 @@
 #
 # Monthly and grouped, so the noise stays at one pull request per ecosystem.
 version: 2
+
+# The dev kit is pinned in three places that must name one release: the npm version in package.json and the
+# lockfile, and the commit (with its `# vX.Y.Z` comment) in the `uses:` lines of ci.yml and release.yml.
+# `opdk release check` fails when they disagree, so the kit moves in one pull request across both ecosystems,
+# checked daily so a kit release reaches Garmy the next day. The regular entries below ignore it.
+multi-ecosystem-groups:
+  kit:
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore(deps)"
+
 updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    patterns: ["obsidian-plugin-dev-kit"]
+    multi-ecosystem-group: "kit"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    patterns: ["Dimagious/obsidian-plugin-dev-kit*"]
+    multi-ecosystem-group: "kit"
+
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -16,7 +38,7 @@ updates:
       prefix: "chore(deps)"
       prefix-development: "chore(deps-dev)"
     ignore:
-      # The kit pin moves by hand, together with the two workflow SHAs (see the github-actions block).
+      # The kit moves in the `kit` group above, together with the two workflow SHAs.
       - dependency-name: "obsidian-plugin-dev-kit"
       # typescript-eslint and eslint-plugin-obsidianmd now come through the kit; its peer ranges do not allow
       # TypeScript 7 yet and the whole group failed `npm ci` on it. Revisit when a kit release allows it.
@@ -38,8 +60,7 @@ updates:
 
   # ci.yml, release.yml and pages.yml pin every action to a full commit SHA with the version in a comment;
   # Dependabot moves both together.
-  # The three kit pins (the tag in package.json, the SHA in ci.yml, the SHA in release.yml) move together by
-  # hand with a kit release, so Dependabot leaves the kit's reusable workflows alone.
+  # The kit's reusable workflows move in the `kit` group above, with the npm version.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
