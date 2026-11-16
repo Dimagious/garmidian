@@ -4,6 +4,14 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ## [Unreleased]
 
+### Fixed
+
+- In Japanese the name of the current step in the wizard's step row broke between its letters on a phone-width screen. Step names now stay on one line.
+
+### Added
+
+- `e2e/tour.spec.ts` walks the wizard in Obsidian's mobile interface at 390 px in German, French, Russian, Spanish, Portuguese and Japanese and checks for sideways scroll and touch targets under 44 px (`TOUR=1`).
+
 ### Changed
 
 - The dev kit is [obsidian-plugin-dev-kit](https://github.com/Dimagious/obsidian-plugin-dev-kit) 0.3.1 (moved with `opdk kit upgrade v0.3.1`). Its `opdk scan` now also lints `e2e/` files that a `tsconfig.json` covers. Garmy keeps its e2e type-checking in the root `tsconfig.e2e.json` (there is no `e2e/tsconfig.json`), so the scan reports nothing new here.

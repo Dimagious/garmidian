@@ -289,3 +289,29 @@ test("layout: no sideways scroll, touch targets and a focus ring, in every theme
     await obsidian.mobile();
     await walk("mobile", { dashyMissing: true, touch: true });
 });
+
+test("layout: the wizard in Obsidian's mobile interface in every language (long German and French strings)", async ({ win, obsidian }) => {
+    await loadHistory(win, obsidian, 30, false);
+    await closeWizard(win);
+    await obsidian.mobile();
+    for (const code of ["de", "fr", "ru", "es", "pt", "ja"]) {
+        await obsidian.evaluate((app: GarmyApp, c: string) => {
+            const p = app.plugins.plugins.garmidian;
+            if (p) p.settings.language = c;
+            delete app.plugins.plugins.dashsidian;
+        }, code);
+        await fakeGarmin(obsidian, 30);
+        await openWizard(win);
+        await shot(win, `m-${code}-1-key.png`);
+        expect((await overflow(win)).hScroll, `${code}: key step scrolls sideways`).toBe(false);
+        await win.locator(".garmy-key-check").click();
+        await win.locator(".garmy-load").waitFor({ timeout: 10_000 });
+        await win.locator(".garmy-use-saved").click();
+        await win.locator(".garmy-preview-btn").waitFor({ timeout: 10_000 });
+        await shot(win, `m-${code}-3-choose.png`);
+        const ov = await overflow(win);
+        expect(ov.hScroll, `${code}: the modal is ${ov.modalW} px of ${ov.viewW} px`).toBe(false);
+        expect(await smallTargets(win), `${code}: touch targets under 44 px`).toEqual([]);
+        await closeWizard(win);
+    }
+});

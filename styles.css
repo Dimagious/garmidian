@@ -29,6 +29,7 @@
 .garmy-steps-item.is-current { color: var(--text-normal); }
 .garmy-steps-item.is-current .garmy-steps-dot { border-color: var(--interactive-accent); color: var(--interactive-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--interactive-accent) 22%, transparent); }
 .garmy-steps-item.is-current .garmy-steps-label { font-weight: var(--font-semibold); }
+.garmy-steps-label { white-space: nowrap; }
 
 /* Body and footer */
 .garmy-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--size-4-4) var(--size-4-6); }
