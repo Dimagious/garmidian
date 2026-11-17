@@ -19,7 +19,11 @@
     "listing": "node tools/listing.mjs",
     "site:check": "node scripts/site-check.cjs",
     "site:assemble": "node scripts/assemble-site.cjs",
-    "site:card": "node scripts/social-card.cjs"
+    "site:card": "node scripts/social-card.cjs",
+    "video:clips": "npm run build && VIDEO=1 playwright test e2e/video.spec.ts -c playwright.video.config.ts",
+    "video:manifest": "node scripts/video/manifest.mjs",
+    "video:studio": "npm run video:manifest && video/node_modules/.bin/remotion studio video/src/index.ts --public-dir=video/public --config=video/remotion.config.ts",
+    "video:render": "npm run video:manifest && video/node_modules/.bin/remotion render video/src/index.ts GarmyOverview out/video/garmy-overview.mp4 --public-dir=video/public --config=video/remotion.config.ts --codec=h264 --crf=18"
   },
   "devDependencies": {
     "@playwright/test": "1.65.0",

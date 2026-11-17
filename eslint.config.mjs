@@ -19,6 +19,11 @@ export default [
       // timers) have no meaning there, and none of it ships in main.js.
       'site/**',
       '_site/**',
+      // The YouTube overview: a Remotion project with its own tsconfig, React
+      // and node_modules link, rendered on the author's machine, never shipped.
+      'video/**',
+      // Its recording config: a Playwright config like playwright.config.ts, which the kit already leaves out.
+      'playwright.video.config.ts',
       // Test scaffolding: the fake Obsidian, the DOM shim, the fake vault.
       // None of it is bundled, and the preset forbids silencing its DOM rules
       // per line, rightly, since in plugin code they are never negotiable.
