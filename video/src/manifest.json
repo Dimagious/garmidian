@@ -1,0 +1,61 @@
+{
+  "scenes": [
+    {
+      "n": 1,
+      "title": "What it is",
+      "text": "Garmy builds a Garmin dashboard inside Obsidian from your own data. No export files, no third-party service. You paste one key from Garmin, and Garmy builds the dashboard from your sleep, steps, heart rate and training.",
+      "voiceFile": "voice-master/scene-1.mp3",
+      "voiceSeconds": 12.445896
+    },
+    {
+      "n": 2,
+      "title": "The key",
+      "text": "Garmin gives every account a Personal API key. It lives in Garmin Connect, under Settings, Personal API Key. You accept the terms, pick how long the key should live, and copy it. Garmin shows it only once, so paste it into Garmy right away. The key stays in Obsidian's secret storage, and requests go straight to Garmin.",
+      "voiceFile": "voice-master/scene-2.mp3",
+      "voiceSeconds": 19.690522
+    },
+    {
+      "n": 3,
+      "title": "Check and load",
+      "text": "Garmy asks Garmin whether the key works before it moves on. Then you choose how many days to load. A year of history takes about seventeen requests. Steps, sleep, heart rate variability, Body Battery, and every run, ride and swim come through the official API.",
+      "voiceFile": "voice-master/scene-3.mp3",
+      "voiceSeconds": 15.13941
+    },
+    {
+      "n": 4,
+      "title": "Pick a dashboard",
+      "text": "Garmy does not build one dashboard. It offers a library of eleven. A morning glance, sleep, recovery, steps, a page for each sport, triathlon, a race build, weekly and monthly reviews, and the year. Pick by the question you have. Did I sleep enough? Am I ready for the race? If your data is missing for a card, it is greyed out and says what it waits for. A sport you never do is not offered at all.",
+      "voiceFile": "voice-master/scene-4.mp3",
+      "voiceSeconds": 23.405714
+    },
+    {
+      "n": 5,
+      "title": "The result",
+      "text": "The result is an ordinary note. Garmy draws it with Dashy, another plugin of mine: a few lines of text become cards, charts, a year heatmap and a progress bar. Dashy is free and sits in the same catalog. Garmy needs version 2.2.0 or newer and checks that before it writes the note. The month goal is worked out from your usual month, not typed by me.",
+      "voiceFile": "voice-master/scene-5.mp3",
+      "voiceSeconds": 19.969161
+    },
+    {
+      "n": 6,
+      "title": "Change your mind",
+      "text": "If you change your mind, rebuild and you get a fresh dashboard. Kilometres or miles, the plugin follows your choice. The wizard comes in seven languages.",
+      "voiceFile": "voice-master/scene-6.mp3",
+      "voiceSeconds": 8.637823
+    },
+    {
+      "n": 7,
+      "title": "Install and limits",
+      "text": "Garmy is in the community catalog, free and open source. Search for Garmy in Community plugins and install it. Install Dashy the same way, then run Build a Garmin dashboard. The guides on the site walk through every step. Link in the description.",
+      "voiceFile": "voice-master/scene-7.mp3",
+      "voiceSeconds": 13.885533
+    }
+  ],
+  "clips": {
+    "wizard": 52.56,
+    "note": 32.52,
+    "variants": 29.4,
+    "catalog": 12.44
+  },
+  "musicFile": "music/intergalactic.mp3",
+  "musicSeconds": 157.124989
+}

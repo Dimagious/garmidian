@@ -10,6 +10,7 @@
 [![Obsidian 1.13+](https://img.shields.io/badge/Obsidian-1.13%2B-7c5ce8)](https://obsidian.md)
 [![Languages](https://img.shields.io/badge/languages-7-7c5ce8)](#seven-languages)
 [![Buy me a coffee](https://img.shields.io/badge/support-buy%20me%20a%20coffee-7c5ce8)](https://buymeacoffee.com/dimagious)
+[![Video overview on YouTube](https://img.shields.io/badge/YouTube-2%20min%20overview-ff0000?logo=youtube&logoColor=white)](https://youtu.be/iQwe1YdaFCE)
 
 **Paste a Garmin key. Pick what you care about. Get a dashboard in your note.**
 
@@ -18,6 +19,12 @@ Sleep, HRV, resting heart rate, Body Battery, steps, runs, rides, swims and stre
 <img alt="The Garmy wizard in Obsidian: a Garmin key is pasted, a year of history loads in four parts, the user chooses what to show, previews the dashboard on their own numbers and creates the note, which then scrolls through recovery cards, charts, a year map by sport and monthly goals" src="https://raw.githubusercontent.com/Dimagious/garmidian/HEAD/docs/screens/film-wizard.gif" width="100%">
 
 **Install:** Settings, **Community plugins**, **Browse**, search for **Garmy**. Garmy draws its blocks with [Dashy](https://github.com/Dimagious/dashsidian), so install Dashy the same way. Then open the command palette and run **Garmy: Build a Garmin dashboard**.
+
+### Watch the 2 minute overview
+
+[<img alt="Garmy video overview on YouTube: the wizard's library of eleven dashboards, with a play button" src="https://raw.githubusercontent.com/Dimagious/garmidian/HEAD/docs/screens/video-overview.jpg" width="560">](https://youtu.be/iQwe1YdaFCE)
+
+From the Garmin key to a finished dashboard, on my own data. [Watch on YouTube](https://youtu.be/iQwe1YdaFCE).
 
 [Website](https://dimagious.github.io/garmidian/) · [Guides](https://dimagious.github.io/garmidian/guides/) · [Get a Garmin Personal API key](https://dimagious.github.io/garmidian/guides/garmin-personal-api-key/) · [Changelog](https://github.com/Dimagious/garmidian/blob/main/CHANGELOG.md)
 

@@ -7,3 +7,6 @@ test-results/
 .capture/
 _site/
 .opdk/
+out/
+video/node_modules
+video/public
