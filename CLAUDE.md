@@ -17,10 +17,10 @@ Name vs id: `name` must not resemble "Obsidian" (the catalog review rejects that
 ## Layout
 
 ```
-src/core   pure: catalog (metrics, sports, ru/en labels), profile (what data exists), mapping (API JSON -> fields), compose (profile + choices -> Dashy markdown)
+src/core   pure: catalog (metrics, sports), profile (what data exists), mapping (API JSON -> fields), compose (profile + choices -> Dashy markdown)
 src/api    GarminClient with an injected transport (Obsidian requestUrl in the plugin, a fake in tests)
 src/i18n   one file per language (en, ru, es, de, fr, pt, ja) typed as `Locale`; `index.ts` picks the language from Obsidian's code
-src/app    wizard modal, media slots, vault storage, settings tab, i18n strings
+src/app    wizard modal, media slots, vault storage, settings tab, rebuild
 src/main.ts  plugin entry
 e2e/       Playwright specs against real Obsidian (fake Garmin by default, live with GARMIN_LIVE=1)
 tools/     developer scripts, not shipped: comparison with Health Sync, API probes
@@ -41,10 +41,22 @@ npm run listing                                                   # headline-and
 TOUR=1 npx playwright test e2e/tour.spec.ts                      # screenshots of every wizard state and the layout checks, fake Garmin, output in .e2e/tour (GARMIN_LIVE=1 on top uses the real key for the one test that builds a dashboard)
 ```
 
+## Maker and checker
+
+Любая фича или багфикс с изменением кода идёт через агентов `maker` (Sonnet) и `checker` (Opus) из кита: `.claude/agents/opdk -> node_modules/obsidian-plugin-dev-kit/claude/agents`. Оба читают этот раздел и разделы "Rules that cost us something" и "Сайт" ниже как обязательные. Оркестратор (основная сессия) код не пишет: ставит задачу maker'у, передаёт отчёты, показывает итоговый вердикт и дифф. Цикл повторяется до APPROVE. Без агентов можно: опечатки, документация, комментарии, файлы `.claude/**`, или когда пользователь просит явно.
+
+Garmy-specific rules for both agents:
+
+- **Layers.** `src/core` and `src/api` import nothing from `obsidian` and touch no DOM. Obsidian is reached from `src/app` and `src/main.ts`; the Garmin client gets its transport injected (`requestUrl` in `main.ts`, a fake in tests).
+- **Strings.** A new user-visible string goes into `src/i18n/types.ts` and all seven language files; `locales.test.ts` enforces it.
+- **Extra gates:** `npm run typecheck` covers two tsconfigs (src, e2e), both must pass. `npm run build` (images are bundled into `main.js`). When the diff touches `README.md` or `docs/`, `npm run readme:check`; when it touches `site/`, `npm run site:check`.
+- **Checker lens: Dashy's public API.** Garmy writes Dashy blocks and depends on Dashy's API (`../dashsidian/docs/API.md`, types copied into `src/core/dashy.ts`). Check that: every block key Garmy writes is in `src/test/dashy-schema.ts` and its test runs; a key newer than the oldest supported Dashy is written only behind `schemaAtLeast(api.schemaVersion, X)` with a fallback (the `goal: usual` pattern in `ctx.ts`); the API is read through `readDashyApi` when needed, never cached; `apiVersion` is compared with `>=`; `check` warns and never blocks a write, `status: "unknown"` counts as an error, an indexing notice means retry. A changed block is listed under "Not verifiable locally" for `e2e/templates.spec.ts` (real Dashy, zero diagnostics).
+- **Checker lens: notes already in vaults.** The `garmy` property is positional (template is the 8th field) and the region markers are fixed: a format change must still rebuild notes written by every released version. Sync overwrites only the three latest days (ADR 0005); unit switches only add fields; multi-page activity days are summed after all pages.
+- **Checker lens: the key and the network.** The key is never logged, shown, put in `data.json` or a test fixture; it lives in `secretStorage`. The only host is `personal.connectapi.garmin.com` through the injected transport; any other network call is a finding. Every dashboard keeps "Data source: Garmin" under its title (Garmin brand guidelines) and no Garmin logo.
+
 ## Rules that cost us something
 
 - Obsidian collects `getSettingDefinitions()` early for search. Anything that can change (is a key saved?) must be read inside the row's `render`, not outside it.
-- Timers go through `window.setTimeout`; DOM and media queries through `activeDocument` / `activeWindow` (popout windows). The scorecard gate checks this.
 - "Today" is the local day (`core/dates.ts`), never `toISOString()`. Date arithmetic goes through `addDays`.
 - Directory pictures live in `docs/listing` and are uploaded by hand on community.obsidian.md (Edit listing). The phone ones are Obsidian's mobile interface in a 390 px window (`app.emulateMobile`), not a device.
 - README pictures must come from `npm run capture` (real plugin, generated demo data). Never put a real person's health data into a picture. `npm run readme:check` verifies links, images and dashes.
