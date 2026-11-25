@@ -33,7 +33,7 @@
     "eslint": "^10.14.0",
     "jsdom": "^31.0.1",
     "obsidian": "^1.14.4",
-    "obsidian-plugin-dev-kit": "0.3.3",
+    "obsidian-plugin-dev-kit": "0.5.0",
     "obsidian-test-mocks": "8.0.0",
     "typescript": "^6.0.3",
     "vite": "^8.3.8",
