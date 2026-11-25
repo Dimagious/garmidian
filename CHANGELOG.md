@@ -18,6 +18,7 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- The dev kit is `obsidian-plugin-dev-kit` 0.5.0 (was 0.3.3), with the workflow pins moved by `opdk kit upgrade`. Its `opdk scan` runs `eslint-plugin-obsidianmd` 0.6.0 and reports nothing new here. The kit's rules for Claude Code are linked into `.claude/rules/opdk`. Nothing in `main.js` changes.
 - The dev kit is [obsidian-plugin-dev-kit](https://github.com/Dimagious/obsidian-plugin-dev-kit) 0.3.1 (moved with `opdk kit upgrade v0.3.1`). Its `opdk scan` now also lints `e2e/` files that a `tsconfig.json` covers. Garmy keeps its e2e type-checking in the root `tsconfig.e2e.json` (there is no `e2e/tsconfig.json`), so the scan reports nothing new here.
 - The dev kit is installed from npm (`obsidian-plugin-dev-kit` 0.3.3, exact version) instead of a git tag, and the workflow pins moved to 0.3.3 with `opdk kit upgrade`. Dependabot now moves the kit daily in one pull request that updates the npm version and the commit in both `uses:` lines together (`kit` group in `.github/dependabot.yml`).
 
